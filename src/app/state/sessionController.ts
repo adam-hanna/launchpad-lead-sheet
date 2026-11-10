@@ -115,6 +115,8 @@ export interface SessionOptions {
   readonly clearTimer?: (handle: unknown) => void;
   readonly createHardwarePort?: (midi: WebMidi, inputId: string, outputId: string) => HardwarePort;
   readonly initialSettings?: Partial<Settings>;
+  /** Optional event trace for diagnostics (the app enables it with `?debug`, logging to the console). */
+  readonly trace?: (event: string, detail?: Record<string, unknown>) => void;
   /** Sheet library, autosave and settings storage (roadmap E6.4). Optional: tests run without it. */
   readonly persistence?: {
     readonly sheets: SheetStore;
@@ -155,6 +157,7 @@ export class SessionController {
   private readonly midi: WebMidi;
   private readonly virtual: VirtualLaunchpad;
   private readonly now: () => number;
+  private readonly trace: (event: string, detail?: Record<string, unknown>) => void;
   private readonly setTimer: (fn: () => void, ms: number) => unknown;
   private readonly clearTimer: (handle: unknown) => void;
   private readonly createHardwarePort: (midi: WebMidi, inputId: string, outputId: string) => HardwarePort;
@@ -190,6 +193,7 @@ export class SessionController {
     this.midi = options.midi;
     this.virtual = options.virtual;
     this.now = options.now ?? (() => performance.now());
+    this.trace = options.trace ?? (() => undefined);
     this.setTimer = options.setTimer ?? ((fn, ms) => globalThis.setTimeout(fn, ms));
     this.clearTimer =
       options.clearTimer ??
@@ -573,12 +577,20 @@ export class SessionController {
     }
     const port = this.createHardwarePort(this.midi, lpIn, lpOut);
     this.hardware = port;
+    this.trace('hardware.bind', { lpIn, lpOut });
     this.hardwareUnsubs = [
       port.onLayoutChanged((layout) => {
+        this.trace('hardware.layout', { layout });
         this.apply(this.ownership.layoutObserved(layout));
         this.emit();
       }),
       port.onPad((pad, velocity) => {
+        this.trace('hardware.pad', {
+          pad,
+          velocity,
+          inputEnabled: this.inputEnabled,
+          status: this.ownership.snapshot().status,
+        });
         if (!this.inputEnabled) return;
         this.onPad('hw', pad, velocity);
       }),
@@ -694,6 +706,7 @@ export class SessionController {
             fx.command === 'enterProgrammer'
               ? this.hardware?.enterProgrammerMode()
               : this.hardware?.restoreLiveMode();
+          this.trace('hardware.send', { command: fx.command, ok });
           if (ok === false) {
             this.hwRenderer.markSendFailed();
             this.fail(`could not send ${fx.command} to the Launchpad`);
@@ -718,6 +731,7 @@ export class SessionController {
           this.inputEnabled = fx.enabled;
           break;
         case 'statusChanged':
+          this.trace('ownership.status', { status: fx.status });
           break;
       }
     }
@@ -730,6 +744,7 @@ export class SessionController {
     if (velocity > 0) {
       const note = this.mapping.noteAt(pad);
       const port = this.selection.notesOut;
+      this.trace('notes.press', { source, pad, note, port, velocity });
       if (note === null || !port) return;
       // A returning destination must deliver its owed Note Offs before accepting new notes.
       if (this.pending.isBlocked(port)) {
@@ -767,6 +782,7 @@ export class SessionController {
   private send(messages: readonly OutputMessage[]): void {
     if (messages.length === 0) return;
     const report = this.output.send(messages);
+    this.trace('notes.send', { count: messages.length, failed: report.failed.length });
     if (report.failed.length) {
       this.pending.add(report.failed);
       this.fail(`${String(report.failed.length)} MIDI message(s) could not be sent to the notes output`);
@@ -892,6 +908,7 @@ export class SessionController {
   }
 
   private fail(message: string): void {
+    this.trace('error', { message });
     this.lastError = message;
   }
 

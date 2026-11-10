@@ -78,10 +78,18 @@ export function getSession(): Session {
     onSaved: (id) => controllerRef?.onSaved(id),
     onError: (id, e) => controllerRef?.onSaveError(id, e),
   });
+  const debug = new URLSearchParams(window.location.search).has('debug');
   const controller = new SessionController({
     midi: WebMidi.fromNavigator(),
     virtual,
     persistence: { sheets, autosave, settings: new SettingsStore() },
+    ...(debug
+      ? {
+          trace: (event: string, detail?: Record<string, unknown>) => {
+            console.debug(`[leadsheet] ${event}`, detail ?? '');
+          },
+        }
+      : {}),
   });
   controllerRef = controller;
   const store = createSessionStore(
