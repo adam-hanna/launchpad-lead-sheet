@@ -50,7 +50,11 @@ approximately ten minutes. This is a summary:
    | Output: `LPProMK3 DAW`        | –     | Off  |
 
 3. Set the MIDI Clock Type of the `LS Clock` output to **Song**.
-4. Make a MIDI track in Live. Set **MIDI From** to `IAC Driver LS Notes`. Set **Monitor** to **In**.
+4. Make a MIDI track in Live. Set **MIDI From** to `IAC Driver LS Notes`. Set **Monitor** to **Auto**. Arm the track.
+
+   > **Note:** Do not set **Monitor** to **In**. With **In**, Live does not play the recorded clips of
+   > the track.
+
 5. Open the app. Click **Connect MIDI**. Click **Take the Launchpad**.
 6. Push Play in Live.
 

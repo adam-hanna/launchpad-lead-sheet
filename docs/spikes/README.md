@@ -28,7 +28,7 @@ Open it in Chrome. Before starting:
 1. **IAC**: Audio MIDI Setup → IAC Driver → enable, create buses `LS Clock` and `LS Notes`.
 2. **Live → Preferences → Link/Tempo/MIDI**: `IAC Driver LS Clock` output: **Sync On**, MIDI Clock Type
    **Song**. `IAC Driver LS Notes` input: **Track On**. `LPProMK3 MIDI` input: **Track Off**.
-3. A MIDI track with input **IAC Driver LS Notes** only, monitoring **In**, with any instrument.
+3. A MIDI track with input **IAC Driver LS Notes** only, monitoring **Auto** and armed (**In** mutes the track's clips), with any instrument.
 4. In the harness: **Request MIDI access** → **Auto-detect ports** (fix any that are wrong) →
    **Inquiry** (records the firmware) → fill the macOS and Live fields.
 
