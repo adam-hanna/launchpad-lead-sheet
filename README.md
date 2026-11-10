@@ -203,3 +203,7 @@ flowchart TB
 - The app does not follow clips in the Session view of Live.
 - Three hardware tests are not complete: latency, long operation, and repeated reconnection. Refer to
   [docs/spikes/README.md](docs/spikes/README.md).
+
+## Licence
+
+The licence is the MIT licence. Refer to [LICENSE](LICENSE).
