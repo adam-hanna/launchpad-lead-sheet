@@ -28,3 +28,19 @@ describe('parseSettings', () => {
     expect(settingsSchema.safeParse(DEFAULT_SETTINGS).success).toBe(true);
   });
 });
+
+describe('M7 settings fields', () => {
+  it('defaults and validation for clock offset, look-ahead, beat indicator and custom theme', () => {
+    expect(DEFAULT_SETTINGS.clockOffsetTicks).toBe(0);
+    expect(DEFAULT_SETTINGS.lookAhead).toBe(false);
+    expect(DEFAULT_SETTINGS.beatIndicator).toBe(true);
+    expect(DEFAULT_SETTINGS.customTheme.colours.chordRoot).toEqual([127, 0, 64]);
+    expect(parseSettings({ clockOffsetTicks: 99 }).clockOffsetTicks).toBe(0);
+    expect(parseSettings({ clockOffsetTicks: -12 }).clockOffsetTicks).toBe(-12);
+    expect(parseSettings({ customTheme: { colours: {}, rootFlash: { a: 1, b: 2 } } }).customTheme).toEqual(
+      DEFAULT_SETTINGS.customTheme,
+    );
+    const ok = parseSettings({ customTheme: { ...DEFAULT_SETTINGS.customTheme, rootFlash: { a: 5, b: 7 } } });
+    expect(ok.customTheme.rootFlash).toEqual({ a: 5, b: 7 });
+  });
+});

@@ -528,3 +528,46 @@ describe('SessionController: editing API (E6.2)', () => {
     await controller.deleteSheet('x');
   });
 });
+
+describe('SessionController: should-haves (M7-T1..T4)', () => {
+  it('custom theme colours reach the frame; clock offset shifts the displayed position', async () => {
+    const { controller, virtual, clockIn, clocks } = await setup();
+    controller.updateSettings({
+      themeName: 'custom',
+      customTheme: {
+        ...controller.snapshot().settings.customTheme,
+        colours: { ...controller.snapshot().settings.customTheme.colours, third: [1, 2, 3] },
+      },
+    });
+    expect(stateAt(virtual.state().frame, 15)).toEqual({ kind: 'rgb', rgb: [1, 2, 3] }); // E1 = third of Cmaj7
+    clockIn.receive([0xfa], 0);
+    clocks(10);
+    expect(controller.snapshot().transport.position?.tickInBar).toBe(9);
+    controller.updateSettings({ clockOffsetTicks: 5 });
+    expect(controller.snapshot().transport.position?.tickInBar).toBe(14);
+    controller.updateSettings({ clockOffsetTicks: -20 });
+    expect(controller.snapshot().transport.position?.tickInBar).toBe(0); // clamped at 1.1.1
+  });
+
+  it('beat indicator lights the current beat on the top row while playing; look-ahead pulses changing pads in the last beat', async () => {
+    const { controller, virtual, clockIn, clocks } = await setup();
+    expect(stateAt(virtual.state().frame, 91).kind).toBe('off');
+    clockIn.receive([0xfa], 0);
+    clocks(1);
+    expect(stateAt(virtual.state().frame, 91)).toEqual({ kind: 'rgb', rgb: [110, 110, 110] });
+    expect(stateAt(virtual.state().frame, 92)).toEqual({ kind: 'rgb', rgb: [10, 10, 10] });
+    clocks(24);
+    expect(stateAt(virtual.state().frame, 92)).toEqual({ kind: 'rgb', rgb: [110, 110, 110] });
+    controller.updateSettings({ beatIndicator: false });
+    expect(stateAt(virtual.state().frame, 92).kind).toBe('off');
+    // look-ahead: bar 1 Cmaj7 → bar 2 Am7; during beat 4 the pads whose role changes pulse
+    controller.updateSettings({ lookAhead: true });
+    const noPulseYet = [...virtual.state().frame.values()].filter((st) => st.kind === 'pulse').length;
+    expect(noPulseYet).toBe(0);
+    clocks(48); // tick 24 + 48 = 72 = beat 4
+    const pulsing = [...virtual.state().frame.values()].filter((st) => st.kind === 'pulse').length;
+    expect(pulsing).toBeGreaterThan(0);
+    clocks(24); // bar 2 beat 1: back to normal
+    expect([...virtual.state().frame.values()].filter((st) => st.kind === 'pulse').length).toBe(0);
+  });
+});

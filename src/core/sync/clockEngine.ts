@@ -47,6 +47,8 @@ export type Listener = (snapshot: TransportSnapshot, previous: TransportSnapshot
 export class ClockEngine {
   private meter: Meter;
   private originBar: number;
+  /** Display compensation in ticks (plan §4.4 should-have); never changes counted ticks. */
+  private tickOffset = 0;
   private readonly timeoutMs: number;
 
   private intent: PlayIntent = 'stop';
@@ -77,6 +79,11 @@ export class ClockEngine {
 
   setOriginBar(originBar: number): void {
     this.originBar = originBar;
+    this.emit();
+  }
+
+  setTickOffset(ticks: number): void {
+    this.tickOffset = Math.trunc(ticks);
     this.emit();
   }
 
@@ -196,7 +203,7 @@ export class ClockEngine {
   }
 
   private position(): Position {
-    const bar = positionFromTicks(this.ticks, this.meter);
+    const bar = positionFromTicks(Math.max(0, this.ticks + this.tickOffset), this.meter);
     return { ...bar, sheetBar: toSheetBar(bar.liveBar, this.originBar) };
   }
 

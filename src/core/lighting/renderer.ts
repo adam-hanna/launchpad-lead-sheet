@@ -21,6 +21,7 @@ export interface RenderDeps {
   readonly dark: boolean;
   readonly pressed: ReadonlySet<PadIndex>;
   readonly buttons?: ReadonlyMap<PadIndex, LedState>;
+  readonly lookAhead?: ReadonlySet<PadIndex>;
 }
 
 export interface RenderResult {
@@ -50,6 +51,7 @@ export class FrameRenderer {
       offStyle: deps.offStyle,
       dark: deps.dark,
       ...(deps.buttons ? { buttons: deps.buttons } : {}),
+      ...(deps.lookAhead ? { lookAhead: deps.lookAhead } : {}),
     });
     const fullRepaint = this.deviceFrame === null;
     const specs = diffFrames(this.deviceFrame, frame);

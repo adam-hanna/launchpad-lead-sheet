@@ -6,7 +6,10 @@ import {
 } from '@core/device';
 import { GRID_PADS, mappingFor, type GridMapping, type PadIndex } from '@core/grid';
 import {
+  CUSTOM_THEME_NAME,
   FrameRenderer,
+  beatIndicatorStates,
+  changedPads,
   led,
   OCTAVE_DOWN_BUTTON,
   OCTAVE_UP_BUTTON,
@@ -14,6 +17,8 @@ import {
   WARM_THEME,
   clampOctaveShift,
   octaveButtonStates,
+  resolveRoles,
+  themeFromCustom,
   type LedState,
   type Theme,
 } from '@core/lighting';
@@ -48,7 +53,7 @@ import {
   type Loop,
   type Meter,
 } from '@core/sheet';
-import { ClockEngine, TempoEstimator, type TransportSnapshot } from '@core/sync';
+import { ClockEngine, TempoEstimator, ticksPerBar, ticksPerBeat, type TransportSnapshot } from '@core/sync';
 import { formatKey, type Key } from '@core/theory';
 import {
   NotesOutput,
@@ -508,6 +513,7 @@ export class SessionController {
   updateSettings(patch: Partial<Settings>): void {
     this.settings = { ...this.settings, ...patch };
     this.settings = { ...this.settings, octaveShift: clampOctaveShift(this.settings.octaveShift) };
+    this.engine.setTickOffset(this.settings.clockOffsetTicks);
     this.persistence?.settings.saveSettings(this.settings);
     this.render();
     this.emit();
@@ -799,7 +805,43 @@ export class SessionController {
   }
 
   private theme(): Theme {
+    if (this.settings.themeName === CUSTOM_THEME_NAME) return themeFromCustom(this.settings.customTheme);
     return THEMES.find((t) => t.name === this.settings.themeName) ?? WARM_THEME;
+  }
+
+  /** Pads whose role changes at the next half-bar or bar boundary, during the last beat (roadmap M7-T2). */
+  private lookAheadPads(
+    transport: TransportSnapshot,
+    harmony: ActiveHarmony,
+    half: 0 | 1,
+    mapping: GridMapping,
+  ): ReadonlySet<PadIndex> | undefined {
+    const s = this.settings;
+    if (!s.lookAhead || transport.state !== 'playing' || !transport.position || harmony.barIndex === null)
+      return undefined;
+    const perBar = ticksPerBar(this.sheet.meter);
+    const perBeat = ticksPerBeat(this.sheet.meter);
+    const tick = transport.position.tickInBar;
+    const boundary = half === 0 && harmony.harmony?.chords.length === 2 ? perBar / 2 : perBar;
+    if (tick < boundary - perBeat) return undefined;
+    let nextHarmony = harmony;
+    let nextHalf: 0 | 1 = 1;
+    if (boundary === perBar) {
+      const sheetBar = transport.position.sheetBar ?? 0;
+      nextHarmony = activeHarmony(this.resolved, sheetBar + 1, this.sheet.loop, s.pastEnd);
+      nextHalf = 0;
+    }
+    const nextMapping = mappingFor(
+      s.layout,
+      s.octaveShift,
+      s.relative,
+      s.anchor,
+      nextHarmony.harmony,
+      nextHalf,
+    );
+    const current = resolveRoles(harmony.harmony, half, mapping, s.displayMode);
+    const next = resolveRoles(nextHarmony.harmony, nextHalf, nextMapping, s.displayMode);
+    return changedPads(current, next);
   }
 
   private render(forceHardware = false): void {
@@ -808,6 +850,7 @@ export class SessionController {
     const s = this.settings;
     const mapping = mappingFor(s.layout, s.octaveShift, s.relative, s.anchor, harmony.harmony, half);
     this.mapping = mapping;
+    const lookAhead = this.lookAheadPads(transport, harmony, half, mapping);
     // Press feedback: every pad the current mapping maps to an owned note (plan §4.1).
     const pressed = new Set<PadIndex>();
     for (const note of this.notes.activeNotes()) for (const pad of mapping.padsFor(note)) pressed.add(pad);
@@ -822,7 +865,14 @@ export class SessionController {
       rootFlash: s.rootFlash,
       dark: harmony.dark,
       pressed,
-      buttons: new Map([...octaveButtonStates(s.octaveShift), ...(this.buttons ?? [])]),
+      buttons: new Map([
+        ...octaveButtonStates(s.octaveShift),
+        ...(s.beatIndicator && transport.state === 'playing' && transport.position
+          ? beatIndicatorStates(transport.position.beat, this.sheet.meter.numerator)
+          : []),
+        ...(this.buttons ?? []),
+      ]),
+      ...(lookAhead ? { lookAhead } : {}),
     };
 
     const v = this.virtualRenderer.render(deps);

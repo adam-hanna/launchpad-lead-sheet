@@ -1,6 +1,14 @@
 import { z } from 'zod';
 import { DEFAULT_LAYOUT, MAX_ROW_OFFSET, MIN_ROW_OFFSET, type AnchorSetting, type Layout } from '../grid';
-import { MAX_OCTAVE_SHIFT, MIN_OCTAVE_SHIFT, WARM_THEME, type DisplayMode, type OffStyle } from '../lighting';
+import {
+  MAX_OCTAVE_SHIFT,
+  MIN_OCTAVE_SHIFT,
+  WARM_THEME,
+  type ColourRole,
+  type DisplayMode,
+  type OffStyle,
+  type RGB,
+} from '../lighting';
 import type { PastEndPolicy } from '../sheet';
 
 /** User settings that affect lighting and mapping (plan §2, §4.3, §4.7). Persisted separately from sheets. */
@@ -16,7 +24,29 @@ export interface Settings {
   readonly pastEnd: PastEndPolicy;
   /** 0-based MIDI channel for notes sent to Live. */
   readonly notesChannel: number;
+  /** Compensation for perceived LED lag, in clock ticks (plan §4.4 should-have). */
+  readonly clockOffsetTicks: number;
+  /** Pulse the pads that change at the next boundary during the last beat (roadmap M7-T2). */
+  readonly lookAhead: boolean;
+  /** Show the beat on the top button row while playing (roadmap M7-T3). */
+  readonly beatIndicator: boolean;
+  /** User-edited theme, selected with themeName = 'custom' (roadmap M7-T1). */
+  readonly customTheme: CustomTheme;
 }
+
+export interface CustomTheme {
+  readonly colours: Readonly<Record<ColourRole, RGB>>;
+  readonly rootFlash: { readonly a: number; readonly b: number };
+}
+
+export const MAX_CLOCK_OFFSET_TICKS = 48;
+
+const WARM_CUSTOM: CustomTheme = {
+  colours: Object.fromEntries(
+    Object.entries(WARM_THEME.colours).map(([k, c]) => [k, 'rgb' in c ? c.rgb : [127, 127, 127]]),
+  ) as Record<ColourRole, RGB>,
+  rootFlash: WARM_THEME.rootFlash,
+};
 
 export const DEFAULT_SETTINGS: Settings = {
   displayMode: 'keyChord',
@@ -29,7 +59,35 @@ export const DEFAULT_SETTINGS: Settings = {
   octaveShift: 0,
   pastEnd: 'sustain',
   notesChannel: 0,
+  clockOffsetTicks: 0,
+  lookAhead: false,
+  beatIndicator: true,
+  customTheme: WARM_CUSTOM,
 };
+
+const rgbSchema = z.tuple([
+  z.number().int().min(0).max(127),
+  z.number().int().min(0).max(127),
+  z.number().int().min(0).max(127),
+]);
+const colourRoles = [
+  'bass',
+  'chordRoot',
+  'third',
+  'fifth',
+  'seventh',
+  'extension',
+  'keyRoot',
+  'scale',
+  'pressed',
+  'dim',
+] as const;
+export const customThemeSchema = z.object({
+  colours: z.object(
+    Object.fromEntries(colourRoles.map((r) => [r, rgbSchema])) as Record<ColourRole, typeof rgbSchema>,
+  ),
+  rootFlash: z.object({ a: z.number().int().min(0).max(127), b: z.number().int().min(0).max(127) }),
+});
 
 export const settingsSchema = z.object({
   displayMode: z.enum(['key', 'chord', 'keyChord']),
@@ -45,6 +103,10 @@ export const settingsSchema = z.object({
   octaveShift: z.number().int().min(MIN_OCTAVE_SHIFT).max(MAX_OCTAVE_SHIFT),
   pastEnd: z.enum(['sustain', 'repeat', 'dark']),
   notesChannel: z.number().int().min(0).max(15),
+  clockOffsetTicks: z.number().int().min(-MAX_CLOCK_OFFSET_TICKS).max(MAX_CLOCK_OFFSET_TICKS),
+  lookAhead: z.boolean(),
+  beatIndicator: z.boolean(),
+  customTheme: customThemeSchema,
 });
 
 /**

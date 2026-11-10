@@ -50,6 +50,19 @@ export const PINK_RED_ORANGE_THEME: Theme = {
 
 export const THEMES: readonly Theme[] = [WARM_THEME, PINK_RED_ORANGE_THEME];
 
+export const CUSTOM_THEME_NAME = 'custom';
+
+/** Build a Theme from user-edited colours (roadmap M7-T1). Flashing roles stay palette-based. */
+export function themeFromCustom(custom: {
+  readonly colours: Readonly<Record<ColourRole, RGB>>;
+  readonly rootFlash: { readonly a: number; readonly b: number };
+}): Theme {
+  const colours = Object.fromEntries(
+    Object.entries(custom.colours).map(([k, rgb]) => [k, { rgb }]),
+  ) as Record<ColourRole, ThemeColour>;
+  return { name: CUSTOM_THEME_NAME, label: 'Custom', colours, rootFlash: custom.rootFlash };
+}
+
 export type OffStyle = 'dark' | 'dim';
 
 export interface RenderInput {
@@ -66,7 +79,12 @@ export interface RenderInput {
   readonly dark: boolean;
   /** States for the surrounding buttons, supplied by whoever owns them (octave indicators etc.). */
   readonly buttons?: ReadonlyMap<PadIndex, LedState>;
+  /** Pads that change at the next boundary; pulsed white during the last beat (roadmap M7-T2). */
+  readonly lookAhead?: ReadonlySet<PadIndex>;
 }
+
+/** Palette entry used for the look-ahead pulse (white). */
+export const LOOK_AHEAD_PALETTE = 3;
 
 export function colourToLed(c: ThemeColour): LedState {
   return 'rgb' in c ? led.rgb(...c.rgb) : led.palette(c.palette);
@@ -83,6 +101,10 @@ export function render(input: RenderInput): Frame {
     }
     if (input.dark) {
       entries.push([pad, OFF]);
+      continue;
+    }
+    if (input.lookAhead?.has(pad)) {
+      entries.push([pad, led.pulse(LOOK_AHEAD_PALETTE)]);
       continue;
     }
     const role = input.roles.get(pad) ?? 'off';
