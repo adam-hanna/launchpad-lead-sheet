@@ -8,14 +8,14 @@ until every gate below has a recorded pass or an ADR explaining the consequence 
 
 Fill this in once per session. The harness exports the same block with every file.
 
-| Item                       | Value                                          |
-| -------------------------- | ---------------------------------------------- |
-| macOS                      |                                                |
-| Browser                    | (Chrome/Edge version; from `chrome://version`) |
-| Ableton Live               | (edition and version)                          |
-| Launchpad Pro MK3 firmware | (from the inquiry reply in the harness)        |
-| Harness commit             | (`git rev-parse --short HEAD`)                 |
-| Date                       |                                                |
+| Item                       | Value                                            |
+| -------------------------- | ------------------------------------------------ |
+| macOS                      | 27.0 (26A428)                                    |
+| Browser                    | Chrome 157.0.8103.39 (browser gates not yet run) |
+| Ableton Live               | Live 12 Lite 12.4.16                             |
+| Launchpad Pro MK3 firmware | inquiry version bytes `00 04 06 05`              |
+| Harness commit             | 2435415                                          |
+| Date                       | 2026-11-10 (CoreMIDI probe only, see G1)         |
 
 ## Running the harness
 
@@ -47,7 +47,13 @@ Programmer` with the response time. **All off**, then **Index sweep** (watch a w
   press logs ✓ (index and message type match the documented map) or ✗. **Restore Live mode** → the device
   returns to its normal Live/Note mode.
 - **Pass**: 97 indices seen, zero ✗; Programmer mode confirmed within 500 ms; restore works.
-- **Result**: _pending_ · evidence: `logs/g1-*.json`
+- **Result**: **PARTIAL** (2026-11-10, terminal CoreMIDI probe, not the browser harness) · evidence:
+  `logs/g1-coremidi-probe-2026-11-10.txt`. Inquiry answered in 0.6 ms (family `23 01`, not the documented
+  `13 01`; decoder and protocol note fixed). Programmer mode entered and restored by SysEx, confirmed by
+  layout query in 0.7 ms (`04` → `11` → `04`); an RGB LED message lit pad 11 and a 64-pad off frame
+  cleared it. **FAIL of an assumption**: the device sent no layout-changed message after either mode
+  command (2.5 s windows) → ADR-0004, every mode command is now followed by a layout query. Still to do
+  in the browser: index sweep, index map test (97 presses), restore observed on the device.
 
 ### G2 Live coexistence
 

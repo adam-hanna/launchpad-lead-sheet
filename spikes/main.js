@@ -326,11 +326,14 @@ function enterProgrammer(auto) {
   S.desiredProgrammer = true;
   S.programmerRequestedAt = performance.now();
   sendLp(LP.programmerMode(true), auto ? 'programmer ON (auto)' : 'programmer ON');
+  // The device does not announce a SysEx-initiated mode switch (G1 probe): confirm by query.
+  sendLp(LP.layoutQuery(), 'layout?');
 }
 function restoreLive() {
   releaseAllHeld('restore');
   S.desiredProgrammer = false;
   sendLp(LP.programmerMode(false), 'LIVE mode');
+  sendLp(LP.layoutQuery(), 'layout?');
 }
 let testTimer = null;
 function stopTests() {

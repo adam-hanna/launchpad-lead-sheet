@@ -11,14 +11,14 @@ import { WebMidi } from './webMidi';
 
 // F0 7E 00 06 02 00 20 29 13 01 00 00 <v1 v2 v3 v4> F7
 const PRO_MK3_REPLY = [
-  0xf0, 0x7e, 0x00, 0x06, 0x02, 0x00, 0x20, 0x29, 0x13, 0x01, 0x00, 0x00, 0, 1, 2, 2, 0xf7,
+  0xf0, 0x7e, 0x00, 0x06, 0x02, 0x00, 0x20, 0x29, 0x23, 0x01, 0x00, 0x00, 0, 1, 2, 2, 0xf7,
 ];
 
 describe('decodeInquiryReply', () => {
   it('decodes the Pro MK3 application reply and firmware digits', () => {
     expect(decodeInquiryReply(PRO_MK3_REPLY)).toEqual({
       manufacturer: [0x00, 0x20, 0x29],
-      family: 0x13,
+      family: 0x23,
       member: 0x01,
       version: '0122',
       model: 'launchpad-pro-mk3',
@@ -42,10 +42,10 @@ describe('decodeInquiryReply', () => {
       0,
       0xf7,
     ];
-    expect(decodeInquiryReply(with_(0x13, 0x11))!.model).toBe('launchpad-pro-mk3-bootloader');
+    expect(decodeInquiryReply(with_(0x23, 0x11))!.model).toBe('launchpad-pro-mk3-bootloader');
     expect(decodeInquiryReply(with_(0x03, 0x01))!.model).toBe('launchpad-x');
-    expect(decodeInquiryReply(with_(0x13, 0x00))!.model).toBe('launchpad-mini-mk3');
-    expect(decodeInquiryReply(with_(0x13, 0x01, [0x00, 0x00, 0x7f]))!.model).toBe('unknown');
+    expect(decodeInquiryReply(with_(0x13, 0x01))!.model).toBe('launchpad-mini-mk3');
+    expect(decodeInquiryReply(with_(0x23, 0x01, [0x00, 0x00, 0x7f]))!.model).toBe('unknown');
   });
   it('rejects non-inquiry messages', () => {
     expect(decodeInquiryReply([0x90, 60, 100])).toBeNull();

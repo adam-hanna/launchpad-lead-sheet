@@ -697,7 +697,11 @@ export class SessionController {
           if (ok === false) {
             this.hwRenderer.markSendFailed();
             this.fail(`could not send ${fx.command} to the Launchpad`);
+            break;
           }
+          // The device does not announce a mode switch it was told to make (ADR-0004, gate G1):
+          // ask for the layout and confirm from the reply.
+          this.hardware?.requestLayout();
           break;
         }
         case 'cleanupHardwareOwners':
