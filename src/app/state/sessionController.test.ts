@@ -301,6 +301,96 @@ describe('SessionController: note routing (M5)', () => {
     access.unplug('out-notes');
     access.outputs.get('out-notes')!.failNextSend = true;
     lpIn.receive([0x90, 11, 0]);
-    expect(controller.snapshot().lastError).toMatch(/could not be sent/);
+    expect(controller.snapshot().lastError).toMatch(/stuck/);
+  });
+});
+
+describe('SessionController: cleanup rules, held-note safety and buttons (M5-T5..T7)', () => {
+  const notesOut = (access: ReturnType<typeof standardFakeAccess>, id = 'out-notes') =>
+    access.outputs.get(id)!.sent.map((s) => s.data);
+
+  async function owned() {
+    const ctx = await setup();
+    ctx.controller.enterProgrammer();
+    ctx.lpIn.receive(LAYOUT_MSG(LAYOUT_PROGRAMMER));
+    return ctx;
+  }
+
+  it('output disconnect while holding → note becomes stuck; replug flushes the Note Off before new notes', async () => {
+    const { controller, lpIn, access } = await owned();
+    lpIn.receive([0x90, 11, 100]);
+    access.unplug('out-notes');
+    const snap = controller.snapshot();
+    expect(snap.heldNotes).toEqual([]);
+    expect(snap.stuck).toEqual([{ port: 'out-notes', notes: [36] }]);
+    expect(snap.lastError).toMatch(/stuck/);
+    // while blocked, presses are refused (the fake still accepts sends, so flush would succeed; block it)
+    access.outputs.get('out-notes')!.failNextSend = true;
+    lpIn.receive([0x90, 12, 100]);
+    expect(controller.snapshot().pressedCount).toBe(0);
+    expect(controller.snapshot().stuck).toHaveLength(1);
+    // the port returns: pending Note Off is delivered first, then new notes flow
+    access.replug('out-notes');
+    expect(controller.snapshot().stuck).toEqual([]);
+    expect(notesOut(access).at(-1)).toEqual([0x80, 36, 0]);
+    lpIn.receive([0x90, 12, 100]);
+    expect(controller.snapshot().heldNotes).toEqual([37]);
+  });
+
+  it('a different output never clears the stuck record', async () => {
+    const { controller, lpIn, access } = await owned();
+    lpIn.receive([0x90, 11, 100]);
+    access.unplug('out-notes');
+    controller.selectPorts({ notesOut: 'out-daw' });
+    expect(controller.snapshot().stuck).toEqual([{ port: 'out-notes', notes: [36] }]);
+    lpIn.receive([0x90, 12, 100]);
+    expect(notesOut(access, 'out-daw')).toEqual([[0x90, 37, 100]]);
+  });
+
+  it('changing the notes output releases held notes to the old port first', async () => {
+    const { controller, lpIn, access } = await owned();
+    lpIn.receive([0x90, 11, 100]);
+    controller.selectPorts({ notesOut: 'out-daw' });
+    expect(notesOut(access)).toEqual([
+      [0x90, 36, 100],
+      [0x80, 36, 0],
+    ]);
+    expect(controller.snapshot().heldNotes).toEqual([]);
+    lpIn.receive([0x90, 11, 100]);
+    expect(notesOut(access, 'out-daw')).toEqual([[0x90, 36, 100]]);
+  });
+
+  it('Panic with an unreachable output records the stuck notes', async () => {
+    const { controller, lpIn, access } = await owned();
+    lpIn.receive([0x90, 11, 100]);
+    access.outputs.get('out-notes')!.state = 'disconnected'; // gone without a statechange
+    controller.panic();
+    expect(controller.snapshot().stuck).toEqual([{ port: 'out-notes', notes: [36] }]);
+    expect(controller.snapshot().lastError).toMatch(/could not be silenced/);
+  });
+
+  it('octave buttons shift the register with LED feedback; a held note keeps its original pitch', async () => {
+    const { controller, lpIn, access, virtual } = await owned();
+    expect(stateAt(virtual.state().frame, 80)).toEqual({ kind: 'rgb', rgb: [20, 20, 20] });
+    lpIn.receive([0x90, 11, 100]); // C1 = 36
+    lpIn.receive([0xb0, 80, 127]); // ↑
+    lpIn.receive([0xb0, 80, 0]);
+    expect(controller.snapshot().settings.octaveShift).toBe(1);
+    expect(stateAt(virtual.state().frame, 80)).toEqual({ kind: 'rgb', rgb: [45, 45, 45] });
+    lpIn.receive([0x90, 12, 100]); // C#2 = 49 after the shift
+    lpIn.receive([0x90, 11, 0]); // releases the ORIGINAL 36
+    expect(notesOut(access)).toEqual([
+      [0x90, 36, 100],
+      [0x90, 49, 100],
+      [0x80, 36, 0],
+    ]);
+    virtual.pressButton(70);
+    virtual.pressButton(70);
+    expect(controller.snapshot().settings.octaveShift).toBe(-1);
+    for (let i = 0; i < 20; i++) virtual.pressButton(70);
+    expect(controller.snapshot().settings.octaveShift).toBe(-4);
+    expect(stateAt(virtual.state().frame, 70)).toEqual({ kind: 'off' });
+    controller.updateSettings({ octaveShift: 99 });
+    expect(controller.snapshot().settings.octaveShift).toBe(6);
   });
 });
