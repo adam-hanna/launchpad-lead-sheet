@@ -33,7 +33,7 @@ The device sends Note On with velocity 0 for Note Off. It accepts either Note Of
 Indices = `row*10 + col`, row 1 at the bottom, col 1 at the left. The 8x8 grid is **Notes**; surrounding buttons are **CCs**. Every pad and button accepts either Note or CC for lighting.
 
 ```
-      91 92 93 94 95 96 97 98        (top row, CC)
+ 90 | 91 92 93 94 95 96 97 98 | 99   (Shift 90 CC; top row CC; logo 99 light-only)
  80 | 81 82 83 84 85 86 87 88 | 89
  70 | 71 72 73 74 75 76 77 78 | 79
  60 | 61 62 63 64 65 66 67 68 | 69
@@ -42,9 +42,14 @@ Indices = `row*10 + col`, row 1 at the bottom, col 1 at the left. The 8x8 grid i
  30 | 31 32 33 34 35 36 37 38 | 39
  20 | 21 22 23 24 25 26 27 28 | 29
  10 | 11 12 13 14 15 16 17 18 | 19
+     101 102 103 104 105 106 107 108  (row under the grid, CC)
        1  2  3  4  5  6  7  8        (bottom row, CC)
- left column 10..80 (CC)   right column 19..89 (CC)   logo 99 (CC, light only)
+ left column 10..80 (CC)   right column 19..89 (CC)
 ```
+
+Verified on hardware (gate G1, 2026-11-10, firmware 0465): all 105 pressable indices above send the
+documented message type; the logo lights but is not pressable. Total addressable LEDs = 106, which is also
+the maximum number of specs in one LED SysEx, so a full repaint is exactly one message.
 
 Grid pads send **Note On** (channel 1) with velocity; **aftertouch** is polyphonic or channel pressure depending on the device's setting. Verified against hardware in gate G1 (`docs/spikes/`).
 

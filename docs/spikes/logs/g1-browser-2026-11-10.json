@@ -1,0 +1,1892 @@
+{
+ "versions": {
+  "macos": "27",
+  "live": "12 Lite 12.4.16",
+  "firmware": "",
+  "model": "",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+  "recordedAt": "2026-11-10T15:46:08.241Z"
+ },
+ "entries": [
+  {
+   "t": 0.4,
+   "kind": "sys",
+   "text": "Spike harness ready. 1) Request MIDI access. 2) Enter Programmer. 3) Follow docs/spikes/README.md."
+  },
+  {
+   "t": 10370.9,
+   "kind": "ok",
+   "text": "MIDI access granted in 5 ms, sysex=true"
+  },
+  {
+   "t": 10372.5,
+   "kind": "sys",
+   "text": "LP in = Launchpad Pro MK3 LPProMK3 MIDI"
+  },
+  {
+   "t": 10373,
+   "kind": "sys",
+   "text": "clock in = IAC Driver LS Clock"
+  },
+  {
+   "t": 10373.2,
+   "kind": "sys",
+   "text": "autodetect: LP in=Launchpad Pro MK3 LPProMK3 MIDI LP out=Launchpad Pro MK3 LPProMK3 MIDI clock=IAC Driver LS Clock notes=IAC Driver LS Notes"
+  },
+  {
+   "t": 10374.5,
+   "kind": "sys",
+   "text": "statechange input \"Launchpad Pro MK3 LPProMK3 MIDI\" state=connected connection=open"
+  },
+  {
+   "t": 10374.7,
+   "kind": "ok",
+   "text": "LP reconnected ? ms after disconnect; re-binding"
+  },
+  {
+   "t": 10375.2,
+   "kind": "sys",
+   "text": "LP in = Launchpad Pro MK3 LPProMK3 MIDI"
+  },
+  {
+   "t": 10375.3,
+   "kind": "sys",
+   "text": "clock in = IAC Driver LS Clock"
+  },
+  {
+   "t": 10375.3,
+   "kind": "sys",
+   "text": "autodetect: LP in=Launchpad Pro MK3 LPProMK3 MIDI LP out=Launchpad Pro MK3 LPProMK3 MIDI clock=IAC Driver LS Clock notes=IAC Driver LS Notes"
+  },
+  {
+   "t": 10375.5,
+   "kind": "sys",
+   "text": "statechange input \"IAC Driver LS Clock\" state=connected connection=open"
+  },
+  {
+   "t": 10386.3,
+   "kind": "sys",
+   "text": "← LP   realtime F8 from the device (its own clock); further ones not logged"
+  },
+  {
+   "t": 30665.8,
+   "kind": "sys",
+   "text": "LP in = Launchpad Pro MK3 LPProMK3 MIDI"
+  },
+  {
+   "t": 30666.5,
+   "kind": "sys",
+   "text": "clock in = IAC Driver LS Clock"
+  },
+  {
+   "t": 30666.9,
+   "kind": "sys",
+   "text": "autodetect: LP in=Launchpad Pro MK3 LPProMK3 MIDI LP out=Launchpad Pro MK3 LPProMK3 MIDI clock=IAC Driver LS Clock notes=IAC Driver LS Notes"
+  },
+  {
+   "t": 101090.6,
+   "kind": "out",
+   "text": "→ LP   programmer ON F0 00 20 29 02 0E 0E 01 F7"
+  },
+  {
+   "t": 101091,
+   "kind": "out",
+   "text": "→ LP   layout? F0 00 20 29 02 0E 00 F7"
+  },
+  {
+   "t": 101092.4,
+   "kind": "sys",
+   "text": "statechange output \"Launchpad Pro MK3 LPProMK3 MIDI\" state=connected connection=open"
+  },
+  {
+   "t": 101095.3,
+   "kind": "ok",
+   "text": "← LP   layout changed → Programmer (page 0) (5 ms after request)"
+  },
+  {
+   "t": 101096.2,
+   "kind": "sys",
+   "text": "full repaint after acquiring Programmer mode"
+  },
+  {
+   "t": 117524.3,
+   "kind": "out",
+   "text": "→ LP   all off F0 00 20 29 02 0E 03 00 01 00 00 02 00 00 03 00 00 04 00 00 05 00 00 06 …"
+  },
+  {
+   "t": 120390.6,
+   "kind": "sys",
+   "text": "tests stopped"
+  },
+  {
+   "t": 132032.5,
+   "kind": "sys",
+   "text": "tests stopped"
+  },
+  {
+   "t": 143548.7,
+   "kind": "sys",
+   "text": "tests stopped"
+  },
+  {
+   "t": 155191.3,
+   "kind": "sys",
+   "text": "tests stopped"
+  },
+  {
+   "t": 186990.3,
+   "kind": "sys",
+   "text": "tests stopped"
+  },
+  {
+   "t": 186991.1,
+   "kind": "sys",
+   "text": "INDEX MAP TEST: press every pad and button. Each press is checked against the documented map (grid=notes 11..88, buttons=CCs). Press \"Stop test\" when done."
+  },
+  {
+   "t": 190303.6,
+   "kind": "ok",
+   "text": "index 1 sent as cc — expected cc  ✓  seen 1/97"
+  },
+  {
+   "t": 190921.5,
+   "kind": "ok",
+   "text": "index 2 sent as cc — expected cc  ✓  seen 2/97"
+  },
+  {
+   "t": 191505.1,
+   "kind": "ok",
+   "text": "index 3 sent as cc — expected cc  ✓  seen 3/97"
+  },
+  {
+   "t": 191929.1,
+   "kind": "ok",
+   "text": "index 4 sent as cc — expected cc  ✓  seen 4/97"
+  },
+  {
+   "t": 192388.2,
+   "kind": "ok",
+   "text": "index 5 sent as cc — expected cc  ✓  seen 5/97"
+  },
+  {
+   "t": 192807.2,
+   "kind": "ok",
+   "text": "index 6 sent as cc — expected cc  ✓  seen 6/97"
+  },
+  {
+   "t": 193250.7,
+   "kind": "ok",
+   "text": "index 7 sent as cc — expected cc  ✓  seen 7/97"
+  },
+  {
+   "t": 193734.6,
+   "kind": "ok",
+   "text": "index 8 sent as cc — expected cc  ✓  seen 8/97"
+  },
+  {
+   "t": 195255.9,
+   "kind": "ok",
+   "text": "index 10 sent as cc — expected cc  ✓  seen 9/97"
+  },
+  {
+   "t": 195678.8,
+   "kind": "ok",
+   "text": "index 11 sent as note — expected note (grid row 1 col 1) ✓  seen 10/97"
+  },
+  {
+   "t": 195710.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 195710.4,
+   "kind": "sys",
+   "text": "statechange output \"IAC Driver LS Notes\" state=connected connection=open"
+  },
+  {
+   "t": 195811.5,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 196040.5,
+   "kind": "ok",
+   "text": "index 12 sent as note — expected note (grid row 1 col 2) ✓  seen 11/97"
+  },
+  {
+   "t": 196071.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 196151.1,
+   "kind": "in",
+   "text": "← LP   chanAT = 13",
+   "pressure": true
+  },
+  {
+   "t": 196152.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 196386.9,
+   "kind": "ok",
+   "text": "index 13 sent as note — expected note (grid row 1 col 3) ✓  seen 12/97"
+  },
+  {
+   "t": 196418.4,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 196497.7,
+   "kind": "in",
+   "text": "← LP   chanAT = 118",
+   "pressure": true
+  },
+  {
+   "t": 196510.5,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 196714.9,
+   "kind": "ok",
+   "text": "index 14 sent as note — expected note (grid row 1 col 4) ✓  seen 13/97"
+  },
+  {
+   "t": 196746.1,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 196806,
+   "kind": "in",
+   "text": "← LP   chanAT = 111",
+   "pressure": true
+  },
+  {
+   "t": 196825.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 24",
+   "pressure": true
+  },
+  {
+   "t": 196832.7,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 197027.3,
+   "kind": "ok",
+   "text": "index 15 sent as note — expected note (grid row 1 col 5) ✓  seen 14/97"
+  },
+  {
+   "t": 197058.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 197118.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 110",
+   "pressure": true
+  },
+  {
+   "t": 197139.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 197345.6,
+   "kind": "ok",
+   "text": "index 16 sent as note — expected note (grid row 1 col 6) ✓  seen 15/97"
+  },
+  {
+   "t": 197376.7,
+   "kind": "in",
+   "text": "← LP   chanAT = 123",
+   "pressure": true
+  },
+  {
+   "t": 197396.4,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 197436,
+   "kind": "in",
+   "text": "← LP   chanAT = 106",
+   "pressure": true
+  },
+  {
+   "t": 197455.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 6",
+   "pressure": true
+  },
+  {
+   "t": 197457.1,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 197660.8,
+   "kind": "ok",
+   "text": "index 17 sent as note — expected note (grid row 1 col 7) ✓  seen 16/97"
+  },
+  {
+   "t": 197691.7,
+   "kind": "in",
+   "text": "← LP   chanAT = 116",
+   "pressure": true
+  },
+  {
+   "t": 197711.9,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 197751.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 107",
+   "pressure": true
+  },
+  {
+   "t": 197773.9,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 198282.7,
+   "kind": "ok",
+   "text": "index 18 sent as note — expected note (grid row 1 col 8) ✓  seen 17/97"
+  },
+  {
+   "t": 198314.4,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 198374.1,
+   "kind": "in",
+   "text": "← LP   chanAT = 121",
+   "pressure": true
+  },
+  {
+   "t": 198394,
+   "kind": "in",
+   "text": "← LP   chanAT = 37",
+   "pressure": true
+  },
+  {
+   "t": 198397.9,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 198662.4,
+   "kind": "ok",
+   "text": "index 19 sent as cc — expected cc  ✓  seen 18/97"
+  },
+  {
+   "t": 199320.7,
+   "kind": "ok",
+   "text": "index 20 sent as cc — expected cc  ✓  seen 19/97"
+  },
+  {
+   "t": 199701.1,
+   "kind": "ok",
+   "text": "index 21 sent as note — expected note (grid row 2 col 1) ✓  seen 20/97"
+  },
+  {
+   "t": 199732.3,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 199752.1,
+   "kind": "in",
+   "text": "← LP   chanAT = 126",
+   "pressure": true
+  },
+  {
+   "t": 199772,
+   "kind": "in",
+   "text": "← LP   chanAT = 107",
+   "pressure": true
+  },
+  {
+   "t": 199792.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 43",
+   "pressure": true
+  },
+  {
+   "t": 199798,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 200032.4,
+   "kind": "ok",
+   "text": "index 22 sent as note — expected note (grid row 2 col 2) ✓  seen 21/97"
+  },
+  {
+   "t": 200063.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 200103.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 112",
+   "pressure": true
+  },
+  {
+   "t": 200122,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 200373.3,
+   "kind": "ok",
+   "text": "index 23 sent as note — expected note (grid row 2 col 3) ✓  seen 22/97"
+  },
+  {
+   "t": 200404.5,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 200444,
+   "kind": "in",
+   "text": "← LP   chanAT = 97",
+   "pressure": true
+  },
+  {
+   "t": 200452.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 200724.7,
+   "kind": "ok",
+   "text": "index 24 sent as note — expected note (grid row 2 col 4) ✓  seen 23/97"
+  },
+  {
+   "t": 200756,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 200796,
+   "kind": "in",
+   "text": "← LP   chanAT = 116",
+   "pressure": true
+  },
+  {
+   "t": 200808.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 201085.3,
+   "kind": "ok",
+   "text": "index 25 sent as note — expected note (grid row 2 col 5) ✓  seen 24/97"
+  },
+  {
+   "t": 201116.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 201136.5,
+   "kind": "in",
+   "text": "← LP   chanAT = 119",
+   "pressure": true
+  },
+  {
+   "t": 201156.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 26",
+   "pressure": true
+  },
+  {
+   "t": 201159.5,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 201415.3,
+   "kind": "ok",
+   "text": "index 26 sent as note — expected note (grid row 2 col 6) ✓  seen 25/97"
+  },
+  {
+   "t": 201446.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 201466.7,
+   "kind": "in",
+   "text": "← LP   chanAT = 115",
+   "pressure": true
+  },
+  {
+   "t": 201486.4,
+   "kind": "in",
+   "text": "← LP   chanAT = 57",
+   "pressure": true
+  },
+  {
+   "t": 201496.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 201750.8,
+   "kind": "ok",
+   "text": "index 27 sent as note — expected note (grid row 2 col 7) ✓  seen 26/97"
+  },
+  {
+   "t": 201782.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 108",
+   "pressure": true
+  },
+  {
+   "t": 201802.3,
+   "kind": "in",
+   "text": "← LP   chanAT = 79",
+   "pressure": true
+  },
+  {
+   "t": 201820.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 202080.9,
+   "kind": "ok",
+   "text": "index 28 sent as note — expected note (grid row 2 col 8) ✓  seen 27/97"
+  },
+  {
+   "t": 202112.4,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 202132.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 114",
+   "pressure": true
+  },
+  {
+   "t": 202151.9,
+   "kind": "in",
+   "text": "← LP   chanAT = 45",
+   "pressure": true
+  },
+  {
+   "t": 202156.1,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 202403.3,
+   "kind": "ok",
+   "text": "index 29 sent as cc — expected cc  ✓  seen 28/97"
+  },
+  {
+   "t": 203106.4,
+   "kind": "ok",
+   "text": "index 30 sent as cc — expected cc  ✓  seen 29/97"
+  },
+  {
+   "t": 203434.4,
+   "kind": "ok",
+   "text": "index 31 sent as note — expected note (grid row 3 col 1) ✓  seen 30/97"
+  },
+  {
+   "t": 203465.9,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 203485.5,
+   "kind": "in",
+   "text": "← LP   chanAT = 117",
+   "pressure": true
+  },
+  {
+   "t": 203505.4,
+   "kind": "in",
+   "text": "← LP   chanAT = 41",
+   "pressure": true
+  },
+  {
+   "t": 203506.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 203749.6,
+   "kind": "ok",
+   "text": "index 32 sent as note — expected note (grid row 3 col 2) ✓  seen 31/97"
+  },
+  {
+   "t": 203780.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 203800.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 122",
+   "pressure": true
+  },
+  {
+   "t": 203820.9,
+   "kind": "in",
+   "text": "← LP   chanAT = 66",
+   "pressure": true
+  },
+  {
+   "t": 203826.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 204077.9,
+   "kind": "ok",
+   "text": "index 33 sent as note — expected note (grid row 3 col 3) ✓  seen 32/97"
+  },
+  {
+   "t": 204081.4,
+   "kind": "ok",
+   "text": "index 34 sent as note — expected note (grid row 3 col 4) ✓  seen 33/97"
+  },
+  {
+   "t": 204109.4,
+   "kind": "in",
+   "text": "← LP   chanAT = 107",
+   "pressure": true
+  },
+  {
+   "t": 204129.1,
+   "kind": "in",
+   "text": "← LP   chanAT = 89",
+   "pressure": true
+  },
+  {
+   "t": 204146.3,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 204822.2,
+   "kind": "ok",
+   "text": "index 35 sent as note — expected note (grid row 3 col 5) ✓  seen 34/97"
+  },
+  {
+   "t": 204853.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 125",
+   "pressure": true
+  },
+  {
+   "t": 204873.3,
+   "kind": "in",
+   "text": "← LP   chanAT = 119",
+   "pressure": true
+  },
+  {
+   "t": 204887.1,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 205166.4,
+   "kind": "ok",
+   "text": "index 36 sent as note — expected note (grid row 3 col 6) ✓  seen 35/97"
+  },
+  {
+   "t": 205197.9,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 205238.1,
+   "kind": "in",
+   "text": "← LP   chanAT = 30",
+   "pressure": true
+  },
+  {
+   "t": 205240.7,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 205484,
+   "kind": "ok",
+   "text": "index 37 sent as note — expected note (grid row 3 col 7) ✓  seen 36/97"
+  },
+  {
+   "t": 205515.5,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 205535.3,
+   "kind": "in",
+   "text": "← LP   chanAT = 111",
+   "pressure": true
+  },
+  {
+   "t": 205546.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 205797.2,
+   "kind": "ok",
+   "text": "index 38 sent as note — expected note (grid row 3 col 8) ✓  seen 37/97"
+  },
+  {
+   "t": 205828.5,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 205868.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 4",
+   "pressure": true
+  },
+  {
+   "t": 205869.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 206108.8,
+   "kind": "ok",
+   "text": "index 39 sent as cc — expected cc  ✓  seen 38/97"
+  },
+  {
+   "t": 206812.1,
+   "kind": "ok",
+   "text": "index 40 sent as cc — expected cc  ✓  seen 39/97"
+  },
+  {
+   "t": 207111.7,
+   "kind": "ok",
+   "text": "index 41 sent as note — expected note (grid row 4 col 1) ✓  seen 40/97"
+  },
+  {
+   "t": 207143.1,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 207162.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 126",
+   "pressure": true
+  },
+  {
+   "t": 207181.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 207414.7,
+   "kind": "ok",
+   "text": "index 42 sent as note — expected note (grid row 4 col 2) ✓  seen 41/97"
+  },
+  {
+   "t": 207445.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 207465.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 115",
+   "pressure": true
+  },
+  {
+   "t": 207482.5,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 207750.4,
+   "kind": "ok",
+   "text": "index 43 sent as note — expected note (grid row 4 col 3) ✓  seen 42/97"
+  },
+  {
+   "t": 207781.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 207820,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 208074.2,
+   "kind": "ok",
+   "text": "index 44 sent as note — expected note (grid row 4 col 4) ✓  seen 43/97"
+  },
+  {
+   "t": 208105.1,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 208124.9,
+   "kind": "in",
+   "text": "← LP   chanAT = 111",
+   "pressure": true
+  },
+  {
+   "t": 208139.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 208394,
+   "kind": "ok",
+   "text": "index 45 sent as note — expected note (grid row 4 col 5) ✓  seen 44/97"
+  },
+  {
+   "t": 208425,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 208466,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 208718.6,
+   "kind": "ok",
+   "text": "index 46 sent as note — expected note (grid row 4 col 6) ✓  seen 45/97"
+  },
+  {
+   "t": 208749.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 208789.5,
+   "kind": "in",
+   "text": "← LP   chanAT = 50",
+   "pressure": true
+  },
+  {
+   "t": 208795.1,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 209045.6,
+   "kind": "ok",
+   "text": "index 47 sent as note — expected note (grid row 4 col 7) ✓  seen 46/97"
+  },
+  {
+   "t": 209077.4,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 209118.5,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 209359.1,
+   "kind": "ok",
+   "text": "index 48 sent as note — expected note (grid row 4 col 8) ✓  seen 47/97"
+  },
+  {
+   "t": 209390.4,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 209410.5,
+   "kind": "in",
+   "text": "← LP   chanAT = 118",
+   "pressure": true
+  },
+  {
+   "t": 209430.4,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 209655.1,
+   "kind": "ok",
+   "text": "index 49 sent as cc — expected cc  ✓  seen 48/97"
+  },
+  {
+   "t": 210433,
+   "kind": "ok",
+   "text": "index 50 sent as cc — expected cc  ✓  seen 49/97"
+  },
+  {
+   "t": 210728.7,
+   "kind": "ok",
+   "text": "index 51 sent as note — expected note (grid row 5 col 1) ✓  seen 50/97"
+  },
+  {
+   "t": 210760.1,
+   "kind": "in",
+   "text": "← LP   chanAT = 121",
+   "pressure": true
+  },
+  {
+   "t": 210779.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 97",
+   "pressure": true
+  },
+  {
+   "t": 210798.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 211032.8,
+   "kind": "ok",
+   "text": "index 52 sent as note — expected note (grid row 5 col 2) ✓  seen 51/97"
+  },
+  {
+   "t": 211063.7,
+   "kind": "in",
+   "text": "← LP   chanAT = 125",
+   "pressure": true
+  },
+  {
+   "t": 211083.7,
+   "kind": "in",
+   "text": "← LP   chanAT = 92",
+   "pressure": true
+  },
+  {
+   "t": 211097.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 211338.9,
+   "kind": "ok",
+   "text": "index 53 sent as note — expected note (grid row 5 col 3) ✓  seen 52/97"
+  },
+  {
+   "t": 211370,
+   "kind": "in",
+   "text": "← LP   chanAT = 124",
+   "pressure": true
+  },
+  {
+   "t": 211389.9,
+   "kind": "in",
+   "text": "← LP   chanAT = 103",
+   "pressure": true
+  },
+  {
+   "t": 211406.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 211631.5,
+   "kind": "ok",
+   "text": "index 54 sent as note — expected note (grid row 5 col 4) ✓  seen 53/97"
+  },
+  {
+   "t": 211662.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 211700.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 211936.1,
+   "kind": "ok",
+   "text": "index 55 sent as note — expected note (grid row 5 col 5) ✓  seen 54/97"
+  },
+  {
+   "t": 211967.5,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 211987.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 126",
+   "pressure": true
+  },
+  {
+   "t": 212006.7,
+   "kind": "in",
+   "text": "← LP   chanAT = 12",
+   "pressure": true
+  },
+  {
+   "t": 212008.1,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 212240.4,
+   "kind": "ok",
+   "text": "index 56 sent as note — expected note (grid row 5 col 6) ✓  seen 55/97"
+  },
+  {
+   "t": 212271.9,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 212291.4,
+   "kind": "in",
+   "text": "← LP   chanAT = 102",
+   "pressure": true
+  },
+  {
+   "t": 212302.7,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 212550.7,
+   "kind": "ok",
+   "text": "index 57 sent as note — expected note (grid row 5 col 7) ✓  seen 56/97"
+  },
+  {
+   "t": 212582.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 123",
+   "pressure": true
+  },
+  {
+   "t": 212602,
+   "kind": "in",
+   "text": "← LP   chanAT = 82",
+   "pressure": true
+  },
+  {
+   "t": 212616.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 212847.5,
+   "kind": "ok",
+   "text": "index 58 sent as note — expected note (grid row 5 col 8) ✓  seen 57/97"
+  },
+  {
+   "t": 212878.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 125",
+   "pressure": true
+  },
+  {
+   "t": 212898.5,
+   "kind": "in",
+   "text": "← LP   chanAT = 85",
+   "pressure": true
+  },
+  {
+   "t": 212911.1,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 213141.3,
+   "kind": "ok",
+   "text": "index 59 sent as cc — expected cc  ✓  seen 58/97"
+  },
+  {
+   "t": 213849.5,
+   "kind": "ok",
+   "text": "index 60 sent as cc — expected cc  ✓  seen 59/97"
+  },
+  {
+   "t": 214150,
+   "kind": "ok",
+   "text": "index 61 sent as note — expected note (grid row 6 col 1) ✓  seen 60/97"
+  },
+  {
+   "t": 214181.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 214201,
+   "kind": "in",
+   "text": "← LP   chanAT = 120",
+   "pressure": true
+  },
+  {
+   "t": 214220.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 33",
+   "pressure": true
+  },
+  {
+   "t": 214226.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 214445.4,
+   "kind": "ok",
+   "text": "index 62 sent as note — expected note (grid row 6 col 2) ✓  seen 61/97"
+  },
+  {
+   "t": 214477.1,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 214516.4,
+   "kind": "in",
+   "text": "← LP   chanAT = 93",
+   "pressure": true
+  },
+  {
+   "t": 214524.7,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 214732.3,
+   "kind": "ok",
+   "text": "index 63 sent as note — expected note (grid row 6 col 3) ✓  seen 62/97"
+  },
+  {
+   "t": 214764.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 214803.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 76",
+   "pressure": true
+  },
+  {
+   "t": 214811,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 215023.6,
+   "kind": "ok",
+   "text": "index 64 sent as note — expected note (grid row 6 col 4) ✓  seen 63/97"
+  },
+  {
+   "t": 215054.7,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 215094.4,
+   "kind": "in",
+   "text": "← LP   chanAT = 93",
+   "pressure": true
+  },
+  {
+   "t": 215102.9,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 215333.9,
+   "kind": "ok",
+   "text": "index 65 sent as note — expected note (grid row 6 col 5) ✓  seen 64/97"
+  },
+  {
+   "t": 215365,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 215404.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 101",
+   "pressure": true
+  },
+  {
+   "t": 215416,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 215641,
+   "kind": "ok",
+   "text": "index 66 sent as note — expected note (grid row 6 col 6) ✓  seen 65/97"
+  },
+  {
+   "t": 215672,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 215691.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 125",
+   "pressure": true
+  },
+  {
+   "t": 215711.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 215945.9,
+   "kind": "ok",
+   "text": "index 67 sent as note — expected note (grid row 6 col 7) ✓  seen 66/97"
+  },
+  {
+   "t": 215977.3,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 216016.5,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 216247.1,
+   "kind": "ok",
+   "text": "index 68 sent as note — expected note (grid row 6 col 8) ✓  seen 67/97"
+  },
+  {
+   "t": 216278.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 216298,
+   "kind": "in",
+   "text": "← LP   chanAT = 120",
+   "pressure": true
+  },
+  {
+   "t": 216318.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 4",
+   "pressure": true
+  },
+  {
+   "t": 216319.3,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 216542.8,
+   "kind": "ok",
+   "text": "index 69 sent as cc — expected cc  ✓  seen 68/97"
+  },
+  {
+   "t": 217355.8,
+   "kind": "ok",
+   "text": "index 70 sent as cc — expected cc  ✓  seen 69/97"
+  },
+  {
+   "t": 217656.2,
+   "kind": "ok",
+   "text": "index 71 sent as note — expected note (grid row 7 col 1) ✓  seen 70/97"
+  },
+  {
+   "t": 217687.4,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 217707.3,
+   "kind": "in",
+   "text": "← LP   chanAT = 115",
+   "pressure": true
+  },
+  {
+   "t": 217727.3,
+   "kind": "in",
+   "text": "← LP   chanAT = 39",
+   "pressure": true
+  },
+  {
+   "t": 217730,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 217951.4,
+   "kind": "ok",
+   "text": "index 72 sent as note — expected note (grid row 7 col 2) ✓  seen 71/97"
+  },
+  {
+   "t": 217982.7,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 218022.5,
+   "kind": "in",
+   "text": "← LP   chanAT = 76",
+   "pressure": true
+  },
+  {
+   "t": 218026.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 218240.9,
+   "kind": "ok",
+   "text": "index 73 sent as note — expected note (grid row 7 col 3) ✓  seen 72/97"
+  },
+  {
+   "t": 218272.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 218292,
+   "kind": "in",
+   "text": "← LP   chanAT = 125",
+   "pressure": true
+  },
+  {
+   "t": 218311.9,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 218540.2,
+   "kind": "ok",
+   "text": "index 74 sent as note — expected note (grid row 7 col 4) ✓  seen 73/97"
+  },
+  {
+   "t": 218571.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 218611.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 13",
+   "pressure": true
+  },
+  {
+   "t": 218613.9,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 218856.2,
+   "kind": "ok",
+   "text": "index 75 sent as note — expected note (grid row 7 col 5) ✓  seen 74/97"
+  },
+  {
+   "t": 218887.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 126",
+   "pressure": true
+  },
+  {
+   "t": 218907.3,
+   "kind": "in",
+   "text": "← LP   chanAT = 114",
+   "pressure": true
+  },
+  {
+   "t": 218925.9,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 219154.8,
+   "kind": "ok",
+   "text": "index 76 sent as note — expected note (grid row 7 col 6) ✓  seen 75/97"
+  },
+  {
+   "t": 219186.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 219226.1,
+   "kind": "in",
+   "text": "← LP   chanAT = 46",
+   "pressure": true
+  },
+  {
+   "t": 219230.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 219445.7,
+   "kind": "ok",
+   "text": "index 77 sent as note — expected note (grid row 7 col 7) ✓  seen 76/97"
+  },
+  {
+   "t": 219476.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 219516.4,
+   "kind": "in",
+   "text": "← LP   chanAT = 34",
+   "pressure": true
+  },
+  {
+   "t": 219519.3,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 219739.1,
+   "kind": "ok",
+   "text": "index 78 sent as note — expected note (grid row 7 col 8) ✓  seen 77/97"
+  },
+  {
+   "t": 219770.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 219790.7,
+   "kind": "in",
+   "text": "← LP   chanAT = 109",
+   "pressure": true
+  },
+  {
+   "t": 219807.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 220039.2,
+   "kind": "ok",
+   "text": "index 79 sent as cc — expected cc  ✓  seen 78/97"
+  },
+  {
+   "t": 220862.4,
+   "kind": "ok",
+   "text": "index 80 sent as cc — expected cc  ✓  seen 79/97"
+  },
+  {
+   "t": 221170.4,
+   "kind": "ok",
+   "text": "index 81 sent as note — expected note (grid row 8 col 1) ✓  seen 80/97"
+  },
+  {
+   "t": 221201.7,
+   "kind": "in",
+   "text": "← LP   chanAT = 119",
+   "pressure": true
+  },
+  {
+   "t": 221221.7,
+   "kind": "in",
+   "text": "← LP   chanAT = 101",
+   "pressure": true
+  },
+  {
+   "t": 221241.3,
+   "kind": "in",
+   "text": "← LP   chanAT = 8",
+   "pressure": true
+  },
+  {
+   "t": 221242.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 221465.4,
+   "kind": "ok",
+   "text": "index 82 sent as note — expected note (grid row 8 col 2) ✓  seen 81/97"
+  },
+  {
+   "t": 221496.8,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 221516.7,
+   "kind": "in",
+   "text": "← LP   chanAT = 116",
+   "pressure": true
+  },
+  {
+   "t": 221533.6,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 221762.8,
+   "kind": "ok",
+   "text": "index 83 sent as note — expected note (grid row 8 col 3) ✓  seen 82/97"
+  },
+  {
+   "t": 221794.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 115",
+   "pressure": true
+  },
+  {
+   "t": 221814.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 90",
+   "pressure": true
+  },
+  {
+   "t": 221831,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 222065.6,
+   "kind": "ok",
+   "text": "index 84 sent as note — expected note (grid row 8 col 4) ✓  seen 83/97"
+  },
+  {
+   "t": 222096.9,
+   "kind": "in",
+   "text": "← LP   chanAT = 121",
+   "pressure": true
+  },
+  {
+   "t": 222116.9,
+   "kind": "in",
+   "text": "← LP   chanAT = 112",
+   "pressure": true
+  },
+  {
+   "t": 222136.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 222359.1,
+   "kind": "ok",
+   "text": "index 85 sent as note — expected note (grid row 8 col 5) ✓  seen 84/97"
+  },
+  {
+   "t": 222390.1,
+   "kind": "in",
+   "text": "← LP   chanAT = 127",
+   "pressure": true
+  },
+  {
+   "t": 222409.9,
+   "kind": "in",
+   "text": "← LP   chanAT = 98",
+   "pressure": true
+  },
+  {
+   "t": 222425.3,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 222661.2,
+   "kind": "ok",
+   "text": "index 86 sent as note — expected note (grid row 8 col 6) ✓  seen 85/97"
+  },
+  {
+   "t": 222692.3,
+   "kind": "in",
+   "text": "← LP   chanAT = 119",
+   "pressure": true
+  },
+  {
+   "t": 222712.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 83",
+   "pressure": true
+  },
+  {
+   "t": 222726.4,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 222961.4,
+   "kind": "ok",
+   "text": "index 87 sent as note — expected note (grid row 8 col 7) ✓  seen 86/97"
+  },
+  {
+   "t": 222992.5,
+   "kind": "in",
+   "text": "← LP   chanAT = 125",
+   "pressure": true
+  },
+  {
+   "t": 223012.2,
+   "kind": "in",
+   "text": "← LP   chanAT = 64",
+   "pressure": true
+  },
+  {
+   "t": 223025,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 223266.4,
+   "kind": "ok",
+   "text": "index 88 sent as note — expected note (grid row 8 col 8) ✓  seen 87/97"
+  },
+  {
+   "t": 223297.9,
+   "kind": "in",
+   "text": "← LP   chanAT = 96",
+   "pressure": true
+  },
+  {
+   "t": 223317.5,
+   "kind": "in",
+   "text": "← LP   chanAT = 26",
+   "pressure": true
+  },
+  {
+   "t": 223320.3,
+   "kind": "in",
+   "text": "← LP   chanAT = 0",
+   "pressure": true
+  },
+  {
+   "t": 223570.4,
+   "kind": "ok",
+   "text": "index 89 sent as cc — expected cc  ✓  seen 88/97"
+  },
+  {
+   "t": 224433,
+   "kind": "ok",
+   "text": "index 91 sent as cc — expected cc  ✓  seen 89/97"
+  },
+  {
+   "t": 224742.5,
+   "kind": "ok",
+   "text": "index 92 sent as cc — expected cc  ✓  seen 90/97"
+  },
+  {
+   "t": 225041.6,
+   "kind": "ok",
+   "text": "index 93 sent as cc — expected cc  ✓  seen 91/97"
+  },
+  {
+   "t": 225355.9,
+   "kind": "ok",
+   "text": "index 94 sent as cc — expected cc  ✓  seen 92/97"
+  },
+  {
+   "t": 225670.1,
+   "kind": "ok",
+   "text": "index 95 sent as cc — expected cc  ✓  seen 93/97"
+  },
+  {
+   "t": 225974.6,
+   "kind": "ok",
+   "text": "index 96 sent as cc — expected cc  ✓  seen 94/97"
+  },
+  {
+   "t": 226288.5,
+   "kind": "ok",
+   "text": "index 97 sent as cc — expected cc  ✓  seen 95/97"
+  },
+  {
+   "t": 226577.9,
+   "kind": "ok",
+   "text": "index 98 sent as cc — expected cc  ✓  seen 96/97"
+  },
+  {
+   "t": 243166.6,
+   "kind": "bad",
+   "text": "index 90 sent as cc — expected unknown  ✗ MISMATCH  seen 97/97"
+  },
+  {
+   "t": 316748.6,
+   "kind": "bad",
+   "text": "index 106 sent as cc — expected unknown  ✗ MISMATCH  seen 98/97"
+  },
+  {
+   "t": 318055.1,
+   "kind": "bad",
+   "text": "index 107 sent as cc — expected unknown  ✗ MISMATCH  seen 99/97"
+  },
+  {
+   "t": 319272.2,
+   "kind": "bad",
+   "text": "index 108 sent as cc — expected unknown  ✗ MISMATCH  seen 100/97"
+  },
+  {
+   "t": 319905.6,
+   "kind": "bad",
+   "text": "index 105 sent as cc — expected unknown  ✗ MISMATCH  seen 101/97"
+  },
+  {
+   "t": 320384.5,
+   "kind": "bad",
+   "text": "index 104 sent as cc — expected unknown  ✗ MISMATCH  seen 102/97"
+  },
+  {
+   "t": 320783.3,
+   "kind": "bad",
+   "text": "index 103 sent as cc — expected unknown  ✗ MISMATCH  seen 103/97"
+  },
+  {
+   "t": 321177.3,
+   "kind": "bad",
+   "text": "index 102 sent as cc — expected unknown  ✗ MISMATCH  seen 104/97"
+  },
+  {
+   "t": 321546.4,
+   "kind": "bad",
+   "text": "index 101 sent as cc — expected unknown  ✗ MISMATCH  seen 105/97"
+  },
+  {
+   "t": 381877.9,
+   "kind": "out",
+   "text": "→ LP   LIVE mode F0 00 20 29 02 0E 0E 00 F7"
+  },
+  {
+   "t": 381879.3,
+   "kind": "out",
+   "text": "→ LP   layout? F0 00 20 29 02 0E 00 F7"
+  },
+  {
+   "t": 381882.4,
+   "kind": "warn",
+   "text": "← LP   layout changed → Note/Drum (page 0)"
+  }
+ ]
+}

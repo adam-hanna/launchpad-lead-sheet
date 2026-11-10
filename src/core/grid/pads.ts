@@ -36,15 +36,24 @@ export const BOTTOM_BUTTONS: readonly PadIndex[] = [1, 2, 3, 4, 5, 6, 7, 8];
 export const LEFT_BUTTONS: readonly PadIndex[] = [10, 20, 30, 40, 50, 60, 70, 80];
 export const RIGHT_BUTTONS: readonly PadIndex[] = [19, 29, 39, 49, 59, 69, 79, 89];
 export const LOGO: PadIndex = 99;
+/** Shift, left of the top row (gate G1, 2026-11-10). */
+export const SHIFT_BUTTON: PadIndex = 90;
+/** The row of eight buttons directly under the grid, above the bottom row (gate G1, 2026-11-10). */
+export const LOWER_BUTTONS: readonly PadIndex[] = [101, 102, 103, 104, 105, 106, 107, 108];
 
-/** Every addressable LED: 64 pads + 32 buttons + logo = 97 (the device accepts up to 106 specs). */
+/**
+ * Every addressable LED: 64 pads + 41 buttons + logo = 106, exactly the device's maximum specs per
+ * message. Verified on hardware in gate G1 (index map test: 105 pressable, logo light-only).
+ */
 export const ALL_LEDS: readonly PadIndex[] = [
   ...BOTTOM_BUTTONS,
   ...GRID_PADS,
   ...LEFT_BUTTONS,
   ...RIGHT_BUTTONS,
+  SHIFT_BUTTON,
   ...TOP_BUTTONS,
   LOGO,
+  ...LOWER_BUTTONS,
 ];
 
 export function isButton(index: PadIndex): boolean {
