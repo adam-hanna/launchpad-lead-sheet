@@ -554,6 +554,15 @@ function onLpMessage(e) {
   const s = d[0] & 0xf0;
   const ch = d[0] & 0x0f;
   if (d[0] === 0xf0) return onLpSysEx(d);
+  if (d[0] >= 0xf8) {
+    // The device's own Timing Clock / Active Sensing (120 bpm while unsynced, gate G1 probe): 48 lines
+    // a second would bury the log, so note it once and drop the rest; the app ignores these bytes too.
+    if (!S.lpRealtimeNoted) {
+      S.lpRealtimeNoted = true;
+      log.add('sys', `← LP   realtime ${hex(d)} from the device (its own clock); further ones not logged`);
+    }
+    return;
+  }
   if (s === 0x90 || s === 0x80) {
     const pad = d[1],
       vel = s === 0x80 ? 0 : d[2];
