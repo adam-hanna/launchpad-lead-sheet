@@ -12,15 +12,15 @@ and changes with the song.
 
 ## 2. Decisions already made
 
-| Topic | Decision | Why |
-| --- | --- | --- |
-| Hardware | Launchpad Pro MK3 only for v1 | It's what we have; Mini MK3 / X share most of the protocol and can follow later |
-| Pad layout | Programmer mode, app-defined layout | Only Programmer mode gives full LED control; pads then send grid positions, not notes, so the app must map pads to notes and forward them to Live |
-| Host integration | No Max for Live | Requires Suite; too expensive |
-| Transport | Follow Live | Live stays the source of truth for tempo, position, start/stop |
-| Per-bar content | Key/scale **and** chord(s); user picks what lights up | Both are useful; chord tones over a scale is how real charts are read |
-| Persistence | Save/load lead sheets | Never start from scratch |
-| Process | Brainstorm → plan → roadmap → build; GitHub issues/PRs/milestones/wiki | Deliberate, trackable |
+| Topic            | Decision                                                               | Why                                                                                                                                               |
+| ---------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hardware         | Launchpad Pro MK3 only for v1                                          | It's what we have; Mini MK3 / X share most of the protocol and can follow later                                                                   |
+| Pad layout       | Programmer mode, app-defined layout                                    | Only Programmer mode gives full LED control; pads then send grid positions, not notes, so the app must map pads to notes and forward them to Live |
+| Host integration | No Max for Live                                                        | Requires Suite; too expensive                                                                                                                     |
+| Transport        | Follow Live                                                            | Live stays the source of truth for tempo, position, start/stop                                                                                    |
+| Per-bar content  | Key/scale **and** chord(s); user picks what lights up                  | Both are useful; chord tones over a scale is how real charts are read                                                                             |
+| Persistence      | Save/load lead sheets                                                  | Never start from scratch                                                                                                                          |
+| Process          | Brainstorm → plan → roadmap → build; GitHub issues/PRs/milestones/wiki | Deliberate, trackable                                                                                                                             |
 
 ## 3. Architecture
 
@@ -52,13 +52,13 @@ and changes with the song.
 
 ### 3.2 Alternatives considered
 
-| Option | Pros | Cons | Verdict |
-| --- | --- | --- | --- |
-| Max for Live device | Reads Live transport directly, saves in the Set | Needs Suite / M4L | Rejected |
-| Ableton Remote Script (Python) | Deep Live integration | Undocumented API, painful dev loop, fragile across Live versions | Rejected for v1 |
-| Native app (Electron/Tauri) | Virtual MIDI ports (no IAC setup), Ableton Link, file system | Packaging, signing, slower iteration | **Later**: wrap the web app in Tauri once it's proven |
-| Ableton Link for sync | Sub-ms phase, tempo, start/stop | No browser API; needs native | Only with the Tauri wrapper |
-| MIDI clock for sync | Works from the browser today; Live sends SPP in Song mode | 24 ppqn jitter, loop-wrap behaviour unknown | **Chosen** for v1 |
+| Option                         | Pros                                                         | Cons                                                             | Verdict                                               |
+| ------------------------------ | ------------------------------------------------------------ | ---------------------------------------------------------------- | ----------------------------------------------------- |
+| Max for Live device            | Reads Live transport directly, saves in the Set              | Needs Suite / M4L                                                | Rejected                                              |
+| Ableton Remote Script (Python) | Deep Live integration                                        | Undocumented API, painful dev loop, fragile across Live versions | Rejected for v1                                       |
+| Native app (Electron/Tauri)    | Virtual MIDI ports (no IAC setup), Ableton Link, file system | Packaging, signing, slower iteration                             | **Later**: wrap the web app in Tauri once it's proven |
+| Ableton Link for sync          | Sub-ms phase, tempo, start/stop                              | No browser API; needs native                                     | Only with the Tauri wrapper                           |
+| MIDI clock for sync            | Works from the browser today; Live sends SPP in Song mode    | 24 ppqn jitter, loop-wrap behaviour unknown                      | **Chosen** for v1                                     |
 
 ### 3.3 Possible evolution path
 
@@ -85,7 +85,7 @@ Worth copying into the wiki as a protocol cheat sheet.
   but the app must offer a clear "Restore Launchpad" action and restore Live mode on exit.
 - **Session mode cannot run at the same time** as Programmer mode on the device; it is one or the other.
   "Keeping Session mode" therefore means **fast hand-back**, not coexistence. Idea for v1.x: an optional
-  *auto hand-back* setting that returns the Launchpad to Live mode when Live stops (Session view works
+  _auto hand-back_ setting that returns the Launchpad to Live mode when Live stops (Session view works
   again) and re-enters Programmer mode when Live starts. Whether Live's control surface script tolerates
   this is spike S1. Nice-to-have, not a v1.0.0 blocker (decided).
 - **Pad indices** (from the layout diagram; verify on hardware): grid is `row*10 + col`, `11` bottom-left
@@ -116,7 +116,7 @@ Worth copying into the wiki as a protocol cheat sheet.
   the first chord covers the first half of the bar, the second covers the second half (`| Dm7 G7 |` in 4/4
   = Dm7 on beats 1–2, G7 on beats 3–4). The UI shows a split cell. Uneven splits (3+1) and more than two
   chords come later.
-  - *Not* "first time through / second time through": that is a repeat with different endings, which
+  - _Not_ "first time through / second time through": that is a repeat with different endings, which
     belongs to song structure (§5.3). Until that exists, write the repeat out as separate bars.
 - **Both**: the normal lead-sheet case. Key gives the scale backdrop, chord gives the strong tones.
 - Empty bar = inherit previous (so you only write changes, like a real chart).
@@ -135,9 +135,9 @@ Display modes the user can switch between: **Key only**, **Chord only**, **Key +
 
 **Grid reference mode** (decided: a setting):
 
-- **Absolute grid** (default): pads are fixed pitches. When the key/chord changes, the *lights move*.
+- **Absolute grid** (default): pads are fixed pitches. When the key/chord changes, the _lights move_.
   Same as a piano: C is always in the same place.
-- **Relative grid** ("movable do"): the lights stay put and the *pitches under them move*. The bottom-left
+- **Relative grid** ("movable do"): the lights stay put and the _pitches under them move_. The bottom-left
   pad is always the current root, so the root / 3rd / 5th shapes are always in the same place and every
   chord is fingered the same way. Sub-setting: follow the **chord** root or the **key** root. This is a
   per-bar transposition of the pad→note mapping, so it depends on the held-note safety in §6.
@@ -149,17 +149,17 @@ Stock Launchpad convention (Live's Note mode and the Launchpad's own Scale mode)
 
 Proposed default theme, "warm chord over cool scale":
 
-| Role | Colour | Rationale |
-| --- | --- | --- |
-| Chord root / bass | **Pink**, full brightness | Matches stock Launchpad root colour (user preference) |
-| 3rd | **Orange** | Warm family = chord tones; far enough from pink on an LED |
-| 5th | **Yellow** | Continues the warm gradient root → 3rd → 5th |
-| 7th | **White** | Neutral "colour tone"; distinct from both families |
-| Extensions (9, 11, 13) | **Cyan** | Cool but clearly brighter/greener than scale blue |
-| Scale tone (not in chord) | **Dim blue** | Stock Launchpad in-scale colour, dimmed so chord tones pop |
-| Key root when not a chord tone | **Dim pink** | Keeps the key anchor visible under the chord |
-| Pressed pad | **Bright white flash** | We own press feedback in Programmer mode |
-| Out of key | Off (or dim grey if "dim" setting is on) | Decided |
+| Role                           | Colour                                   | Rationale                                                  |
+| ------------------------------ | ---------------------------------------- | ---------------------------------------------------------- |
+| Chord root / bass              | **Pink**, full brightness                | Matches stock Launchpad root colour (user preference)      |
+| 3rd                            | **Orange**                               | Warm family = chord tones; far enough from pink on an LED  |
+| 5th                            | **Yellow**                               | Continues the warm gradient root → 3rd → 5th               |
+| 7th                            | **White**                                | Neutral "colour tone"; distinct from both families         |
+| Extensions (9, 11, 13)         | **Cyan**                                 | Cool but clearly brighter/greener than scale blue          |
+| Scale tone (not in chord)      | **Dim blue**                             | Stock Launchpad in-scale colour, dimmed so chord tones pop |
+| Key root when not a chord tone | **Dim pink**                             | Keeps the key anchor visible under the chord               |
+| Pressed pad                    | **Bright white flash**                   | We own press feedback in Programmer mode                   |
+| Out of key                     | Off (or dim grey if "dim" setting is on) | Decided                                                    |
 
 Notes:
 
@@ -178,7 +178,7 @@ Notes:
 
 Extras to consider:
 
-- **Look-ahead**: during the last beat of a bar, flash the pads that will *change* in the next bar.
+- **Look-ahead**: during the last beat of a bar, flash the pads that will _change_ in the next bar.
 - **Beat indicator** on a side button column (4 LEDs for 4/4) and a bar-position readout on screen.
 - **Octave markers** on the side buttons, like Live's Note mode.
 - **Stopped state**: show the selected bar in the editor so you can practice a bar without transport.
@@ -192,8 +192,8 @@ Extras to consider:
 
 ## 6. Grid layout and note routing
 
-- **Layouts** (selectable): *Fourths* (Live's default: each row is 5 semitones up, the classic "guitar"
-  grid), *Thirds*, *Sequential* (rows continue chromatically), *In-key only* (like Launchpad's Scale mode:
+- **Layouts** (selectable): _Fourths_ (Live's default: each row is 5 semitones up, the classic "guitar"
+  grid), _Thirds_, _Sequential_ (rows continue chromatically), _In-key only_ (like Launchpad's Scale mode:
   only scale tones get pads). **Decided: Fourths is the default.**
 - **Customisation lives in our software, not the Launchpad.** In Programmer mode the device's own Note
   mode settings (scale, root, layout) do nothing; the firmware is out of the loop. Internally every
@@ -248,15 +248,15 @@ Extras to consider:
 
 ## 10. Risks, unknowns, and spikes
 
-| # | Unknown | How we find out |
-| --- | --- | --- |
-| S1 | Does Live's Launchpad control surface fight Programmer mode (e.g. reset the device, hog LEDs)? | Spike: enter Programmer mode with Live running, with the control surface on and off |
-| S2 | What does Live send on Arrangement loop wrap, on Continue, on jumping the playhead? | Spike: log raw clock/SPP from Live under each case |
-| S3 | Chrome Web MIDI: SysEx permission UX, hot-plug/reconnect reliability, timestamp precision | Spike alongside S1 |
-| S4 | Pad/button index map matches the manual's diagram | Hardware check |
-| S5 | IAC setup friction for other users | Document with screenshots; revisit with Tauri |
-| S6 | GitHub Pages from the **private** repo (paid plan: allowed). The site URL is still publicly reachable unless on Enterprise; acceptable since the app holds no secrets and all data stays in the browser | Deploy via Actions; revisit if that ever matters |
-| S7 | LED colour rendering: do the proposed palette roles stay distinguishable on the real device? | Colour-tuning spike with a test pattern (§5.4) |
+| #   | Unknown                                                                                                                                                                                                 | How we find out                                                                     |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| S1  | Does Live's Launchpad control surface fight Programmer mode (e.g. reset the device, hog LEDs)?                                                                                                          | Spike: enter Programmer mode with Live running, with the control surface on and off |
+| S2  | What does Live send on Arrangement loop wrap, on Continue, on jumping the playhead?                                                                                                                     | Spike: log raw clock/SPP from Live under each case                                  |
+| S3  | Chrome Web MIDI: SysEx permission UX, hot-plug/reconnect reliability, timestamp precision                                                                                                               | Spike alongside S1                                                                  |
+| S4  | Pad/button index map matches the manual's diagram                                                                                                                                                       | Hardware check                                                                      |
+| S5  | IAC setup friction for other users                                                                                                                                                                      | Document with screenshots; revisit with Tauri                                       |
+| S6  | GitHub Pages from the **private** repo (paid plan: allowed). The site URL is still publicly reachable unless on Enterprise; acceptable since the app holds no secrets and all data stays in the browser | Deploy via Actions; revisit if that ever matters                                    |
+| S7  | LED colour rendering: do the proposed palette roles stay distinguishable on the real device?                                                                                                            | Colour-tuning spike with a test pattern (§5.4)                                      |
 
 ## 11. Tech stack (proposal)
 
@@ -287,7 +287,7 @@ Extras to consider:
 ## 13. Stretch ideas (parking lot)
 
 - Standalone practice mode with its own metronome (WebAudio) when Live isn't running; optionally send
-  clock *to* Live.
+  clock _to_ Live.
 - Count-in display.
 - Chord-tone "target" drills: light only the 3rd and 7th.
 - Record what you played vs. the chart; show out-of-key hits afterwards.
@@ -313,15 +313,15 @@ Extras to consider:
 
 1. **Palette**: "warm chord over cool scale" is the default theme; pink/red/orange ships as a second
    built-in theme. Because a theme is just a role → RGB map, a **per-role colour editor** is cheap and is
-   a *should-have* for v1.0.0 (drop it if it threatens the date; theme *selection* is a must-have).
+   a _should-have_ for v1.0.0 (drop it if it threatens the date; theme _selection_ is a must-have).
 2. **Relative grid anchor defaults to the chord root**, with a setting to use the key root instead. In this
    mode the lit shape never moves: the root pad is always bottom-left and only the pitches underneath
    change bar to bar.
-3. **Pressed-pad feedback is on**, Launchpad-standard: pressing a pad lights that pad *and every other pad
-   that plays the same note* (the fourths layout repeats each pitch on several pads). Default is same MIDI
+3. **Pressed-pad feedback is on**, Launchpad-standard: pressing a pad lights that pad _and every other pad
+   that plays the same note_ (the fourths layout repeats each pitch on several pads). Default is same MIDI
    note; option to also light the same pitch class in other octaves.
-4. **Root pulses on the beat by default**, opt-out. Implementation note from the spec: hardware *pulsing*
-   has a two-beat period, while hardware *flashing* has a one-beat period between two colours. So "pulse on
+4. **Root pulses on the beat by default**, opt-out. Implementation note from the spec: hardware _pulsing_
+   has a two-beat period, while hardware _flashing_ has a one-beat period between two colours. So "pulse on
    the beat" = hardware **flash between bright pink and dim pink**, beat-locked by forwarding Live's MIDI
    clock to the Launchpad's MIDI port. Software fallback if clock forwarding proves unreliable.
 

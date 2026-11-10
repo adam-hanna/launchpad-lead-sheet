@@ -25,17 +25,17 @@ Milestone (M0–M7, one GitHub milestone each, one release tag each from M2 on)
 
 ## 2. Milestones at a glance
 
-| Milestone | Theme | Exit criterion | Release |
-| --- | --- | --- | --- |
-| M0 Foundation | Repo, CI, process, docs infrastructure | CI green on an empty app; labels, templates, board exist; design docs committed | — |
-| M1 Feasibility gate | Gates G1–G8 on real hardware | Every gate has a recorded pass/fail with versions; plan amended for any failure | — |
-| M2 Core domain | Theory, chord grammar, sheet model, text format | All §4.5, §4.9, §4.11 acceptance tests pass; grammar doc reviewed | v0.2.0 |
-| M3 Sync, grid, lighting | ClockEngine, mapping, LED model | §4.3, §4.4, §4.6, §4.7, §4.8 tests pass incl. G3 trace replay | v0.3.0 |
-| M4 Device adapters | Web MIDI, Pro MK3 driver, ownership, virtual Launchpad | A JSON sheet lights the real and virtual Launchpad from Live's transport | v0.4.0 |
-| M5 Note routing | Ownership, pressure, feedback, cleanup | §4.1, §4.2, §4.10 tests pass; G4 scenario repeats on the app | v0.5.0 |
-| M6 App UI and persistence | Setup, editor, settings, library | A new sheet can be written, played, saved and reloaded without JSON | v0.6.0 |
-| M7 Release | Should-haves, docs, checklist, deploy | §9 definition of done | v1.0.0 |
-| M8 Backlog | Won't-haves and parking lot | Unscheduled | — |
+| Milestone                 | Theme                                                  | Exit criterion                                                                  | Release |
+| ------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------- | ------- |
+| M0 Foundation             | Repo, CI, process, docs infrastructure                 | CI green on an empty app; labels, templates, board exist; design docs committed | —       |
+| M1 Feasibility gate       | Gates G1–G8 on real hardware                           | Every gate has a recorded pass/fail with versions; plan amended for any failure | —       |
+| M2 Core domain            | Theory, chord grammar, sheet model, text format        | All §4.5, §4.9, §4.11 acceptance tests pass; grammar doc reviewed               | v0.2.0  |
+| M3 Sync, grid, lighting   | ClockEngine, mapping, LED model                        | §4.3, §4.4, §4.6, §4.7, §4.8 tests pass incl. G3 trace replay                   | v0.3.0  |
+| M4 Device adapters        | Web MIDI, Pro MK3 driver, ownership, virtual Launchpad | A JSON sheet lights the real and virtual Launchpad from Live's transport        | v0.4.0  |
+| M5 Note routing           | Ownership, pressure, feedback, cleanup                 | §4.1, §4.2, §4.10 tests pass; G4 scenario repeats on the app                    | v0.5.0  |
+| M6 App UI and persistence | Setup, editor, settings, library                       | A new sheet can be written, played, saved and reloaded without JSON             | v0.6.0  |
+| M7 Release                | Should-haves, docs, checklist, deploy                  | §9 definition of done                                                           | v1.0.0  |
+| M8 Backlog                | Won't-haves and parking lot                            | Unscheduled                                                                     | —       |
 
 ## 3. Sequencing and parallelism
 

@@ -97,55 +97,119 @@ docs/                   brainstorm, plan, roadmap, adr/, live-setup.md, launchpa
 
 ```ts
 // theory
-type PitchClass = 0|1|2|3|4|5|6|7|8|9|10|11;
-interface Key { root: PitchClass; scale: ScaleType }
-type ChordFunction = 'root'|'third'|'fifth'|'seventh'|'extension'|'bass';
-interface Chord { symbol: string /* user spelling, authoritative */; root: PitchClass; bass?: PitchClass;
-                  tones: Array<{ pc: PitchClass; fn: ChordFunction }> /* derived, never stored */ }
+type PitchClass = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
+interface Key {
+  root: PitchClass;
+  scale: ScaleType;
+}
+type ChordFunction = 'root' | 'third' | 'fifth' | 'seventh' | 'extension' | 'bass';
+interface Chord {
+  symbol: string /* user spelling, authoritative */;
+  root: PitchClass;
+  bass?: PitchClass;
+  tones: Array<{ pc: PitchClass; fn: ChordFunction }>; /* derived, never stored */
+}
 
 // sheet
-type Inherit = undefined;                       // field absent → inherit from previous bar
-type KeyField   = Inherit | Key | null;         // null → cleared (no key)
-type ChordField = Inherit | [Chord] | [Chord, Chord] | [];   // [] → N.C.
-interface Bar { key?: KeyField; chords?: ChordField; section?: string }
-interface Meter { numerator: number /* 1..16 */; denominator: 2|4|8|16 }
-interface Sheet { schemaVersion: 1; id: string; title: string; meter: Meter; tempoNote?: number;
-                  originBar: number /* Live bar where sheet bar 1 starts; default 1 */;
-                  loop?: { startBar: number; endBar: number } /* 1-based, inclusive */; bars: Bar[] }
-interface ResolvedBar { key: Key | null; chords: [Chord] | [Chord, Chord] | [] }
+type Inherit = undefined; // field absent → inherit from previous bar
+type KeyField = Inherit | Key | null; // null → cleared (no key)
+type ChordField = Inherit | [Chord] | [Chord, Chord] | []; // [] → N.C.
+interface Bar {
+  key?: KeyField;
+  chords?: ChordField;
+  section?: string;
+}
+interface Meter {
+  numerator: number /* 1..16 */;
+  denominator: 2 | 4 | 8 | 16;
+}
+interface Sheet {
+  schemaVersion: 1;
+  id: string;
+  title: string;
+  meter: Meter;
+  tempoNote?: number;
+  originBar: number /* Live bar where sheet bar 1 starts; default 1 */;
+  loop?: { startBar: number; endBar: number } /* 1-based, inclusive */;
+  bars: Bar[];
+}
+interface ResolvedBar {
+  key: Key | null;
+  chords: [Chord] | [Chord, Chord] | [];
+}
 // resolve(sheet): ResolvedBar[]  — see §4.5
 
 // sync
 type TransportState = 'unsynced' | 'playing' | 'stopped' | 'lostClock';
-interface Position { liveBar: number; beat: number; tickInBar: number; sheetBar: number | null /* null = outside sheet */ }
+interface Position {
+  liveBar: number;
+  beat: number;
+  tickInBar: number;
+  sheetBar: number | null; /* null = outside sheet */
+}
 
 // grid
-interface Layout { rowOffset: number; baseNote: number }
-interface GridMapping { noteAt(pad: PadIndex): MidiNote | null; padsFor(note: MidiNote): PadIndex[] }
+interface Layout {
+  rowOffset: number;
+  baseNote: number;
+}
+interface GridMapping {
+  noteAt(pad: PadIndex): MidiNote | null;
+  padsFor(note: MidiNote): PadIndex[];
+}
 
 // lighting
-type LedState = { kind: 'off' } | { kind: 'rgb'; rgb: RGB } | { kind: 'palette'; index: number }
-              | { kind: 'flash'; a: number; b: number } | { kind: 'pulse'; index: number };
-type Role = 'bass'|'chordRoot'|'third'|'fifth'|'seventh'|'extension'|'keyRoot'|'scale'|'off'|'pressed';
-interface Theme { name: string; colours: Record<Role, RGB | { palette: number }>;
-                  rootFlash?: { a: number; b: number } }
+type LedState =
+  | { kind: 'off' }
+  | { kind: 'rgb'; rgb: RGB }
+  | { kind: 'palette'; index: number }
+  | { kind: 'flash'; a: number; b: number }
+  | { kind: 'pulse'; index: number };
+type Role =
+  | 'bass'
+  | 'chordRoot'
+  | 'third'
+  | 'fifth'
+  | 'seventh'
+  | 'extension'
+  | 'keyRoot'
+  | 'scale'
+  | 'off'
+  | 'pressed';
+interface Theme {
+  name: string;
+  colours: Record<Role, RGB | { palette: number }>;
+  rootFlash?: { a: number; b: number };
+}
 type Frame = LedState[106];
 // resolveRoles(resolvedBar, half, mapping, displayMode, offStyle) → Role per pad   (§4.6)
 // render(roles, theme, pressedNotes, mapping, transport) → Frame                 (§4.3)
 // diff(prev, next) → LedSpec[]  (one SysEx)
 
 // routing
-interface NoteOwner { source: 'hw' | 'virtual'; pad: PadIndex }
-interface OwnedNote { port: string; channel: number; note: MidiNote; velocity: number }
+interface NoteOwner {
+  source: 'hw' | 'virtual';
+  pad: PadIndex;
+}
+interface OwnedNote {
+  port: string;
+  channel: number;
+  note: MidiNote;
+  velocity: number;
+}
 // NoteOwnership: Map<ownerKey, OwnedNote> + refcount per (port, channel, note)        (§4.1)
 
 // hardware
-interface LaunchpadPort { send(specs: LedSpec[]): void; forwardClock(byte: number): void;
+interface LaunchpadPort {
+  send(specs: LedSpec[]): void;
+  forwardClock(byte: number): void;
   onPad(cb: (pad: PadIndex, velocity: number) => void): Unsub;
   onPolyPressure(cb: (pad: PadIndex, value: number) => void): Unsub;
   onChannelPressure(cb: (value: number) => void): Unsub;
   onLayoutChanged(cb: (layout: number) => void): Unsub;
-  enterProgrammerMode(): void; restoreLiveMode(): void; }
+  enterProgrammerMode(): void;
+  restoreLiveMode(): void;
+}
 ```
 
 ### 3.2 Key flows
@@ -322,24 +386,25 @@ including `off` LEDs, even though the cached frame was identical.
   4. `stopped` otherwise
 - **Transition table**
 
-  | Event | Effect |
-  | --- | --- |
-  | Start `FA` | position := 1.1.1, tick 0 pending; valid := true; intent := play; timer armed, `timedOut` cleared |
-  | SPP `F2` | position := value (16ths → ticks), pending; valid := true; intent unchanged; timer armed, `timedOut` cleared |
-  | Continue `FB` | intent := play; valid unchanged (¬valid stays `unsynced` until SPP/Start); timer armed from now, `timedOut` cleared |
-  | Stop `FC` | intent := stop; position retained; valid unchanged; timer disarmed |
-  | Clock `F8` | if intent = play: the first Clock after Start/Continue/SPP **occupies** the pending position (the downbeat lands on that Clock, per the MIDI spec), each later Clock advances one tick; timer re-armed. If intent = stop: ignored |
-  | Timer fires | `timedOut` := true; valid := false → `lostClock` |
-  | Clock input port disconnected | valid := false; intent := stop; timer disarmed → `unsynced`, "clock input lost" |
-  | Clock input port reconnected | no change; valid stays false until Start/SPP |
-  | Launchpad disconnect / reconnect | **no effect** on transport (§4.2) |
+  | Event                            | Effect                                                                                                                                                                                                                            |
+  | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | Start `FA`                       | position := 1.1.1, tick 0 pending; valid := true; intent := play; timer armed, `timedOut` cleared                                                                                                                                 |
+  | SPP `F2`                         | position := value (16ths → ticks), pending; valid := true; intent unchanged; timer armed, `timedOut` cleared                                                                                                                      |
+  | Continue `FB`                    | intent := play; valid unchanged (¬valid stays `unsynced` until SPP/Start); timer armed from now, `timedOut` cleared                                                                                                               |
+  | Stop `FC`                        | intent := stop; position retained; valid unchanged; timer disarmed                                                                                                                                                                |
+  | Clock `F8`                       | if intent = play: the first Clock after Start/Continue/SPP **occupies** the pending position (the downbeat lands on that Clock, per the MIDI spec), each later Clock advances one tick; timer re-armed. If intent = stop: ignored |
+  | Timer fires                      | `timedOut` := true; valid := false → `lostClock`                                                                                                                                                                                  |
+  | Clock input port disconnected    | valid := false; intent := stop; timer disarmed → `unsynced`, "clock input lost"                                                                                                                                                   |
+  | Clock input port reconnected     | no change; valid stays false until Start/SPP                                                                                                                                                                                      |
+  | Launchpad disconnect / reconnect | **no effect** on transport (§4.2)                                                                                                                                                                                                 |
 
   **Receiver rule** (ours, fixed): SPP alone never changes play intent; Continue always sets it.
   **Sender behaviour** (Live's, unverified): the Live 12 manual §17.3.1.2 says SPP and Continue are sent
-  each time the play position changes. Whether a seek while *stopped* emits SPP alone or SPP plus
+  each time the play position changes. Whether a seek while _stopped_ emits SPP alone or SPP plus
   Continue is **not established** and is recorded by gate G3. If G3 shows Continue on a stopped seek, the
   contract is adjusted before implementation (e.g. Continue followed by no Clock within the timeout does
   not count as playing); the limitation is recorded either way.
+
 - **No wall-clock inference.** Position advances only on received messages, processed in arrival order
   with their Web MIDI timestamps. A burst of buffered clocks after a stall shorter than the timeout is
   applied as counted ticks; after a longer stall validity is already lost and a fresh SPP/Start is
@@ -351,7 +416,7 @@ including `off` LEDs, even though the cached frame was identical.
 - **Outside the timeline** (identical whether reached sequentially or by SPP):
   - **Past the end**, no loop: the active harmony is the final **sounding** chord (the second chord of a
     split last bar) plus the final resolved key, treated as a single-chord bar. UI shows "past end".
-    Setting *repeat last bar*: replay the last resolved bar every bar instead. Setting *go dark*: guidance
+    Setting _repeat last bar_: replay the last resolved bar every bar instead. Setting _go dark_: guidance
     lighting off; pads remain playable with the last mapping (relative anchor stays on the final sounding
     chord's root).
   - **Before the origin** (`sheetBar = null` while playing): show bar 1's resolved harmony as a count-in;
@@ -391,7 +456,7 @@ immediately (§3.2 Edit).
 
 ### 4.6 Lighting membership and priority [P1-6]
 
-- **Membership by display mode** decides which pitch classes are *visible*:
+- **Membership by display mode** decides which pitch classes are _visible_:
   Key mode = key tones; Chord mode = chord tones ∪ bass; Key+Chord = union of both. Pads outside the
   active membership get `off` (or `dim` if the setting is on). A borrowed chord's tones are therefore
   visible in Key+Chord mode even when outside the key.
@@ -411,8 +476,8 @@ C = third (`third` outranks `keyRoot`), Eb = fifth (visible although out of key)
 - Absolute mode: `noteAt(pad) = effectiveBase + row*rowOffset + col`.
 - Relative mode: the anchor pitch class `a` is placed at the bottom-left pad as the **lowest note ≥
   effectiveBase with pitch class `a`**; the rest of the grid follows the layout from there. Anchor
-  selection: setting *chord root* (default) uses the chord root, falling back to the key root when there
-  is no chord; setting *key root* uses the key root, falling back to the chord root when there is no
+  selection: setting _chord root_ (default) uses the chord root, falling back to the key root when there
+  is no chord; setting _key root_ uses the key root, falling back to the chord root when there is no
   key; with neither, `a` = the pitch class of `effectiveBase` (the grid equals absolute mode). The rule
   is deterministic and not path-dependent. Example with `effectiveBase` = C2: anchor B sits at B2 and
   anchor C at C2, so B → C shifts the grid down eleven semitones; with a different base pitch class the
@@ -508,16 +573,16 @@ A throwaway page proves the **whole performance path** before feature work. It c
 S1–S4 and S7. Results, traces and the exact versions tested (macOS, browser, Live, Launchpad firmware)
 are recorded in `docs/spikes/README.md`. A failed gate changes the plan before implementation.
 
-| Gate | What is proven | Pass criteria |
-| --- | --- | --- |
-| G1 Device control | Programmer mode entry/exit, full-frame SysEx, layout-change detection, pad/button index map (S4) | Every pad and button index matches the documented map; exit restores Live mode |
-| G2 Live coexistence (S1) | Behaviour with Live's Launchpad control surface enabled and disabled | Either coexistence works, or disabling it is documented as required; no fighting |
-| G3 Clock traces (S2) | Raw bytes for start, mid-song start, continue, seek, loop wrap, stop, reconnect | Traces captured and interpretable; S2 unknowns answered |
-| G4 Round trip | Mapped pad → IAC → Live instrument **with Live in the foreground** (pass requirement, not a note); held notes across a mapping change; poly and channel pressure; LED repaint during play | No stuck notes; pressure arrives in both modes; LEDs update while playing with Live in front |
-| G5 Latency / jitter | **Metric**: arrival of the pad's Note On on `LPProMK3 MIDI` to arrival of the routed Note On on `LS Notes`, both timestamped by one external MIDI monitor (same clock). Not pad motion to sound. **Workload with known expected output**: fixed mapping, non-overlapping fully released presses (no duplicates, so every input has exactly one expected output note/channel); ≥ 1,000 presses; simultaneous LED traffic; Live in the foreground. **Pairing** by expected mapped note/channel in sequence, not by proximity alone. Unmatched inputs, extra outputs and events later than 100 ms are counted and reported separately and stay in the denominator; raw samples kept in `docs/spikes/` | Median ≤ 10 ms, p99 ≤ 20 ms (provisional budgets) **and** zero unmatched or extra events; any anomaly fails the run regardless of percentiles. Harness self-test: a deliberately delayed or dropped event must be reported and must fail the run |
-| G6 Endurance and transitions | 20 min each at 60, 120 and 200 bpm in 4/4, plus one run with split-chord bars in 7/16 and 6/8; each run includes explicit Stop, seek, Arrangement loop wrap and a Launchpad reconnect | No bar drift vs Live's counter; no stuck notes; every transition behaves per §4.4; Live foreground throughout |
-| G7 Colour (S7) | Test pattern of all theme roles plus candidate flash palette pairs | Roles distinguishable at arm's length; palette pinks chosen; flash phase correct on Start/Continue/reconnect |
-| G8 Web MIDI lifecycle (S3) | Permission flow, hot-plug, reconnect | From the browser's port-available event to confirmed Programmer mode plus complete repaint ≤ 2 s (OS enumeration excluded); device readiness reported separately from transport validity; states surface in UI |
+| Gate                         | What is proven                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | Pass criteria                                                                                                                                                                                                                                    |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| G1 Device control            | Programmer mode entry/exit, full-frame SysEx, layout-change detection, pad/button index map (S4)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | Every pad and button index matches the documented map; exit restores Live mode                                                                                                                                                                   |
+| G2 Live coexistence (S1)     | Behaviour with Live's Launchpad control surface enabled and disabled                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Either coexistence works, or disabling it is documented as required; no fighting                                                                                                                                                                 |
+| G3 Clock traces (S2)         | Raw bytes for start, mid-song start, continue, seek, loop wrap, stop, reconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Traces captured and interpretable; S2 unknowns answered                                                                                                                                                                                          |
+| G4 Round trip                | Mapped pad → IAC → Live instrument **with Live in the foreground** (pass requirement, not a note); held notes across a mapping change; poly and channel pressure; LED repaint during play                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | No stuck notes; pressure arrives in both modes; LEDs update while playing with Live in front                                                                                                                                                     |
+| G5 Latency / jitter          | **Metric**: arrival of the pad's Note On on `LPProMK3 MIDI` to arrival of the routed Note On on `LS Notes`, both timestamped by one external MIDI monitor (same clock). Not pad motion to sound. **Workload with known expected output**: fixed mapping, non-overlapping fully released presses (no duplicates, so every input has exactly one expected output note/channel); ≥ 1,000 presses; simultaneous LED traffic; Live in the foreground. **Pairing** by expected mapped note/channel in sequence, not by proximity alone. Unmatched inputs, extra outputs and events later than 100 ms are counted and reported separately and stay in the denominator; raw samples kept in `docs/spikes/` | Median ≤ 10 ms, p99 ≤ 20 ms (provisional budgets) **and** zero unmatched or extra events; any anomaly fails the run regardless of percentiles. Harness self-test: a deliberately delayed or dropped event must be reported and must fail the run |
+| G6 Endurance and transitions | 20 min each at 60, 120 and 200 bpm in 4/4, plus one run with split-chord bars in 7/16 and 6/8; each run includes explicit Stop, seek, Arrangement loop wrap and a Launchpad reconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | No bar drift vs Live's counter; no stuck notes; every transition behaves per §4.4; Live foreground throughout                                                                                                                                    |
+| G7 Colour (S7)               | Test pattern of all theme roles plus candidate flash palette pairs                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Roles distinguishable at arm's length; palette pinks chosen; flash phase correct on Start/Continue/reconnect                                                                                                                                     |
+| G8 Web MIDI lifecycle (S3)   | Permission flow, hot-plug, reconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | From the browser's port-available event to confirmed Programmer mode plus complete repaint ≤ 2 s (OS enumeration excluded); device readiness reported separately from transport validity; states surface in UI                                   |
 
 ## 6. Quality and tooling
 
@@ -540,15 +605,15 @@ are recorded in `docs/spikes/README.md`. A failed gate changes the plan before i
 
 ## 8. Risks
 
-| Risk | Mitigation |
-| --- | --- |
+| Risk                                          | Mitigation                                                       |
+| --------------------------------------------- | ---------------------------------------------------------------- |
 | Live's control surface fights Programmer mode | G2 before feature work; bounded recovery + conflict state (§4.2) |
-| Loop wrap / SPP behaviour | G3 traces; sheet loop is a pure mapping (§4.4) |
-| Hardware flash phase unreliable | Software flash fallback behind the same LED model (§4.3) |
-| Web MIDI reconnect / permission UX | G8; adapter states surfaced in UI |
-| LED colours not distinguishable | G7; themes editable |
-| Scope creep in the editor | Must/should/won't list; song structure deferred |
-| Hardware-only testability | Virtual Launchpad, recorded clock traces, mocked Web MIDI |
+| Loop wrap / SPP behaviour                     | G3 traces; sheet loop is a pure mapping (§4.4)                   |
+| Hardware flash phase unreliable               | Software flash fallback behind the same LED model (§4.3)         |
+| Web MIDI reconnect / permission UX            | G8; adapter states surfaced in UI                                |
+| LED colours not distinguishable               | G7; themes editable                                              |
+| Scope creep in the editor                     | Must/should/won't list; song structure deferred                  |
+| Hardware-only testability                     | Virtual Launchpad, recorded clock traces, mocked Web MIDI        |
 
 ## 9. Definition of done for v1.0.0
 
