@@ -205,3 +205,102 @@ function countRgbExtra(data: number[]): number {
   }
   return extra;
 }
+
+describe('SessionController: note routing (M5)', () => {
+  const notesOut = (access: ReturnType<typeof standardFakeAccess>) =>
+    access.outputs.get('out-notes')!.sent.map((s) => s.data);
+
+  async function owned() {
+    const ctx = await setup();
+    ctx.controller.enterProgrammer();
+    ctx.lpIn.receive(LAYOUT_MSG(LAYOUT_PROGRAMMER));
+    return ctx;
+  }
+
+  it('pad press sends Note On with velocity on the notes bus; release sends Note Off; feedback follows owned notes', async () => {
+    const { controller, lpIn, access, virtual } = await owned();
+    lpIn.receive([0x90, 11, 77]); // pad 11 = C1 (36) on the fourths grid
+    expect(notesOut(access)).toEqual([[0x90, 36, 77]]);
+    expect(controller.snapshot()).toMatchObject({ pressedCount: 1, heldNotes: [36] });
+    expect(stateAt(virtual.state().frame, 11)).toEqual({ kind: 'rgb', rgb: [127, 127, 127] });
+    lpIn.receive([0x90, 11, 0]);
+    expect(notesOut(access)).toEqual([
+      [0x90, 36, 77],
+      [0x80, 36, 0],
+    ]);
+    expect(controller.snapshot().heldNotes).toEqual([]);
+  });
+
+  it('a remap during a hold keeps the original note; release sends the original Note Off', async () => {
+    const { controller, lpIn, access } = await owned();
+    lpIn.receive([0x90, 11, 100]);
+    controller.updateSettings({ octaveShift: 1 }); // pad 11 now maps to 48
+    lpIn.receive([0x90, 11, 100]); // duplicate for an active owner: no-op
+    expect(controller.snapshot().heldNotes).toEqual([36]);
+    lpIn.receive([0x90, 11, 0]);
+    expect(notesOut(access)).toEqual([
+      [0x90, 36, 100],
+      [0x80, 36, 0],
+    ]);
+  });
+
+  it('two pads with the same note: one Note On, one Note Off after the last release; virtual shares', async () => {
+    const { lpIn, access, virtual, controller } = await owned();
+    lpIn.receive([0x90, 16, 100]); // F#1 = 41... pad 16 = 36+5 = 41
+    lpIn.receive([0x90, 21, 100]); // row 2 col 1 = 36+5 = 41 too
+    virtual.press(16);
+    expect(notesOut(access)).toEqual([[0x90, 41, 100]]);
+    expect(controller.snapshot().pressedCount).toBe(3);
+    lpIn.receive([0x90, 16, 0]);
+    virtual.release(16);
+    expect(notesOut(access)).toHaveLength(1);
+    lpIn.receive([0x90, 21, 0]);
+    expect(notesOut(access)).toEqual([
+      [0x90, 41, 100],
+      [0x80, 41, 0],
+    ]);
+  });
+
+  it('poly pressure routes through ownership; channel pressure forwards on the notes channel', async () => {
+    const { lpIn, access, controller } = await owned();
+    controller.updateSettings({ notesChannel: 2 });
+    lpIn.receive([0x90, 11, 100]);
+    lpIn.receive([0xa0, 11, 64]);
+    lpIn.receive([0xa0, 12, 64]); // unowned pad: dropped
+    lpIn.receive([0xd0, 33]);
+    expect(notesOut(access)).toEqual([
+      [0x92, 36, 100],
+      [0xa2, 36, 64],
+      [0xd2, 33],
+    ]);
+  });
+
+  it('kick-out and Restore release hardware-owned notes; Panic releases everything', async () => {
+    const { lpIn, access, virtual, controller } = await owned();
+    lpIn.receive([0x90, 11, 100]);
+    virtual.press(12);
+    lpIn.receive(LAYOUT_MSG(LAYOUT_SESSION)); // mode loss → hardware cleanup, virtual keeps sounding
+    expect(controller.snapshot().heldNotes).toEqual([37]);
+    expect(notesOut(access).at(-1)).toEqual([0x80, 36, 0]);
+    lpIn.receive(LAYOUT_MSG(LAYOUT_PROGRAMMER));
+    lpIn.receive([0x90, 11, 100]);
+    controller.restoreLive();
+    expect(controller.snapshot().heldNotes).toEqual([37]);
+    controller.panic();
+    expect(controller.snapshot().heldNotes).toEqual([]);
+    expect(notesOut(access).at(-1)).toEqual([0x80, 37, 0]);
+  });
+
+  it('without a notes output nothing is owned; a missing output on send reports an error', async () => {
+    const { lpIn, controller, access } = await owned();
+    controller.selectPorts({ notesOut: undefined });
+    lpIn.receive([0x90, 11, 100]);
+    expect(controller.snapshot().pressedCount).toBe(0);
+    controller.selectPorts({ notesOut: 'out-notes' });
+    lpIn.receive([0x90, 11, 100]);
+    access.unplug('out-notes');
+    access.outputs.get('out-notes')!.failNextSend = true;
+    lpIn.receive([0x90, 11, 0]);
+    expect(controller.snapshot().lastError).toMatch(/could not be sent/);
+  });
+});

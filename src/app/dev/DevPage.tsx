@@ -89,6 +89,16 @@ export function DevPage({ session }: { readonly session: Session }) {
               >
                 Restore Live mode
               </Button>
+              <Button
+                size="sm"
+                variant="destructive"
+                onClick={() => {
+                  controller.panic();
+                }}
+              >
+                Panic
+              </Button>
+              <Badge variant="outline">held: {snap.heldNotes.length ? snap.heldNotes.join(' ') : '—'}</Badge>
             </div>
             <div className="grid gap-1 sm:grid-cols-2">
               {sel('lpIn', 'input')}

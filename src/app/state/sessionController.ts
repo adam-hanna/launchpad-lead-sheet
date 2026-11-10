@@ -4,7 +4,7 @@ import {
   type OwnershipEffect,
   type OwnershipSnapshot,
 } from '@core/device';
-import { mappingFor, type PadIndex } from '@core/grid';
+import { mappingFor, type GridMapping, type PadIndex } from '@core/grid';
 import { FrameRenderer, THEMES, WARM_THEME, type LedState, type Theme } from '@core/lighting';
 import {
   activeHarmony,
@@ -19,9 +19,11 @@ import {
   type ResolvedBar,
   type Sheet,
 } from '@core/sheet';
+import { NoteOwnership, type OutputMessage, type OwnerSource } from '@core/routing';
 import { ClockEngine, TempoEstimator, type TransportSnapshot } from '@core/sync';
 import { formatKey } from '@core/theory';
 import {
+  NotesOutput,
   autodetectPorts,
   isLaunchpadMidiPort,
   type MidiAccessState,
@@ -53,9 +55,15 @@ export interface SessionSnapshot {
   readonly selectedBar: number;
   readonly active: ActiveSummary;
   readonly settings: Settings;
+  /** Owners currently holding a note (hardware and virtual pads). */
   readonly pressedCount: number;
+  /** Distinct MIDI notes sounding on the notes output. */
+  readonly heldNotes: readonly number[];
   readonly lastError: string | null;
 }
+
+/** Port ids to set; `undefined` clears a slot. */
+export type PortSelectionPatch = { readonly [K in keyof PortSelection]?: string | undefined };
 
 export interface HardwarePort extends LaunchpadPort {
   dispose(): void;
@@ -91,6 +99,9 @@ export class SessionController {
   private readonly ownership: DeviceOwnership;
   private readonly hwRenderer = new FrameRenderer();
   private readonly virtualRenderer = new FrameRenderer();
+  private readonly notes = new NoteOwnership();
+  private readonly output: NotesOutput;
+  private mapping: GridMapping;
 
   private sheet: Sheet = createEmptySheet('empty', 'Empty sheet');
   private resolved: ResolvedBar[] = [];
@@ -103,9 +114,6 @@ export class SessionController {
   private timeoutHandle: unknown = null;
   private inputEnabled = false;
   private lastError: string | null = null;
-  /** Pads physically held, by source. Replaced by NoteOwnership-driven feedback in M5. */
-  private readonly pressedHardware = new Set<PadIndex>();
-  private readonly pressedVirtual = new Set<PadIndex>();
   private buttons: ReadonlyMap<PadIndex, LedState> | undefined;
   private readonly listeners = new Set<(s: SessionSnapshot) => void>();
   private readonly disposers: Unsub[] = [];
@@ -122,6 +130,15 @@ export class SessionController {
       });
     this.createHardwarePort = options.createHardwarePort ?? ((midi, i, o) => new ProMk3Port(midi, i, o));
     this.settings = { ...DEFAULT_SETTINGS, ...options.initialSettings };
+    this.output = new NotesOutput(this.midi);
+    this.mapping = mappingFor(
+      this.settings.layout,
+      this.settings.octaveShift,
+      this.settings.relative,
+      this.settings.anchor,
+      null,
+      0,
+    );
     this.engine = new ClockEngine({ meter: this.sheet.meter, originBar: this.sheet.originBar });
     this.ownership = new DeviceOwnership(this.now);
 
@@ -137,10 +154,13 @@ export class SessionController {
         this.onPortStateChange(port);
       }),
       this.virtual.onPad((pad, velocity) => {
-        if (velocity > 0) this.pressedVirtual.add(pad);
-        else this.pressedVirtual.delete(pad);
-        this.render();
-        this.emit();
+        this.onPad('virtual', pad, velocity);
+      }),
+      this.virtual.onPolyPressure((pad, value) => {
+        this.onPolyPressure('virtual', pad, value);
+      }),
+      this.virtual.onChannelPressure((value) => {
+        this.onChannelPressure(value);
       }),
     );
     this.render();
@@ -169,7 +189,8 @@ export class SessionController {
         keyText: harmony.harmony?.key ? formatKey(harmony.harmony.key) : null,
       },
       settings: this.settings,
-      pressedCount: this.pressedHardware.size + this.pressedVirtual.size,
+      pressedCount: this.notes.ownerCount(),
+      heldNotes: [...this.notes.activeNotes()].sort((a, b) => a - b),
       lastError: this.lastError,
     };
   }
@@ -192,8 +213,13 @@ export class SessionController {
     this.selectPorts(autodetectPorts(this.midi.ports(), this.selection));
   }
 
-  selectPorts(selection: PortSelection): void {
-    const next: PortSelection = { ...this.selection, ...selection };
+  selectPorts(patch: PortSelectionPatch): void {
+    const keys = ['lpIn', 'lpOut', 'clockIn', 'notesOut'] as const;
+    const next: { -readonly [K in keyof PortSelection]?: string } = {};
+    for (const key of keys) {
+      const value = key in patch ? patch[key] : this.selection[key];
+      if (value !== undefined) next[key] = value;
+    }
     const lpChanged = next.lpIn !== this.selection.lpIn || next.lpOut !== this.selection.lpOut;
     const clockChanged = next.clockIn !== this.selection.clockIn;
     this.selection = next;
@@ -213,6 +239,19 @@ export class SessionController {
   restoreLive(): void {
     this.virtual.restoreLiveMode();
     this.apply(this.ownership.userRestore());
+    this.emit();
+  }
+
+  /** Panic: Note Off to every reachable destination, clear ownership, repaint (plan §4.1). */
+  panic(): void {
+    const { messages, unreachable } = this.notes.panic((port) => this.output.reachable(port));
+    this.send(messages);
+    if (unreachable.length) {
+      this.fail(
+        `${String(unreachable.length)} note(s) could not be silenced: their output is gone. Silence them in Live.`,
+      );
+    }
+    this.render();
     this.emit();
   }
 
@@ -285,10 +324,15 @@ export class SessionController {
       }),
       port.onPad((pad, velocity) => {
         if (!this.inputEnabled) return;
-        if (velocity > 0) this.pressedHardware.add(pad);
-        else this.pressedHardware.delete(pad);
-        this.render();
-        this.emit();
+        this.onPad('hw', pad, velocity);
+      }),
+      port.onPolyPressure((pad, value) => {
+        if (!this.inputEnabled) return;
+        this.onPolyPressure('hw', pad, value);
+      }),
+      port.onChannelPressure((value) => {
+        if (!this.inputEnabled) return;
+        this.onChannelPressure(value);
       }),
     ];
     const connected =
@@ -301,7 +345,7 @@ export class SessionController {
     this.hardwareUnsubs = [];
     this.hardware?.dispose();
     this.hardware = null;
-    this.pressedHardware.clear();
+    this.send(this.notes.releaseSource('hw'));
   }
 
   private bindClock(): void {
@@ -379,8 +423,8 @@ export class SessionController {
           break;
         }
         case 'cleanupHardwareOwners':
-          // M5 releases hardware-owned notes here; until then only the press feedback is cleared.
-          this.pressedHardware.clear();
+          // Hardware-owner cleanup (plan §4.2): refcounts respected, virtual owners keep sounding.
+          this.send(this.notes.releaseSource('hw'));
           break;
         case 'invalidateFrame':
           this.hwRenderer.invalidateDevice();
@@ -394,6 +438,40 @@ export class SessionController {
         case 'statusChanged':
           break;
       }
+    }
+  }
+
+  // ---- internals: routing ---------------------------------------------------------------------------
+
+  private onPad(source: OwnerSource, pad: PadIndex, velocity: number): void {
+    const owner = { source, pad };
+    if (velocity > 0) {
+      const note = this.mapping.noteAt(pad);
+      const port = this.selection.notesOut;
+      if (note === null || !port) return;
+      this.send(this.notes.press(owner, { port, channel: this.settings.notesChannel, note, velocity }));
+    } else {
+      this.send(this.notes.release(owner));
+    }
+    this.render();
+    this.emit();
+  }
+
+  private onPolyPressure(source: OwnerSource, pad: PadIndex, value: number): void {
+    this.send(this.notes.polyPressure({ source, pad }, value));
+  }
+
+  private onChannelPressure(value: number): void {
+    const port = this.selection.notesOut;
+    if (!port) return;
+    this.send(this.notes.channelPressure(port, this.settings.notesChannel, value));
+  }
+
+  private send(messages: readonly OutputMessage[]): void {
+    if (messages.length === 0) return;
+    const report = this.output.send(messages);
+    if (report.failed.length) {
+      this.fail(`${String(report.failed.length)} MIDI message(s) could not be sent to the notes output`);
     }
   }
 
@@ -426,7 +504,10 @@ export class SessionController {
     const { harmony, half } = this.currentHarmony(transport);
     const s = this.settings;
     const mapping = mappingFor(s.layout, s.octaveShift, s.relative, s.anchor, harmony.harmony, half);
-    const pressed = new Set<PadIndex>([...this.pressedHardware, ...this.pressedVirtual]);
+    this.mapping = mapping;
+    // Press feedback: every pad the current mapping maps to an owned note (plan §4.1).
+    const pressed = new Set<PadIndex>();
+    for (const note of this.notes.activeNotes()) for (const pad of mapping.padsFor(note)) pressed.add(pad);
     const deps = {
       harmony: harmony.harmony,
       half,
