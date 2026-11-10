@@ -401,11 +401,14 @@ including `off` LEDs, even though the cached frame was identical.
 | Launchpad disconnect / reconnect | **no effect** on transport (§4.2) |
 
 **Receiver rule** (ours, fixed): SPP alone never changes play intent; Continue always sets it.
-**Sender behaviour** (Live's, unverified): the Live 12 manual §17.3.1.2 says SPP and Continue are sent
-each time the play position changes. Whether a seek while _stopped_ emits SPP alone or SPP plus
-Continue is **not established** and is recorded by gate G3. If G3 shows Continue on a stopped seek, the
-contract is adjusted before implementation (e.g. Continue followed by no Clock within the timeout does
-not count as playing); the limitation is recorded either way.
+**Sender behaviour** (Live 12 Lite 12.4.16, verified by gate G3 on 2026-11-10, traces in
+`docs/spikes/traces/`): the very first Play from 1.1.1 sends `Start` alone; later Plays from the start
+marker send `SPP 0, Start`; Play from elsewhere sends `SPP, Stop, SPP, Continue`; a seek while playing
+sends `Stop, SPP, Continue`; a seek while **stopped** sends a lone `SPP` (no Continue, so the receiver
+rule above holds and nothing plays); every `Stop` is followed by one stray `Clock` a few ms later (ignored
+because intent = stop); an Arrangement loop wrap sends **nothing** (ticks keep counting, which is why
+the sheet loop is a pure mapping). SPP values follow the click position exactly, so a ruler click that is
+not on a bar line starts mid-bar.
 
 - **No wall-clock inference.** Position advances only on received messages, processed in arrival order
   with their Web MIDI timestamps. A burst of buffered clocks after a stall shorter than the timeout is
