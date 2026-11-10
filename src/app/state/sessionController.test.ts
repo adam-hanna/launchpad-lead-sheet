@@ -394,3 +394,73 @@ describe('SessionController: cleanup rules, held-note safety and buttons (M5-T5.
     expect(controller.snapshot().settings.octaveShift).toBe(6);
   });
 });
+
+describe('SessionController: persistence (E6.4)', () => {
+  it('loads stored settings and ports, saves settings and ports, autosaves sheets and remembers the last one', async () => {
+    const { MemoryKv, SheetStore, Autosave, SettingsStore, MemoryStorage } =
+      await import('@adapters/storage');
+    const kv = new MemoryKv();
+    const sheets = new SheetStore(kv);
+    const storage = new MemoryStorage();
+    const settings = new SettingsStore(storage);
+    settings.saveSettings({ ...(await import('@core/settings')).DEFAULT_SETTINGS, relative: true });
+    settings.savePorts({ clockIn: 'in-clock' });
+    const saved: string[] = [];
+    let ctl: SessionController | null = null;
+    const autosave = new Autosave(sheets, {
+      debounceMs: 0,
+      setTimer: (fn) => {
+        fn();
+        return 0;
+      },
+      clearTimer: () => undefined,
+      onSaved: (id) => {
+        saved.push(id);
+        ctl?.onSaved(id);
+      },
+      onError: (id, e) => ctl?.onSaveError(id, e),
+    });
+    const access = standardFakeAccess();
+    const midi = new WebMidi(() => Promise.resolve(access));
+    const controller = new SessionController({
+      midi,
+      virtual: new VirtualLaunchpad(),
+      persistence: { sheets, autosave, settings },
+    });
+    ctl = controller;
+    expect(controller.snapshot().settings.relative).toBe(true);
+    expect(controller.snapshot().selection).toEqual({ clockIn: 'in-clock' });
+
+    await controller.openLastOrDemo();
+    expect(controller.snapshot().sheet.title).toBe('Demo changes');
+    await autosave.settled();
+    expect(saved).toEqual(['demo']);
+    expect(await sheets.lastOpened()).toBe('demo');
+    expect(controller.snapshot().save).toBe('saved');
+
+    controller.updateSettings({ displayMode: 'chord' });
+    expect(settings.loadSettings().displayMode).toBe('chord');
+    await controller.requestAccess();
+    expect(settings.loadPorts().lpIn).toBe('in-lp');
+
+    controller.loadChart('title: Mine\n| D |', 'mine');
+    await autosave.settled();
+    expect((await sheets.list()).sheets.map((s) => s.id).sort()).toEqual(['demo', 'mine']);
+
+    // a second controller reopens the last sheet instead of the demo
+    const again = new SessionController({
+      midi,
+      virtual: new VirtualLaunchpad(),
+      persistence: { sheets, autosave, settings },
+    });
+    await again.openLastOrDemo();
+    expect(again.snapshot().sheet.title).toBe('Mine');
+    expect(again.snapshot().save).toBe('saved');
+
+    kv.failSet = (key) => key === 'sheet:broken';
+    controller.loadChart('title: Broken save\n| E |', 'broken');
+    await autosave.settled();
+    expect(controller.snapshot().save).toBe('error');
+    expect(controller.snapshot().lastError).toMatch(/Export JSON/);
+  });
+});
