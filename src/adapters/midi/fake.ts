@@ -76,6 +76,14 @@ export class FakeAccess implements MidiAccessLike {
     this.outputs.set(id, p);
     return p;
   }
+  /** Notify without a state change, as Chrome does when a port's connection opens or closes. */
+  touch(id: string): void {
+    const port = this.inputs.get(id) ?? this.outputs.get(id);
+    if (!port) return;
+    port.connection = port.connection === 'open' ? 'closed' : 'open';
+    this.onstatechange?.({ port });
+  }
+
   /** Mark a port disconnected and notify, as the browser does on unplug. */
   unplug(id: string): void {
     const port = this.inputs.get(id) ?? this.outputs.get(id);

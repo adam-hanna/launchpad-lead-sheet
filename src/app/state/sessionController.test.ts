@@ -148,6 +148,43 @@ describe('SessionController: first end-to-end light-up (M4-T7)', () => {
     expect(queriesAfter(mark)).toHaveLength(1);
   });
 
+  it('treats missing MIDI timestamps (Chrome on macOS sends 0) as arrival time, so Start plays', async () => {
+    const { controller, clockIn, advance } = await setup();
+    advance(1_800_000); // half an hour into the session: event time 0 is now far in the past
+    clockIn.receive([0xf2, 0, 0], 0);
+    clockIn.receive([0xfa], 0);
+    for (let i = 0; i < 30; i++) {
+      advance(20);
+      clockIn.receive([0xf8], 0);
+    }
+    expect(controller.snapshot().transport.state).toBe('playing');
+    expect(controller.snapshot().transport.position).toMatchObject({ liveBar: 1, tickInBar: 29 });
+    clockIn.receive([0xfc], 0);
+    expect(controller.snapshot().transport.state).toBe('stopped');
+    // A real stall is still detected from arrival times.
+    clockIn.receive([0xfb], 0);
+    advance(600);
+    expect(controller.snapshot().transport.state).toBe('lostClock');
+  });
+
+  it('a connection open/close event is not a replug: no rebind, no second Programmer request', async () => {
+    const { controller, access, lpIn, lpOut } = await setup();
+    controller.enterProgrammer();
+    const modeRequests = () => lpOut.sent.filter((s) => isMode(s.data, true)).length;
+    expect(modeRequests()).toBe(1);
+    access.touch('out-lp'); // Chrome opens the output on the first send and fires statechange
+    access.touch('in-lp');
+    expect(modeRequests()).toBe(1);
+    // The reply to the first query still reaches the (unchanged) driver.
+    lpIn.receive(LAYOUT_MSG(LAYOUT_PROGRAMMER));
+    expect(controller.snapshot().ownership.status).toBe('owned');
+    // A real replug is still handled.
+    access.unplug('in-lp');
+    expect(controller.snapshot().ownership.status).toBe('disconnected');
+    access.replug('in-lp');
+    expect(modeRequests()).toBe(2);
+  });
+
   it('hot-plug: unplugging the Launchpad disconnects, replugging re-enters and repaints', async () => {
     const { controller, access, lpIn, lpOut } = await setup();
     controller.enterProgrammer();
