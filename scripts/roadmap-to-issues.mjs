@@ -26,7 +26,7 @@ function gh(args, { json = false, allowFail = false } = {}) {
     return json ? JSON.parse(out || 'null') : out.trim();
   } catch (e) {
     if (allowFail) return null;
-    throw new Error(`gh ${args.join(' ')} failed: ${e.stderr || e.message}`);
+    throw new Error(`gh ${args.join(' ')} failed: ${e.stderr || e.message}`, { cause: e });
   }
 }
 
@@ -70,7 +70,12 @@ for (let i = 0; i < lines.length; i++) {
   }
   const eh = l.match(/^### (E\d+\.\d+) (.+)$/);
   if (eh && currentMilestone) {
-    currentEpic = { id: eh[1], title: eh[2].replace(/\s*\(.*\)$/, ''), milestone: currentMilestone, tasks: [] };
+    currentEpic = {
+      id: eh[1],
+      title: eh[2].replace(/\s*\(.*\)$/, ''),
+      milestone: currentMilestone,
+      tasks: [],
+    };
     epics.push(currentEpic);
     continue;
   }
@@ -82,7 +87,7 @@ for (let i = 0; i < lines.length; i++) {
   if (th && currentMilestone && currentEpic) {
     let rest = th[3];
     let j = i + 1;
-    while (j < lines.length && /^ {2}\S/.test(lines[j])) rest += ' ' + lines[j].trim(), j++;
+    while (j < lines.length && /^ {2}\S/.test(lines[j])) ((rest += ' ' + lines[j].trim()), j++);
     i = j - 1;
     const labelMatches = [...rest.matchAll(/`((?:area|type):[a-z-]+)`/g)];
     const labels = labelMatches.map((x) => x[1]);
@@ -93,7 +98,17 @@ for (let i = 0; i < lines.length; i++) {
     const size = (tail.match(/^\.?\s*([SML])\./) || [])[1] || null;
     const depends = (tail.match(/Depends:\s*([^.]*?)\.(?:\s|$)/) || [])[1] || '';
     const accepts = (tail.match(/Accepts:\s*(.*)$/) || [])[1] || '';
-    const t = { id: th[1], title: th[2], desc, labels, size, depends: depends.trim(), accepts: accepts.trim(), milestone: currentMilestone, epic: currentEpic.id };
+    const t = {
+      id: th[1],
+      title: th[2],
+      desc,
+      labels,
+      size,
+      depends: depends.trim(),
+      accepts: accepts.trim(),
+      milestone: currentMilestone,
+      epic: currentEpic.id,
+    };
     tasks.push(t);
     currentEpic.tasks.push(t.id);
   }
@@ -103,7 +118,10 @@ const taskById = new Map(tasks.map((t) => [t.id, t]));
 function expandDepends(t) {
   if (!t.depends) return [];
   const out = new Set();
-  for (let tok of t.depends.split(',').map((s) => s.trim()).filter(Boolean)) {
+  for (let tok of t.depends
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)) {
     const all = tok.match(/^all (M\d)$/);
     const range = tok.match(/^(M\d-T)(\d+)…\1(\d+)$/);
     if (all) tasks.filter((x) => x.milestone === all[1] && x.id !== t.id).forEach((x) => out.add(x.id));
@@ -115,13 +133,21 @@ function expandDepends(t) {
 }
 
 // Sanity report
-console.log(`Parsed ${milestones.size} milestones, ${epics.length} epics, ${tasks.length} tasks, ${backlog.length} backlog items`);
+console.log(
+  `Parsed ${milestones.size} milestones, ${epics.length} epics, ${tasks.length} tasks, ${backlog.length} backlog items`,
+);
 for (const t of tasks) {
   if (!t.size) console.warn(`  ! ${t.id}: no size`);
   if (t.labels.length !== 2) console.warn(`  ! ${t.id}: labels = ${t.labels.join(',')}`);
 }
 if (DRY) {
-  console.log(JSON.stringify({ milestones: [...milestones.values()], epics, tasks: tasks.slice(0, 3), backlog }, null, 2));
+  console.log(
+    JSON.stringify(
+      { milestones: [...milestones.values()], epics, tasks: tasks.slice(0, 3), backlog },
+      null,
+      2,
+    ),
+  );
   process.exit(0);
 }
 
@@ -129,12 +155,29 @@ if (DRY) {
 // Labels
 // ---------------------------------------------------------------------------------------------
 const LABELS = {
-  'area:infra': 'c5def5', 'area:docs': 'c5def5', 'area:theory': '0e8a16', 'area:sheet': '0e8a16', 'area:sync': '1d76db',
-  'area:grid': '1d76db', 'area:lighting': 'fbca04', 'area:midi': '5319e7', 'area:launchpad': '5319e7', 'area:routing': 'd93f0b',
-  'area:ui': 'e99695', 'area:storage': 'bfd4f2', 'area:qa': 'f9d0c4',
-  'type:feature': '0052cc', 'type:spike': 'd4c5f9', 'type:bug': 'b60205', 'type:docs': '006b75', 'type:chore': 'cccccc',
-  'type:test': 'bfe5bf', 'type:epic': '3e4b9e',
-  'size:S': 'ededed', 'size:M': 'd4d4d4', 'size:L': 'b0b0b0',
+  'area:infra': 'c5def5',
+  'area:docs': 'c5def5',
+  'area:theory': '0e8a16',
+  'area:sheet': '0e8a16',
+  'area:sync': '1d76db',
+  'area:grid': '1d76db',
+  'area:lighting': 'fbca04',
+  'area:midi': '5319e7',
+  'area:launchpad': '5319e7',
+  'area:routing': 'd93f0b',
+  'area:ui': 'e99695',
+  'area:storage': 'bfd4f2',
+  'area:qa': 'f9d0c4',
+  'type:feature': '0052cc',
+  'type:spike': 'd4c5f9',
+  'type:bug': 'b60205',
+  'type:docs': '006b75',
+  'type:chore': 'cccccc',
+  'type:test': 'bfe5bf',
+  'type:epic': '3e4b9e',
+  'size:S': 'ededed',
+  'size:M': 'd4d4d4',
+  'size:L': 'b0b0b0',
 };
 console.log('Labels...');
 for (const [label, color] of Object.entries(LABELS)) {
@@ -151,10 +194,29 @@ for (const ms of milestones.values()) {
   const desc = `${ms.theme}\n\nExit criterion: ${ms.exit}\nRelease: ${ms.release}\n\nSee ${docsBase}/roadmap.md`;
   const found = existingMs.find((m) => m.title === ms.title);
   if (found) {
-    gh(['api', '-X', 'PATCH', `repos/${owner}/${name}/milestones/${found.number}`, '-f', `description=${desc}`]);
+    gh([
+      'api',
+      '-X',
+      'PATCH',
+      `repos/${owner}/${name}/milestones/${found.number}`,
+      '-f',
+      `description=${desc}`,
+    ]);
     msNumber.set(ms.id, found.number);
   } else {
-    const created = gh(['api', '-X', 'POST', `repos/${owner}/${name}/milestones`, '-f', `title=${ms.title}`, '-f', `description=${desc}`], { json: true });
+    const created = gh(
+      [
+        'api',
+        '-X',
+        'POST',
+        `repos/${owner}/${name}/milestones`,
+        '-f',
+        `title=${ms.title}`,
+        '-f',
+        `description=${desc}`,
+      ],
+      { json: true },
+    );
     msNumber.set(ms.id, created.number);
     await sleep(PAUSE_MS);
   }
@@ -166,7 +228,9 @@ for (const ms of milestones.values()) {
 function listIssues() {
   const out = [];
   for (let page = 1; ; page++) {
-    const batch = gh(['api', `repos/${owner}/${name}/issues?state=all&per_page=100&page=${page}`], { json: true });
+    const batch = gh(['api', `repos/${owner}/${name}/issues?state=all&per_page=100&page=${page}`], {
+      json: true,
+    });
     if (!batch.length) break;
     out.push(...batch.filter((i) => !i.pull_request));
     if (batch.length < 100) break;
@@ -180,10 +244,29 @@ async function ensureIssue(title, body, labels, milestoneId) {
   const found = byTitle.get(title);
   const msTitle = milestones.get(milestoneId).title;
   if (found) {
-    gh(['issue', 'edit', String(found.number), '--body', body, '--milestone', msTitle, ...labels.flatMap((l) => ['--add-label', l])]);
+    gh([
+      'issue',
+      'edit',
+      String(found.number),
+      '--body',
+      body,
+      '--milestone',
+      msTitle,
+      ...labels.flatMap((l) => ['--add-label', l]),
+    ]);
     return found.number;
   }
-  const url = gh(['issue', 'create', '--title', title, '--body', body, '--milestone', msTitle, ...labels.flatMap((l) => ['--label', l])]);
+  const url = gh([
+    'issue',
+    'create',
+    '--title',
+    title,
+    '--body',
+    body,
+    '--milestone',
+    msTitle,
+    ...labels.flatMap((l) => ['--label', l]),
+  ]);
   const number = +url.split('/').pop();
   byTitle.set(title, { number, title });
   await sleep(PAUSE_MS);
@@ -225,8 +308,14 @@ function provisionalTaskBody(t) {
 }
 function finalTaskBody(t, epicNo, depNos) {
   const ms = milestones.get(t.milestone).title;
-  const epicLine = epicNo ? `Part of epic #${epicNo} (${t.epic}) in milestone **${ms}**.` : `Epic ${t.epic}, milestone **${ms}**.`;
-  const deps = depNos ? (depNos.length ? depNos.map((n) => `#${n}`).join(', ') : 'none') : t.depends || 'none';
+  const epicLine = epicNo
+    ? `Part of epic #${epicNo} (${t.epic}) in milestone **${ms}**.`
+    : `Epic ${t.epic}, milestone **${ms}**.`;
+  const deps = depNos
+    ? depNos.length
+      ? depNos.map((n) => `#${n}`).join(', ')
+      : 'none'
+    : t.depends || 'none';
   return [
     epicLine,
     '',
@@ -241,7 +330,9 @@ function finalTaskBody(t, epicNo, depNos) {
 
 console.log('Tasks (pass 2: links)...');
 for (const t of tasks) {
-  const depNos = expandDepends(t).map((id) => taskNumber.get(id)).filter(Boolean);
+  const depNos = expandDepends(t)
+    .map((id) => taskNumber.get(id))
+    .filter(Boolean);
   const body = finalTaskBody(t, epicNumber.get(t.epic), depNos);
   gh(['issue', 'edit', String(taskNumber.get(t.id)), '--body', body]);
   await sleep(300);
@@ -256,16 +347,32 @@ if (SUBISSUES) {
   const idByNumber = new Map(existing.map((i) => [i.number, i.id]));
   for (const e of epics) {
     const epicNo = epicNumber.get(e.id);
-    const current = gh(['api', `repos/${owner}/${name}/issues/${epicNo}/sub_issues?per_page=100`], { json: true, allowFail: true }) || [];
+    const current =
+      gh(['api', `repos/${owner}/${name}/issues/${epicNo}/sub_issues?per_page=100`], {
+        json: true,
+        allowFail: true,
+      }) || [];
     const have = new Set(current.map((s) => s.number));
     for (const id of e.tasks) {
       const n = taskNumber.get(id);
       if (have.has(n)) continue;
-      const ok = gh(['api', '-X', 'POST', `repos/${owner}/${name}/issues/${epicNo}/sub_issues`, '-F', `sub_issue_id=${idByNumber.get(n)}`], { allowFail: true });
+      const ok = gh(
+        [
+          'api',
+          '-X',
+          'POST',
+          `repos/${owner}/${name}/issues/${epicNo}/sub_issues`,
+          '-F',
+          `sub_issue_id=${idByNumber.get(n)}`,
+        ],
+        { allowFail: true },
+      );
       if (ok === null) console.warn(`  ! could not attach #${n} to epic #${epicNo}`);
       await sleep(300);
     }
   }
 }
 
-console.log(`Done. ${tasks.length} tasks, ${backlog.length} backlog items, ${epics.length} epics across ${milestones.size} milestones.`);
+console.log(
+  `Done. ${tasks.length} tasks, ${backlog.length} backlog items, ${epics.length} epics across ${milestones.size} milestones.`,
+);

@@ -1,0 +1,18 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+coverage/
+playwright-report/
+test-results/
+
+# git worktrees live inside the repo
+.worktrees/
+
+# editor / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.local
