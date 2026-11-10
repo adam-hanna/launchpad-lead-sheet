@@ -16,3 +16,6 @@ test-results/
 .vscode/*
 !.vscode/extensions.json
 *.local
+
+# spike harness outputs are attached to docs/spikes manually
+spikes/*.local.*
