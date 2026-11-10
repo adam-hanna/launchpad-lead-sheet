@@ -10,7 +10,7 @@ test('app shell renders with the Web MIDI mock installed', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Launchpad Lead Sheet' })).toBeVisible();
   await expect(page.getByTestId('chart-area')).toBeVisible();
   await expect(page.getByTestId('side-panel')).toBeVisible();
-  await expect(page.getByTestId('status-device')).toContainText('No device');
+  await expect(page.getByTestId('status-device')).toContainText('No Launchpad');
 
   const portNames = await page.evaluate(async () => {
     const access = await navigator.requestMIDIAccess({ sysex: true });
