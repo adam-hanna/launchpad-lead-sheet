@@ -1,0 +1,31 @@
+name: Feature
+description: A unit of planned work. Roadmap tasks are created by scripts/roadmap-to-issues.mjs; use this for new work.
+labels: ['type:feature']
+body:
+  - type: input
+    id: roadmap
+    attributes:
+      label: Roadmap ID
+      description: Add the task to docs/roadmap.md first and re-run the script, or leave blank for unplanned work.
+      placeholder: M3-T11
+  - type: textarea
+    id: what
+    attributes:
+      label: What and why
+    validations:
+      required: true
+  - type: textarea
+    id: accepts
+    attributes:
+      label: Acceptance
+      description: Plan section (§) whose acceptance examples apply, or explicit criteria.
+  - type: dropdown
+    id: size
+    attributes:
+      label: Size
+      options: ['S', 'M', 'L']
+  - type: input
+    id: depends
+    attributes:
+      label: Depends on
+      placeholder: '#12, #13'
