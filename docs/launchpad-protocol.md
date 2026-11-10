@@ -16,14 +16,15 @@ The device sends Note On with velocity 0 for Note Off. It accepts either Note Of
 ## SysEx header and identification
 
 - Header on every SysEx, both directions: `F0 00 20 29 02 0E … F7`.
-- Universal device inquiry: send `F0 7E 7F 06 01 F7`. Reply (application): `F0 7E 00 06 02 00 20 29 13 01 00 00 <v1 v2 v3 v4> F7`. Bootloader reply has `13 11` instead of `13 01`. The four version bytes are decimal digits.
+- Universal device inquiry: send `F0 7E 7F 06 01 F7`. Reply (application): `F0 7E 00 06 02 00 20 29 23 01 00 00 <v1 v2 v3 v4> F7`. Bootloader reply has `23 11` instead of `23 01`. The four version bytes are decimal digits. **Verified on hardware 2026-11-10**: `… 00 20 29 23 01 00 00 00 04 06 05 F7` (the reference manual's `13 01` is the Mini MK3's family).
 - Other models for later: Launchpad X header `… 02 0C`, Mini MK3 `… 02 0D`.
 
 ## Modes and layouts
 
 - **Programmer mode on**: `F0 00 20 29 02 0E 0E 01 F7`. **Live mode**: `… 0E 00 F7` (returns to Session layout in DAW mode, Note mode otherwise).
 - Select layout: `F0 00 20 29 02 0E 00 <layout> <page> 00 F7`; Programmer layout is `11`, Session `00`, Note/Drum `04`, Settings `12`. Query current layout: `F0 00 20 29 02 0E 00 F7`.
-- **The device emits a select-layout message whenever its view changes** — this is how we detect losing Programmer mode.
+- The device emits a select-layout message when its view changes **from the hardware** (to be confirmed in gate G2). It does **not** emit one for a mode or layout change it was told to make by SysEx: after `0E 01` or `0E 00` nothing arrives (measured 2.5 s, gate G1 probe), so every mode command must be followed by a layout query, whose reply comes within 1 ms (ADR-0004).
+- While not receiving external clock the device sends **MIDI Timing Clock (`F8`) at 120 bpm** on `LPProMK3 MIDI` (≈21 ms apart), plus Active Sensing (`FE`). The driver ignores realtime bytes from the device; never select this port as the clock input.
 - DAW/Standalone: `F0 00 20 29 02 0E 10 <0|1> F7` (1 = DAW; Session layout only available in DAW mode).
 - The device **always boots into Live mode**. When Programmer mode was entered by SysEx the Setup menu is unavailable; manual exit is hold SETUP → bottom scene button (orange) only when entered from the device UI.
 

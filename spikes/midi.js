@@ -39,9 +39,9 @@ export function decodeInquiry(data) {
   const version = Array.from(data.slice(12, 16)).join('');
   const model =
     manufacturer === '00 20 29'
-      ? family === 0x13 && member === 0x01
+      ? family === 0x23 && member === 0x01
         ? 'Launchpad Pro MK3 (application)'
-        : family === 0x13 && member === 0x11
+        : family === 0x23 && member === 0x11
           ? 'Launchpad Pro MK3 (bootloader)'
           : `Novation family ${family} member ${member}`
       : `manufacturer ${manufacturer}`;

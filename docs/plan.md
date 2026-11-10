@@ -216,7 +216,7 @@ interface LaunchpadPort {
 
 **Connect.** Acquire the tab lock (§4.2). Enumerate Web MIDI ports (user gesture, SysEx) → device inquiry
 → pick `LPProMK3 MIDI` in/out → set desired ownership = ours → **invalidate the device-frame cache** →
-send Programmer mode → wait for the layout-change confirmation → send a **complete frame** (§4.3) → only
+send Programmer mode → query the layout and wait for the reply confirming Programmer (ADR-0004) → send a **complete frame** (§4.3) → only
 then accept pad input and resume incremental diffs. Pick IAC clock input and notes output by remembered
 name. Forward clock bytes to the Launchpad out. Transport starts with an invalid position (§4.4).
 
@@ -280,7 +280,8 @@ same with a second owner sharing C4. Unowned release → no Note Off. Panic then
 ### 4.2 Device ownership, recovery and cleanup [P1-2]
 
 - **Desired ownership** (ours / released) is app state, separate from **observed device mode** (from
-  layout-change messages and inquiry). Auto re-entry into Programmer mode happens only while desired =
+  layout messages: the reply to a layout query sent after every mode command, and any unsolicited
+  layout-change message; ADR-0004). Auto re-entry into Programmer mode happens only while desired =
   ours.
 - **Hardware-owner cleanup** is one operation, used by several events: remove every owner whose source
   is the hardware Launchpad from the active table through NoteOwnership, so a destination's Note Off is

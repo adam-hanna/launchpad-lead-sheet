@@ -11,6 +11,7 @@ import { SessionController } from './sessionController';
 const LAYOUT_MSG = (layout: number) => [0xf0, 0x00, 0x20, 0x29, 0x02, 0x0e, 0x00, layout, 0x00, 0x00, 0xf7];
 const isLedSysEx = (d: number[]) => d[0] === 0xf0 && d[6] === 0x03;
 const isMode = (d: number[], on: boolean) => d[0] === 0xf0 && d[6] === 0x0e && d[7] === (on ? 1 : 0);
+const isLayoutQuery = (d: number[]) => d.length === 8 && d[0] === 0xf0 && d[6] === 0x00 && d[7] === 0xf7;
 
 async function setup() {
   const access = standardFakeAccess();
@@ -121,6 +122,30 @@ describe('SessionController: first end-to-end light-up (M4-T7)', () => {
     clocks(5);
     advance(600);
     expect(controller.snapshot().transport.state).toBe('lostClock');
+  });
+
+  it('queries the layout after every mode command, because the device does not announce it (ADR-0004)', async () => {
+    const { controller, access, lpIn, lpOut } = await setup();
+    const queriesAfter = (from: number) => lpOut.sent.slice(from).filter((s) => isLayoutQuery(s.data));
+    let mark = lpOut.sent.length;
+    controller.enterProgrammer();
+    const sent = lpOut.sent.slice(mark).map((s) => s.data);
+    expect(sent.findIndex((d) => isMode(d, true))).toBeLessThan(sent.findIndex(isLayoutQuery));
+    expect(queriesAfter(mark)).toHaveLength(1);
+    // The reply to the query is what confirms ownership.
+    lpIn.receive(LAYOUT_MSG(LAYOUT_PROGRAMMER));
+    expect(controller.snapshot().ownership.status).toBe('owned');
+
+    mark = lpOut.sent.length;
+    controller.restoreLive();
+    expect(queriesAfter(mark)).toHaveLength(1);
+
+    controller.enterProgrammer();
+    lpIn.receive(LAYOUT_MSG(LAYOUT_PROGRAMMER));
+    access.unplug('in-lp');
+    mark = lpOut.sent.length;
+    access.replug('in-lp');
+    expect(queriesAfter(mark)).toHaveLength(1);
   });
 
   it('hot-plug: unplugging the Launchpad disconnects, replugging re-enters and repaints', async () => {

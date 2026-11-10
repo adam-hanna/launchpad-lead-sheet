@@ -27,10 +27,11 @@ export function decodeInquiryReply(data: Uint8Array | readonly number[]): Inquir
   const version = Array.from(data.slice(12, 16), (b) => String(b)).join('');
   const novation = manufacturer[0] === 0x00 && manufacturer[1] === 0x20 && manufacturer[2] === 0x29;
   let model: KnownModel = 'unknown';
-  if (novation && family === 0x13 && member === 0x01) model = 'launchpad-pro-mk3';
-  else if (novation && family === 0x13 && member === 0x11) model = 'launchpad-pro-mk3-bootloader';
+  // Family bytes verified on hardware (gate G1, 2026-11-10): the Pro MK3 answers 23 01.
+  if (novation && family === 0x23 && member === 0x01) model = 'launchpad-pro-mk3';
+  else if (novation && family === 0x23 && member === 0x11) model = 'launchpad-pro-mk3-bootloader';
   else if (novation && family === 0x03 && member === 0x01) model = 'launchpad-x';
-  else if (novation && family === 0x13 && member === 0x00) model = 'launchpad-mini-mk3';
+  else if (novation && family === 0x13 && member === 0x01) model = 'launchpad-mini-mk3';
   return { manufacturer, family, member, version, model };
 }
 
