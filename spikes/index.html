@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spike harness — Launchpad Lead Sheet</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #111318;
+        --panel: #1a1d24;
+        --line: #2a2f3a;
+        --fg: #e6e8ee;
+        --muted: #9aa3b2;
+        --ok: #3ddc84;
+        --warn: #ffb547;
+        --bad: #ff5c5c;
+        --accent: #ff4fb0;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font:
+          13px/1.4 ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          monospace;
+      }
+      header {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--line);
+        position: sticky;
+        top: 0;
+        background: var(--bg);
+        z-index: 1;
+      }
+      header h1 {
+        font-size: 14px;
+        margin: 0;
+      }
+      header .pill {
+        padding: 2px 8px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--muted);
+      }
+      header .pill.ok {
+        border-color: var(--ok);
+        color: var(--ok);
+      }
+      header .pill.bad {
+        border-color: var(--bad);
+        color: var(--bad);
+      }
+      main {
+        display: grid;
+        grid-template-columns: 420px 1fr;
+        gap: 0;
+        height: calc(100vh - 41px);
+      }
+      #controls {
+        overflow: auto;
+        border-right: 1px solid var(--line);
+        padding: 12px 16px 40px;
+      }
+      #logwrap {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+      #logbar {
+        display: flex;
+        gap: 8px;
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--line);
+        align-items: center;
+      }
+      #log {
+        flex: 1;
+        overflow: auto;
+        padding: 8px 12px;
+        white-space: pre;
+        font-size: 12px;
+      }
+      #log .in {
+        color: #8fd3ff;
+      }
+      #log .out {
+        color: #c3ff8f;
+      }
+      #log .sys {
+        color: var(--muted);
+      }
+      #log .warn {
+        color: var(--warn);
+      }
+      #log .bad {
+        color: var(--bad);
+      }
+      #log .ok {
+        color: var(--ok);
+      }
+      section {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px 12px;
+        margin: 0 0 12px;
+        background: var(--panel);
+      }
+      section h2 {
+        font-size: 12px;
+        margin: 0 0 8px;
+        color: var(--accent);
+        letter-spacing: 0.04em;
+      }
+      section h2 small {
+        color: var(--muted);
+        font-weight: normal;
+        margin-left: 6px;
+      }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+        margin: 6px 0;
+      }
+      label {
+        color: var(--muted);
+      }
+      select,
+      input[type='text'],
+      input[type='number'] {
+        background: #0e1015;
+        color: var(--fg);
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        padding: 4px 6px;
+        font: inherit;
+        max-width: 100%;
+      }
+      input[type='number'] {
+        width: 64px;
+      }
+      button {
+        background: #262b36;
+        color: var(--fg);
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        padding: 4px 10px;
+        font: inherit;
+        cursor: pointer;
+      }
+      button:hover {
+        border-color: var(--muted);
+      }
+      button.primary {
+        background: var(--accent);
+        color: #111;
+        border-color: transparent;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+      .kv {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 2px 10px;
+        color: var(--muted);
+      }
+      .kv b {
+        color: var(--fg);
+        font-weight: normal;
+      }
+      .stat {
+        display: inline-block;
+        min-width: 60px;
+      }
+      .note {
+        color: var(--muted);
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Spike harness</h1>
+      <span id="pill-midi" class="pill">Web MIDI: —</span>
+      <span id="pill-device" class="pill">Device: —</span>
+      <span id="pill-mode" class="pill">Mode: —</span>
+      <span id="pill-pos" class="pill">Pos: —</span>
+      <span style="margin-left: auto" class="note">docs/spikes/README.md has the runbook</span>
+    </header>
+    <main>
+      <div id="controls"></div>
+      <div id="logwrap">
+        <div id="logbar">
+          <label><input type="checkbox" id="log-clock" /> show Clock bytes</label>
+          <label><input type="checkbox" id="log-pressure" /> show pressure</label>
+          <span style="flex: 1"></span>
+          <button id="log-export">Export log</button>
+          <button id="log-clear">Clear</button>
+        </div>
+        <div id="log"></div>
+      </div>
+    </main>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

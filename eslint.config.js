@@ -51,6 +51,11 @@ export default tseslint.config(
     languageOptions: { globals: globals.node },
   },
   {
+    // Throwaway spike harness: browser JS, no build. Kept lint-clean but outside the strict TS rules.
+    files: ['spikes/**/*.js'],
+    languageOptions: { globals: globals.browser },
+  },
+  {
     // shadcn/ui components export their cva variants alongside the component; that is their contract.
     files: ['src/app/components/ui/**/*.tsx'],
     rules: { 'react-refresh/only-export-components': 'off' },
