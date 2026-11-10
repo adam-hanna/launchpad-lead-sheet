@@ -37,8 +37,19 @@ import {
   type OutputMessage,
   type OwnerSource,
 } from '@core/routing';
+import {
+  exportSheetJson,
+  formatChart,
+  importSheetJson,
+  sheetDocSchema,
+  toDoc,
+  type ChordField,
+  type ImportResult,
+  type Loop,
+  type Meter,
+} from '@core/sheet';
 import { ClockEngine, TempoEstimator, type TransportSnapshot } from '@core/sync';
-import { formatKey } from '@core/theory';
+import { formatKey, type Key } from '@core/theory';
 import {
   NotesOutput,
   autodetectPorts,
@@ -50,7 +61,7 @@ import {
 } from '@adapters/midi';
 import { ProMk3Port } from '@adapters/launchpad';
 import type { VirtualLaunchpad } from '@adapters/virtual';
-import type { Autosave, SettingsStore, SheetStore } from '@adapters/storage';
+import type { Autosave, SettingsStore, SheetStore, SheetSummary } from '@adapters/storage';
 import { DEFAULT_SETTINGS, type Settings } from './settings';
 import { demoSheet } from './demoSheet';
 
@@ -108,6 +119,27 @@ export interface SessionOptions {
 }
 
 type Unsub = () => void;
+
+export interface BarPatch {
+  readonly key?: Key | null | 'inherit';
+  readonly chords?: ChordField | 'inherit';
+  readonly section?: string | null;
+}
+
+export interface MetaPatch {
+  readonly title?: string;
+  readonly meter?: Meter;
+  readonly tempoNote?: number | null;
+  readonly originBar?: number;
+  readonly loop?: Loop | null;
+}
+
+export function newSheetId(): string {
+  const c = (globalThis as { crypto?: { randomUUID?: () => string } }).crypto;
+  return c?.randomUUID
+    ? c.randomUUID()
+    : `sheet-${String(Date.now())}-${Math.random().toString(36).slice(2, 8)}`;
+}
 
 /**
  * Wires core and adapters into one running session (roadmap M4-T7): clock input → ClockEngine,
@@ -347,6 +379,123 @@ export class SessionController {
     const r = parseChart(text, id);
     if (r.ok) this.loadSheet(r.sheet);
     else this.fail(r.errors.map((e) => `line ${String(e.line)}: ${e.message}`).join('; '));
+    return r;
+  }
+
+  // ---- editing (roadmap E6.2) ---------------------------------------------------------------------
+
+  /** Replace fields of one bar. 'inherit' removes an explicit value; null clears a key / section. */
+  updateBar(index: number, patch: BarPatch): void {
+    const bars = this.sheet.bars.map((b, i) => {
+      if (i !== index) return b;
+      const next: { key?: Key | null; chords?: ChordField; section?: string } = { ...b };
+      if (patch.key !== undefined) {
+        if (patch.key === 'inherit') delete next.key;
+        else next.key = patch.key;
+      }
+      if (patch.chords !== undefined) {
+        if (patch.chords === 'inherit') delete next.chords;
+        else next.chords = patch.chords;
+      }
+      if (patch.section !== undefined) {
+        if (patch.section === null || patch.section.trim() === '') delete next.section;
+        else next.section = patch.section.trim();
+      }
+      return next;
+    });
+    this.loadSheet({ ...this.sheet, bars });
+  }
+
+  /** Insert an inheriting bar before `index` (`bars.length` appends). */
+  insertBar(index: number): void {
+    const at = Math.max(0, Math.min(this.sheet.bars.length, index));
+    const bars = [...this.sheet.bars.slice(0, at), {}, ...this.sheet.bars.slice(at)];
+    this.loadSheet({ ...this.sheet, bars });
+    this.selectBar(at + 1);
+  }
+
+  removeBar(index: number): void {
+    if (index < 0 || index >= this.sheet.bars.length) return;
+    const bars = this.sheet.bars.filter((_, i) => i !== index);
+    const { loop, ...rest } = this.sheet;
+    // A loop that now points past the last bar is dropped (plan §4.11 ordered loop bounds).
+    const keep = loop && loop.endBar <= bars.length ? { loop } : {};
+    this.loadSheet({ ...rest, bars, ...keep });
+  }
+
+  /** Change metadata; returns validation issues (and leaves the sheet unchanged) when invalid. */
+  updateMeta(patch: MetaPatch): string[] {
+    const { tempoNote: currentTempo, loop: currentLoop, ...rest } = this.sheet;
+    const tempoNote = patch.tempoNote === undefined ? currentTempo : (patch.tempoNote ?? undefined);
+    const loop = patch.loop === undefined ? currentLoop : (patch.loop ?? undefined);
+    const candidate: Sheet = {
+      ...rest,
+      title: patch.title ?? this.sheet.title,
+      meter: patch.meter ?? this.sheet.meter,
+      originBar: patch.originBar ?? this.sheet.originBar,
+      ...(tempoNote !== undefined ? { tempoNote } : {}),
+      ...(loop ? { loop } : {}),
+    };
+    const check = sheetDocSchema.safeParse(toDoc(candidate));
+    if (!check.success) return check.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`);
+    this.loadSheet(candidate);
+    return [];
+  }
+
+  newSheet(title = 'Untitled'): void {
+    this.loadSheet({ ...createEmptySheet(newSheetId(), title), bars: [{}, {}, {}, {}] });
+    this.selectBar(1);
+  }
+
+  duplicateSheet(): void {
+    this.loadSheet({ ...this.sheet, id: newSheetId(), title: `${this.sheet.title} (copy)` });
+  }
+
+  async openSheet(id: string): Promise<boolean> {
+    const r = await this.persistence?.sheets.load(id);
+    if (!r?.ok) {
+      this.fail(r ? r.issues.map((i) => i.message).join('; ') : `sheet "${id}" not found`);
+      this.emit();
+      return false;
+    }
+    this.loadSheet(r.sheet, { persist: false });
+    return true;
+  }
+
+  async deleteSheet(id: string): Promise<void> {
+    await this.persistence?.sheets.delete(id);
+    if (id === this.sheet.id) {
+      const { sheets } = (await this.persistence?.sheets.list()) ?? { sheets: [] };
+      const next = sheets[0];
+      if (next) await this.openSheet(next.id);
+      else this.newSheet();
+    }
+    this.emit();
+  }
+
+  async library(): Promise<readonly SheetSummary[]> {
+    return (await this.persistence?.sheets.list())?.sheets ?? [];
+  }
+
+  exportJson(): string {
+    return exportSheetJson(this.sheet);
+  }
+
+  exportText(): string {
+    return formatChart(this.sheet);
+  }
+
+  /** Import JSON as a new library entry (a colliding id becomes a copy) and open it. */
+  async importJson(text: string): Promise<ImportResult> {
+    const store = this.persistence?.sheets;
+    const existing = store ? new Set((await store.list()).sheets.map((s) => s.id)) : new Set<string>();
+    const r = importSheetJson(text, {
+      exists: (id) => existing.has(id) || id === this.sheet.id,
+      newId: newSheetId,
+    });
+    if (r.ok) this.loadSheet(r.sheet);
+    else this.fail(r.issues.map((i) => (i.path ? `${i.path}: ${i.message}` : i.message)).join('; '));
+    this.emit();
     return r;
   }
 

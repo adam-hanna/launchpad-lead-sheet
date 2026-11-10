@@ -464,3 +464,67 @@ describe('SessionController: persistence (E6.4)', () => {
     expect(controller.snapshot().lastError).toMatch(/Export JSON/);
   });
 });
+
+describe('SessionController: editing API (E6.2)', () => {
+  it('updates, inserts and removes bars; edits metadata with validation; duplicates and exports', async () => {
+    const { controller } = await setup();
+    const { parseChord, parseKeyToken } = await import('@core/theory');
+    controller.updateBar(1, { key: parseKeyToken('G'), chords: [parseChord('Em7')], section: 'Verse' });
+    let bar = controller.snapshot().sheet.bars[1]!;
+    expect(bar.key).toMatchObject({ root: 7 });
+    expect(bar.chords?.map((c) => c.symbol)).toEqual(['Em7']);
+    expect(bar.section).toBe('Verse');
+    controller.updateBar(1, { key: 'inherit', chords: 'inherit', section: null });
+    bar = controller.snapshot().sheet.bars[1]!;
+    expect(bar).toEqual({});
+    controller.updateBar(1, { key: null, chords: [] });
+    expect(controller.snapshot().sheet.bars[1]).toEqual({ key: null, chords: [] });
+
+    controller.insertBar(0);
+    expect(controller.snapshot().sheet.bars).toHaveLength(9);
+    expect(controller.snapshot().sheet.bars[0]).toEqual({});
+    expect(controller.snapshot().selectedBar).toBe(1);
+    controller.insertBar(99);
+    expect(controller.snapshot().sheet.bars).toHaveLength(10);
+    controller.removeBar(0);
+    controller.removeBar(8);
+    expect(controller.snapshot().sheet.bars).toHaveLength(8);
+    controller.removeBar(42); // no-op
+
+    expect(
+      controller.updateMeta({ title: 'Edited', tempoNote: 100, loop: { startBar: 1, endBar: 8 } }),
+    ).toEqual([]);
+    expect(controller.snapshot().sheet).toMatchObject({
+      title: 'Edited',
+      tempoNote: 100,
+      loop: { startBar: 1, endBar: 8 },
+    });
+    expect(controller.updateMeta({ loop: { startBar: 1, endBar: 9 } }).length).toBeGreaterThan(0);
+    expect(controller.snapshot().sheet.loop).toEqual({ startBar: 1, endBar: 8 });
+    expect(controller.updateMeta({ meter: { numerator: 0, denominator: 4 } }).length).toBeGreaterThan(0);
+    controller.removeBar(7); // loop end beyond the bars → loop dropped
+    expect(controller.snapshot().sheet.loop).toBeUndefined();
+    expect(controller.updateMeta({ tempoNote: null, loop: null })).toEqual([]);
+    expect(controller.snapshot().sheet.tempoNote).toBeUndefined();
+
+    const before = controller.snapshot().sheet.id;
+    controller.duplicateSheet();
+    expect(controller.snapshot().sheet.id).not.toBe(before);
+    expect(controller.snapshot().sheet.title).toBe('Edited (copy)');
+    expect(controller.exportText()).toContain('title: Edited (copy)');
+    expect(controller.exportJson()).toContain('"schemaVersion": 1');
+
+    controller.newSheet('Fresh');
+    expect(controller.snapshot().sheet).toMatchObject({ title: 'Fresh' });
+    expect(controller.snapshot().sheet.bars).toHaveLength(4);
+
+    const r = await controller.importJson(controller.exportJson());
+    expect(r.ok && r.copied).toBe(true); // same id as the current sheet → copy
+    const bad = await controller.importJson('nope');
+    expect(bad.ok).toBe(false);
+    expect(controller.snapshot().lastError).toMatch(/not valid JSON/);
+    expect(await controller.library()).toEqual([]); // no persistence configured
+    expect(await controller.openSheet('x')).toBe(false);
+    await controller.deleteSheet('x');
+  });
+});
