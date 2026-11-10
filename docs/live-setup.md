@@ -80,3 +80,6 @@ the device stays in Programmer mode; **power-cycle or replug it** (it always boo
 | "Launchpad conflict"                               | Something keeps leaving Programmer mode                        | Set Live's Launchpad control surface to None, then **Retry**        |
 | "Stuck on …" badge                                 | Notes were sounding when the notes output vanished             | Replug the output (the app releases them) or stop the track in Live |
 | Another tab is controlling MIDI                    | Two app tabs                                                   | Close one, or **Take over here**                                    |
+
+To watch what the app sees, add `?debug` to the URL and open the browser console: every hardware pad,
+layout reply, mode command, note send and error is logged with the ownership status at that moment.
