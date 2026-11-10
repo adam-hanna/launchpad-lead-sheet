@@ -3,3 +3,4 @@ export * from './schema';
 export * from './resolve';
 export * from './timeline';
 export * from './text';
+export * from './textFormat';
