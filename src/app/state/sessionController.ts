@@ -4,9 +4,10 @@ import {
   type OwnershipEffect,
   type OwnershipSnapshot,
 } from '@core/device';
-import { mappingFor, type GridMapping, type PadIndex } from '@core/grid';
+import { GRID_PADS, mappingFor, type GridMapping, type PadIndex } from '@core/grid';
 import {
   FrameRenderer,
+  led,
   OCTAVE_DOWN_BUTTON,
   OCTAVE_UP_BUTTON,
   THEMES,
@@ -382,6 +383,21 @@ export class SessionController {
       `could not save "${sheetId}": ${error instanceof Error ? error.message : String(error)}. Export JSON to keep your work.`,
     );
     this.emit();
+  }
+
+  /** Paint a recognisable pattern for two seconds (setup panel), then return to the normal frame. */
+  testPattern(): void {
+    if (!this.hardware || this.ownership.snapshot().status !== 'owned') return;
+    const specs = GRID_PADS.map((pad, i) => ({
+      pad,
+      state: led.rgb(i % 8 < 4 ? 127 : 0, Math.floor(i / 8) % 2 ? 127 : 0, i % 3 ? 0 : 127),
+    }));
+    this.hardware.send(specs);
+    this.virtual.send(specs);
+    this.hwRenderer.invalidateDevice();
+    this.setTimer(() => {
+      this.render(true);
+    }, 2000);
   }
 
   dispose(): void {
