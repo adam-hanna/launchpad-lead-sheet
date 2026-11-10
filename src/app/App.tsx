@@ -1,10 +1,14 @@
+import { useState } from 'react';
 import { Badge } from '@app/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@app/components/ui/card';
 import { Separator } from '@app/components/ui/separator';
+import { BarEditor } from '@app/components/BarEditor';
+import { ChartGrid } from '@app/components/ChartGrid';
 import { DegradedStates } from '@app/components/DegradedStates';
+import { LibraryPanel, SheetMetaEditor } from '@app/components/SheetPanel';
 import { SidePanel } from '@app/components/SidePanel';
 import { TransportHeader } from '@app/components/TransportHeader';
 import { DevPage } from '@app/dev/DevPage';
+import { demoSheet } from '@app/state/demoSheet';
 import { getSession, useSessionSnapshot, useTabRole, type Session } from '@app/state/store';
 import { Grid3x3, Usb } from 'lucide-react';
 
@@ -35,10 +39,11 @@ export function App() {
   );
 }
 
-function Shell({ session }: { readonly session: Session }) {
+export function Shell({ session }: { readonly session: Session }) {
   const snap = useSessionSnapshot(session);
   const tabRole = useTabRole(session);
   const { controller } = session;
+  const [editing, setEditing] = useState<number | null>(null);
   const saveText =
     snap.save === 'pending'
       ? 'Saving…'
@@ -78,19 +83,70 @@ function Shell({ session }: { readonly session: Session }) {
               controller.enterProgrammer();
             }}
           />
-          <Card>
-            <CardHeader>
-              <CardTitle>{snap.sheet.title}</CardTitle>
-              <CardDescription>
-                {snap.sheet.bars.length} bars · {snap.sheet.meter.numerator}/{snap.sheet.meter.denominator}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              The chart editor arrives with the next epic.
-            </CardContent>
-          </Card>
+          <div className="flex items-baseline justify-between">
+            <h2 className="text-lg font-semibold" data-testid="sheet-title">
+              {snap.sheet.title}
+            </h2>
+            <span className="text-xs text-muted-foreground">
+              {snap.sheet.bars.length} bars · {snap.sheet.meter.numerator}/{snap.sheet.meter.denominator}
+              {snap.sheet.loop
+                ? ` · loop ${String(snap.sheet.loop.startBar)}–${String(snap.sheet.loop.endBar)}`
+                : ''}
+            </span>
+          </div>
+          <ChartGrid
+            snap={snap}
+            onSelect={(i) => {
+              controller.selectBar(i + 1);
+            }}
+            onEdit={(i) => {
+              controller.selectBar(i + 1);
+              setEditing(i);
+            }}
+            onInsert={(i) => {
+              controller.insertBar(i);
+              setEditing(i);
+            }}
+            onLoadDemo={() => {
+              controller.loadSheet(demoSheet(`demo-${String(Date.now())}`));
+            }}
+          />
+          <BarEditor
+            sheet={snap.sheet}
+            index={editing}
+            onClose={() => {
+              setEditing(null);
+            }}
+            onApply={(i, patch) => {
+              controller.updateBar(i, patch);
+            }}
+            onRemove={(i) => {
+              controller.removeBar(i);
+            }}
+            onInsertAfter={(i) => {
+              controller.insertBar(i + 1);
+              setEditing(i + 1);
+            }}
+          />
         </main>
-        <SidePanel snap={snap} controller={controller} virtual={session.virtual} />
+        <SidePanel
+          snap={snap}
+          controller={controller}
+          virtual={session.virtual}
+          extraTabs={[
+            {
+              value: 'sheet',
+              label: 'Sheet',
+              content: (
+                <div className="grid gap-4">
+                  <SheetMetaEditor snap={snap} controller={controller} />
+                  <Separator />
+                  <LibraryPanel snap={snap} controller={controller} />
+                </div>
+              ),
+            },
+          ]}
+        />
       </div>
     </div>
   );
