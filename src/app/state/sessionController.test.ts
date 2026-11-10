@@ -5,6 +5,7 @@ import { stateAt } from '@core/lighting';
 import { WebMidi } from '@adapters/midi';
 import { standardFakeAccess } from '@adapters/midi/fake';
 import { VirtualLaunchpad } from '@adapters/virtual';
+import { Autosave, MemoryKv, MemoryStorage, SettingsStore, SheetStore } from '@adapters/storage';
 import { DEMO_CHART } from './demoSheet';
 import { SessionController } from './sessionController';
 
@@ -55,6 +56,40 @@ async function setup() {
   };
   return { access, midi, virtual, controller, lpIn, lpOut, clockIn, advance, clocks, now: () => t };
 }
+
+describe('SessionController: ports remembered from the last visit (#156)', () => {
+  it('binds the Launchpad and the clock after access even when autodetect changes nothing', async () => {
+    const storage = new MemoryStorage();
+    new SettingsStore(storage).savePorts({
+      lpIn: 'in-lp',
+      lpOut: 'out-lp',
+      clockIn: 'in-clock',
+      notesOut: 'out-notes',
+    });
+    const access = standardFakeAccess();
+    const midi = new WebMidi(() => Promise.resolve(access));
+    const sheets = new SheetStore(new MemoryKv());
+    const controller = new SessionController({
+      midi,
+      virtual: new VirtualLaunchpad(() => 0),
+      setTimer: () => 0,
+      clearTimer: () => undefined,
+      persistence: {
+        sheets,
+        autosave: new Autosave(sheets, { onSaved: () => undefined, onError: () => undefined }),
+        settings: new SettingsStore(storage),
+      },
+    });
+    expect(controller.snapshot().selection.lpIn).toBe('in-lp'); // restored before access
+    await controller.requestAccess();
+    expect(controller.snapshot().ownership.status).toBe('released'); // connected, not 'disconnected'
+    controller.enterProgrammer();
+    expect(access.outputs.get('out-lp')!.sent.some((s) => isMode(s.data, true))).toBe(true);
+    access.inputs.get('in-clock')!.receive([0xfa], 0);
+    access.inputs.get('in-clock')!.receive([0xf8], 0);
+    expect(controller.snapshot().transport.state).toBe('playing');
+  });
+});
 
 describe('SessionController: first end-to-end light-up (M4-T7)', () => {
   it('access → autodetect → enter → confirm paints the complete frame on both Launchpads', async () => {
