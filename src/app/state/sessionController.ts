@@ -179,6 +179,8 @@ export class SessionController {
   private selection: PortSelection = {};
   private hardware: HardwarePort | null = null;
   private hardwareUnsubs: Unsub[] = [];
+  /** Last seen `state` per port id, so connection open/close events are not mistaken for a replug. */
+  private readonly portStates = new Map<string, PortInfo['state']>();
   private clockUnsub: Unsub | null = null;
   private timeoutHandle: unknown = null;
   private inputEnabled = false;
@@ -284,7 +286,10 @@ export class SessionController {
 
   async requestAccess(): Promise<MidiAccessState> {
     const state = await this.midi.requestAccess();
-    if (state.kind === 'granted') this.autodetect();
+    if (state.kind === 'granted') {
+      for (const p of this.midi.ports()) this.portStates.set(p.id, p.state);
+      this.autodetect();
+    }
     this.emit();
     return state;
   }
@@ -624,7 +629,8 @@ export class SessionController {
     this.unbindClock();
     const { clockIn } = this.selection;
     if (!clockIn) return;
-    this.clockUnsub = this.midi.subscribeInput(clockIn, (data, ts) => {
+    this.clockUnsub = this.midi.subscribeInput(clockIn, (data, eventTs) => {
+      const ts = this.arrivalTime(eventTs);
       this.engine.onMidi(data, ts);
       this.tempo.onMidi(data, ts);
       this.hardware?.forwardClock(data);
@@ -632,6 +638,18 @@ export class SessionController {
       this.scheduleTimeout();
     });
     this.engine.onClockInputConnected();
+  }
+
+  /**
+   * The timestamp the clock engine sees. Chrome on macOS delivers CoreMIDI input with `timeStamp` 0 when
+   * the sender did not stamp its packets (found bringing the app up against Live, 2026-11-10), which made
+   * every Start look stale and fired the clock-lost timeout instantly. A missing, non-finite or
+   * implausible event time (more than a second away from now) is replaced by the arrival time.
+   */
+  private arrivalTime(eventTs: number): number {
+    const now = this.now();
+    if (!Number.isFinite(eventTs) || eventTs <= 0 || Math.abs(eventTs - now) > 1000) return now;
+    return eventTs;
   }
 
   private unbindClock(): void {
@@ -661,6 +679,15 @@ export class SessionController {
   }
 
   private onPortStateChange(port: PortInfo): void {
+    // Chrome also fires statechange when a port's *connection* opens or closes (the first send or
+    // subscribe does that). Only a connected/disconnected transition is a hot-plug; rebinding on the
+    // others discarded the fresh driver and re-sent Programmer mode (found on hardware, 2026-11-10).
+    const previous = this.portStates.get(port.id);
+    this.portStates.set(port.id, port.state);
+    if (previous === port.state) {
+      this.trace('port.connectionChange', { id: port.id, state: port.state });
+      return;
+    }
     const { lpIn, lpOut, clockIn } = this.selection;
     if (port.id === lpIn || port.id === lpOut || (isLaunchpadMidiPort(port.name) && (!lpIn || !lpOut))) {
       if (port.state === 'disconnected') {

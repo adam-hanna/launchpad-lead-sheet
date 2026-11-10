@@ -81,5 +81,9 @@ the device stays in Programmer mode; **power-cycle or replug it** (it always boo
 | "Stuck on …" badge                                 | Notes were sounding when the notes output vanished             | Replug the output (the app releases them) or stop the track in Live |
 | Another tab is controlling MIDI                    | Two app tabs                                                   | Close one, or **Take over here**                                    |
 
+Run **one** page that talks to the Launchpad at a time. The spike harness, a local copy and the hosted
+app are separate sites, so the single-tab lock cannot see each other: they will fight over Programmer
+mode, and a harness tab keeps its own flashing test rows lit. Close the others first.
+
 To watch what the app sees, add `?debug` to the URL and open the browser console: every hardware pad,
 layout reply, mode command, note send and error is logged with the ownership status at that moment.
