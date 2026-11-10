@@ -51,6 +51,11 @@ export default tseslint.config(
     languageOptions: { globals: globals.node },
   },
   {
+    // shadcn/ui components export their cva variants alongside the component; that is their contract.
+    files: ['src/app/components/ui/**/*.tsx'],
+    rules: { 'react-refresh/only-export-components': 'off' },
+  },
+  {
     files: ['**/*.test.ts', '**/*.test.tsx'],
     rules: { '@typescript-eslint/no-non-null-assertion': 'off' },
   },
