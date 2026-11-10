@@ -66,15 +66,16 @@ the device stays in Programmer mode; **power-cycle or replug it** (it always boo
 
 ## Troubleshooting
 
-| Symptom                                | Cause                                                   | Fix                                                                 |
-| -------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------- |
-| "This browser has no Web MIDI"         | Safari / Firefox                                        | Use Chrome or Edge                                                  |
-| "MIDI access was denied"               | Permission refused once                                 | Site settings → MIDI → Allow (SysEx included) → reload              |
-| "Ports missing: clockIn"               | IAC bus absent or renamed                               | Section 1; names must match                                         |
-| Transport stays "Waiting for position" | Live has not sent Start/SPP since the app connected     | Press Play, or click in the Arrangement while Live is stopped       |
-| "Clock lost"                           | Live stopped sending clock (sync turned off, Live quit) | Check Sync **On** for `LS Clock`; press Play                        |
-| Harmony is one bar off                 | Sheet starts mid-song or meter differs                  | Set **Starts at Live bar**; check the meter                         |
-| Pads light but nothing sounds          | Track input or monitoring                               | Section 3                                                           |
-| "Launchpad conflict"                   | Something keeps leaving Programmer mode                 | Set Live's Launchpad control surface to None, then **Retry**        |
-| "Stuck on …" badge                     | Notes were sounding when the notes output vanished      | Replug the output (the app releases them) or stop the track in Live |
-| Another tab is controlling MIDI        | Two app tabs                                            | Close one, or **Take over here**                                    |
+| Symptom                                            | Cause                                                          | Fix                                                                 |
+| -------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------- |
+| "This browser has no Web MIDI"                     | Safari / Firefox                                               | Use Chrome or Edge                                                  |
+| "MIDI access was denied"                           | Permission refused once                                        | Site settings → MIDI → Allow (SysEx included) → reload              |
+| "Ports missing: clockIn"                           | IAC bus absent or renamed                                      | Section 1; names must match                                         |
+| Transport stays "Waiting for position"             | Live has not sent Start/SPP since the app connected            | Press Play, or click in the Arrangement while Live is stopped       |
+| Harmony changes mid-bar after a click in the ruler | The click was not on a bar line; Live sends the exact position | Use locators, or click with the grid snap on                        |
+| "Clock lost"                                       | Live stopped sending clock (sync turned off, Live quit)        | Check Sync **On** for `LS Clock`; press Play                        |
+| Harmony is one bar off                             | Sheet starts mid-song or meter differs                         | Set **Starts at Live bar**; check the meter                         |
+| Pads light but nothing sounds                      | Track input or monitoring                                      | Section 3                                                           |
+| "Launchpad conflict"                               | Something keeps leaving Programmer mode                        | Set Live's Launchpad control surface to None, then **Retry**        |
+| "Stuck on …" badge                                 | Notes were sounding when the notes output vanished             | Replug the output (the app releases them) or stop the track in Live |
+| Another tab is controlling MIDI                    | Two app tabs                                                   | Close one, or **Take over here**                                    |

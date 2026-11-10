@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ClockEngine } from './clockEngine';
-import { CONTINUE, START, STOP, replayTrace, spp, synthClock, type Trace } from './replay';
+import { CONTINUE, START, STOP, replayTrace, spp, synthClock, type ReplayStep, type Trace } from './replay';
 
 const M44 = { numerator: 4, denominator: 4 } as const;
 const trace = (scenario: string, events: Trace['events']): Trace => ({ schema: 1, scenario, events });
@@ -124,8 +124,7 @@ describe('recorded G3 traces: scenario assertions', () => {
   };
   const replay = (t: Trace, originBar = 1) =>
     replayTrace(new ClockEngine({ meter: M44, originBar }), t, { endAt: Infinity });
-  const isBytes = (s: { event: unknown }, b: readonly number[]) =>
-    typeof s.event === 'object' && s.event !== null && 'bytes' in s.event && s.event.bytes[0] === b[0];
+  const isBytes = (s: ReplayStep, b: readonly number[]) => s.event !== 'timeout' && s.event.bytes[0] === b[0];
   const after = (steps: ReturnType<typeof replay>, b: readonly number[], nth = 0) => {
     const idx = steps.map((s, i) => (isBytes(s, b) ? i : -1)).filter((i) => i >= 0)[nth];
     return idx === undefined ? null : steps[idx]!;
