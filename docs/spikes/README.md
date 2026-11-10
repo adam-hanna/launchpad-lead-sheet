@@ -65,7 +65,16 @@ Programmer` with the response time. **All off**, then **Index sweep** (watch a w
   CONFLICT). Repeat with the control surface **disabled**.
 - **Pass**: no unsolicited layout changes with the control surface enabled; or, if there are, disabling
   it stops them (then the setup guide requires disabling it).
-- **Result**: _pending_ · evidence: `logs/g2-*.json`, note which configuration was stable
+- **Result**: **PASS** (2026-11-10, control surface **enabled**, Live 12 Lite 12.4.16, firmware 0465) ·
+  evidence: `logs/g2-control-surface-enabled-2026-11-10.json`. Programmer mode held for the whole run
+  (confirmed 4–5 ms after each request) while Live played and stopped, switched Session/Arrangement and
+  the device's own Session and Note buttons were pressed (they arrive as CC 93/94 and do not change the
+  mode). No unsolicited layout message, no re-entry, no conflict. The control-surface-disabled run was
+  not needed: the stable configuration is the default one, so the setup guide does not require disabling
+  it. Side result: Live sent `SPP 0` immediately before `Start` and 343 clock ticks on the IAC bus, so
+  the sync path works end to end (G3 records the sequences). Open point for the plan: since a SysEx-entered
+  Programmer mode cannot be left from the hardware and Live's script did not touch it, the only observed
+  exits are our own command and a power cycle (a disconnect); no periodic layout poll is needed.
 
 ### G3 Clock traces
 
