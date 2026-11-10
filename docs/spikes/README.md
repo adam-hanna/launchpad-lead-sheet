@@ -89,7 +89,17 @@ Programmer` with the response time. **All off**, then **Index sweep** (watch a w
   position pill tracking Live's bar counter.
 - **Open questions answered here**: Does Live send SPP alone on a stopped seek, or SPP + Continue? What,
   if anything, does Live send on an Arrangement loop wrap?
-- **Result**: _pending_ · evidence: `traces/g3-*.json`
+- **Result**: **PASS** (2026-11-10, Live 12 Lite 12.4.16, 120 bpm 4/4) · evidence: `traces/g3-*.json`,
+  eight scenarios; each is replayed by `src/core/sync/replay.test.ts` with scenario assertions. What Live
+  sends: first Play from 1.1.1 → `Start` alone; later Plays from the start marker → `SPP 0, Start`; Play
+  from elsewhere → `SPP, Stop, SPP, Continue`; seek while playing → `Stop, SPP, Continue`; seek while
+  stopped → lone `SPP` (answer to the open question: **SPP alone**, no Continue); every Stop is followed
+  by one stray Clock ≈8 ms later; Arrangement loop wrap → **nothing** (826 uninterrupted clocks through
+  two wraps of bars 5–8; the sheet loop mapping covers it); a 5-minute stop produces no timeout;
+  unplugging and replugging the Launchpad does not disturb the IAC clock (805 clocks, no gap). Tick
+  spacing 20.8 ms = 120 bpm. `clock-stall` skipped (needs an OS-level pause; the synthetic test covers
+  it); `seek-while-playing` was captured inside the stopped-seek file. SPP values are not bar-aligned
+  when the ruler is clicked off a bar line (e.g. 255 sixteenths), so the setup guide recommends locators.
 
 ### G4 Mapped round trip
 
