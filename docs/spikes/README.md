@@ -133,7 +133,8 @@ Programmer` with the response time. **All off**, then **Index sweep** (watch a w
   event fails the run. Compute median and p99 of (output − input).
 - **Pass**: median ≤ 10 ms, p99 ≤ 20 ms, zero anomalies. Harness self-test: deliberately disable **route
   pads to notes out** for one press and confirm the analysis reports one unmatched input.
-- **Result**: _pending_ · evidence: `logs/g5-monitor-*.txt`, `logs/g5-inpage-*.csv`, analysis notes
+- **Result**: **DEFERRED** (2026-11-10, by decision; tracked as #20 in M8). Not a blocker for the v1.0.0
+  build: G4 showed no dropped or stuck notes over 316 presses, and the in-page path is the same code.
 
 ### G6 Endurance and transitions
 
@@ -144,7 +145,8 @@ Programmer` with the response time. **All off**, then **Index sweep** (watch a w
   bars; note the mismatch, the point is stability).
 - **Pass**: position matches Live's bar at the end of each run (or re-aligns after the next SPP); no held
   notes remain; every transition logged as expected; Live stayed in the foreground.
-- **Result**: _pending_ · evidence: `logs/g6-*.json` (export summary at the end of each run)
+- **Result**: **DEFERRED** (2026-11-10, by decision; tracked as #21 in M8). G3's traces cover a 5-minute
+  stop and a Launchpad replug while running; the 20-minute runs at three tempos remain to be done.
 
 ### G7 Colour and flash
 
@@ -178,7 +180,27 @@ disconnect`, then `layout changed → Programmer … [reconnect→programmer N m
   Repeat five times.
 - **Pass**: reconnect→Programmer+repaint ≤ 2,000 ms from the port-available event, every time; the
   position pill is unaffected by the Launchpad reconnect while Live keeps playing.
-- **Result**: _pending_ · evidence: `logs/g8-*.json`
+- **Result**: **DEFERRED** (2026-11-10, by decision; tracked as #23 in M8). Partial evidence: every harness
+  session re-entered Programmer mode 3–17 ms after the port appeared (G2/G4 logs), and the permission
+  flow worked first time. The five-replug loop and the deny-then-allow prompt remain to be done.
+
+## Gate review (M1-T11, 2026-11-10)
+
+Run on macOS 27.0, Chrome 156, Live 12 Lite 12.4.16, Launchpad Pro MK3 firmware 0465. Outcome: **G1, G2,
+G3, G4, G7 PASS; G5, G6, G8 deferred to M8 by decision.** No gate failed, but three assumptions did, and
+each produced a code or document change the same day:
+
+1. The device does not announce a SysEx-initiated mode switch → every mode command is followed by a
+   layout query (ADR-0004, #140).
+2. The reference map misses nine buttons (Shift 90, lower row 101–108) and names the Mini MK3's inquiry
+   family for the Pro MK3 → driver constants, harness and protocol note corrected (#143, #141).
+3. Live's control surface sends clock on the DAW port, doubling the device's flash rate → setup guide
+   requires Sync Off there (#147).
+
+Verified Live transport sequences (G3) are checked in as traces and replayed by tests; the plan's §4.4
+sender paragraph now states them. The software flash fallback was dropped (#51, #77). Open hardware
+work: the three deferred gates and `docs/hardware-checklist.md`, which exercises the app itself rather
+than the harness.
 
 ## Decisions fed back into the plan (gate review, M1-T11)
 
