@@ -363,7 +363,7 @@ function indexMapTest() {
   allOff().forEach(sendLpQuiet);
   log.add(
     'sys',
-    'INDEX MAP TEST: press every pad and button. Each press is checked against the documented map (grid=notes 11..88, buttons=CCs). Press "Stop test" when done.',
+    'INDEX MAP TEST: press every pad and button. Each press is checked against the documented map (grid=notes 11..88, buttons=CCs incl. Shift 90 and 101..108; logo 99 is light-only). Press "Stop test" when done.',
   );
   S.indexSeen = new Set();
 }
@@ -667,7 +667,7 @@ function checkIndex(kind, index, value) {
     col = index % 10;
   log.add(
     ok ? 'ok' : 'bad',
-    `index ${index} sent as ${kind} — expected ${exp} ${isGridPad(index) ? `(grid row ${row} col ${col})` : ''} ${ok ? '✓' : '✗ MISMATCH'}  seen ${S.indexSeen.size}/97`,
+    `index ${index} sent as ${kind} — expected ${exp} ${isGridPad(index) ? `(grid row ${row} col ${col})` : ''} ${ok ? '✓' : '✗ MISMATCH'}  seen ${S.indexSeen.size}/105`,
   );
   sendLpQuiet(ledMessages([ok ? spec.rgb(index, 0, 127, 0) : spec.rgb(index, 127, 0, 0)])[0]);
 }

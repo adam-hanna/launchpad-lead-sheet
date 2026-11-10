@@ -72,6 +72,8 @@ export function expectedKind(index) {
   if (index >= 1 && index <= 8) return 'cc'; // bottom row
   if (col === 0 && row >= 1 && row <= 8) return 'cc'; // left column 10..80
   if (col === 9 && row >= 1 && row <= 8) return 'cc'; // right column 19..89
+  if (index === 90) return 'cc'; // Shift (gate G1, 2026-11-10)
+  if (index >= 101 && index <= 108) return 'cc'; // row under the grid (gate G1, 2026-11-10)
   if (index === 99) return 'logo';
   return 'unknown';
 }
@@ -80,8 +82,9 @@ export const ALL_LED_INDICES = (() => {
   const out = [];
   for (let i = 1; i <= 8; i++) out.push(i);
   for (let r = 1; r <= 8; r++) for (let c = 0; c <= 9; c++) out.push(r * 10 + c);
-  for (let i = 91; i <= 99; i++) out.push(i);
-  return out; // 8 + 80 + 9 = 97 addressable here; the reference allows up to 106 specs per message
+  for (let i = 90; i <= 99; i++) out.push(i);
+  for (let i = 101; i <= 108; i++) out.push(i);
+  return out; // 8 + 80 + 10 + 8 = 106 addressable (gate G1 found 90 and 101..108); exactly one message
 })();
 
 // ---- LED SysEx -----------------------------------------------------------------------------------

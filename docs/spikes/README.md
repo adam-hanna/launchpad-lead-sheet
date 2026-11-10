@@ -47,13 +47,15 @@ Programmer` with the response time. **All off**, then **Index sweep** (watch a w
   press logs ✓ (index and message type match the documented map) or ✗. **Restore Live mode** → the device
   returns to its normal Live/Note mode.
 - **Pass**: 97 indices seen, zero ✗; Programmer mode confirmed within 500 ms; restore works.
-- **Result**: **PARTIAL** (2026-11-10, terminal CoreMIDI probe, not the browser harness) · evidence:
-  `logs/g1-coremidi-probe-2026-11-10.txt`. Inquiry answered in 0.6 ms (family `23 01`, not the documented
-  `13 01`; decoder and protocol note fixed). Programmer mode entered and restored by SysEx, confirmed by
-  layout query in 0.7 ms (`04` → `11` → `04`); an RGB LED message lit pad 11 and a 64-pad off frame
-  cleared it. **FAIL of an assumption**: the device sent no layout-changed message after either mode
-  command (2.5 s windows) → ADR-0004, every mode command is now followed by a layout query. Still to do
-  in the browser: index sweep, index map test (97 presses), restore observed on the device.
+- **Result**: **PASS** (2026-11-10, Chrome 156 harness, firmware 0465) · evidence:
+  `logs/g1-browser-2026-11-10.json`, `logs/g1-coremidi-probe-2026-11-10.txt`. Programmer mode confirmed
+  **5 ms** after the request (by layout query: the device sends no notification for a SysEx mode switch,
+  ADR-0004). Index sweep walked every documented LED. Index map test: all 96 documented pressable
+  indices ✓, zero mismatches; Restore returned the device to Note mode (query reply `04`). **Map
+  correction**: nine undocumented buttons exist and send CCs: Shift = 90 and the row under the grid =
+  101–108; the sweep had skipped them. Added to the harness, `ALL_LEDS` and the protocol note (106 LEDs
+  total, one SysEx message). Also from the CoreMIDI probe: inquiry family bytes `23 01`; the device emits
+  `F8` at 120 bpm on its MIDI port while unsynced.
 
 ### G2 Live coexistence
 

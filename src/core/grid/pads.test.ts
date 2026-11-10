@@ -19,9 +19,11 @@ describe('pads', () => {
       expect(padRowCol(i)).toBeNull();
     }
   });
-  it('97 addressable LEDs, buttons distinct from pads', () => {
-    expect(ALL_LEDS).toHaveLength(97);
-    expect(new Set(ALL_LEDS).size).toBe(97);
+  it('106 addressable LEDs (gate G1), buttons distinct from pads', () => {
+    expect(ALL_LEDS).toHaveLength(106);
+    expect(new Set(ALL_LEDS).size).toBe(106);
+    expect(ALL_LEDS).toContain(90);
+    expect(ALL_LEDS).toContain(108);
     expect(isButton(91)).toBe(true);
     expect(isButton(LOGO)).toBe(true);
     expect(isButton(11)).toBe(false);
