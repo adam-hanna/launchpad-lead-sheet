@@ -9,6 +9,7 @@ import { BarEditor } from './BarEditor';
 import { parseChordField, parseKeyField } from '@app/lib/barFields';
 import type { BarPatch } from '@app/state/sessionController';
 import { ChartGrid } from './ChartGrid';
+import { barKeyAction } from '@app/lib/chartKeys';
 import { LibraryPanel, SheetMetaEditor } from './SheetPanel';
 import { DEMO_CHART } from '@app/state/demoSheet';
 import { SessionController } from '@app/state/sessionController';
@@ -113,6 +114,60 @@ describe('ChartGrid', () => {
       fireEvent.click(screen.getByText('Add a bar'));
       expect(onInsert).toHaveBeenCalledWith(0);
     });
+  });
+});
+
+describe('ChartGrid keyboard navigation (roadmap M7-T9)', () => {
+  it('maps keys to selection, edit and insert actions with clamping', () => {
+    expect(barKeyAction('ArrowRight', 0, 8)).toEqual({ type: 'select', index: 1 });
+    expect(barKeyAction('ArrowLeft', 0, 8)).toEqual({ type: 'select', index: 0 });
+    expect(barKeyAction('ArrowDown', 6, 8)).toEqual({ type: 'select', index: 7 });
+    expect(barKeyAction('ArrowUp', 5, 8)).toEqual({ type: 'select', index: 1 });
+    expect(barKeyAction('Home', 5, 8)).toEqual({ type: 'select', index: 0 });
+    expect(barKeyAction('End', 5, 8)).toEqual({ type: 'select', index: 7 });
+    expect(barKeyAction('Enter', 2, 8)).toEqual({ type: 'edit' });
+    expect(barKeyAction('+', 2, 8)).toEqual({ type: 'insert' });
+    expect(barKeyAction('a', 2, 8)).toBeNull();
+  });
+
+  it('keeps one bar in the tab order, moves selection and focus with the arrows, edits with Enter', () => {
+    const { controller, store } = make();
+    const onEdit = vi.fn();
+    const onInsert = vi.fn();
+    const View = () => (
+      <ChartGrid
+        snap={store.getState().snapshot}
+        onSelect={(i) => {
+          controller.selectBar(i + 1);
+        }}
+        onEdit={onEdit}
+        onInsert={onInsert}
+      />
+    );
+    const { rerender } = render(<View />);
+    const tabbable = screen.getAllByTestId(/^bar-/).filter((b) => b.tabIndex === 0);
+    expect(tabbable.map((b) => b.dataset.testid)).toEqual(['bar-1']);
+    expect(screen.getByTestId('bar-3').getAttribute('aria-label')).toBe('Bar 3, Dm7  G7');
+    expect(screen.getByTestId('bar-1').getAttribute('aria-label')).toContain('key C');
+
+    act(() => {
+      fireEvent.keyDown(screen.getByTestId('bar-1'), { key: 'ArrowRight' });
+    });
+    rerender(<View />);
+    expect(controller.snapshot().selectedBar).toBe(2);
+    expect(screen.getByTestId('bar-2').tabIndex).toBe(0);
+    expect(document.activeElement).toBe(screen.getByTestId('bar-2'));
+
+    act(() => {
+      fireEvent.keyDown(screen.getByTestId('bar-2'), { key: 'ArrowDown' });
+    });
+    rerender(<View />);
+    expect(controller.snapshot().selectedBar).toBe(6);
+
+    fireEvent.keyDown(screen.getByTestId('bar-6'), { key: 'Enter' });
+    expect(onEdit).toHaveBeenCalledWith(5);
+    fireEvent.keyDown(screen.getByTestId('bar-6'), { key: 'Insert' });
+    expect(onInsert).toHaveBeenCalledWith(6);
   });
 });
 
