@@ -1,0 +1,2215 @@
+{
+ "versions": {
+  "macos": "",
+  "live": "",
+  "firmware": "",
+  "model": "",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+  "recordedAt": "2026-11-10T16:08:16.345Z"
+ },
+ "entries": [
+  {
+   "t": 501258.4,
+   "kind": "ok",
+   "text": "MIDI access granted in 2 ms, sysex=true"
+  },
+  {
+   "t": 501260.2,
+   "kind": "sys",
+   "text": "LP in = Launchpad Pro MK3 LPProMK3 MIDI"
+  },
+  {
+   "t": 501261.7,
+   "kind": "sys",
+   "text": "clock in = IAC Driver LS Clock"
+  },
+  {
+   "t": 501261.9,
+   "kind": "sys",
+   "text": "autodetect: LP in=Launchpad Pro MK3 LPProMK3 MIDI LP out=Launchpad Pro MK3 LPProMK3 MIDI clock=IAC Driver LS Clock notes=IAC Driver LS Notes"
+  },
+  {
+   "t": 501264.8,
+   "kind": "sys",
+   "text": "statechange input \"Launchpad Pro MK3 LPProMK3 MIDI\" state=connected connection=open"
+  },
+  {
+   "t": 501265.6,
+   "kind": "ok",
+   "text": "LP reconnected ? ms after disconnect; re-binding and re-entering Programmer mode"
+  },
+  {
+   "t": 501266.4,
+   "kind": "sys",
+   "text": "LP in = Launchpad Pro MK3 LPProMK3 MIDI"
+  },
+  {
+   "t": 501266.6,
+   "kind": "sys",
+   "text": "clock in = IAC Driver LS Clock"
+  },
+  {
+   "t": 501266.6,
+   "kind": "sys",
+   "text": "autodetect: LP in=Launchpad Pro MK3 LPProMK3 MIDI LP out=Launchpad Pro MK3 LPProMK3 MIDI clock=IAC Driver LS Clock notes=IAC Driver LS Notes"
+  },
+  {
+   "t": 501266.8,
+   "kind": "out",
+   "text": "→ LP   programmer ON (auto) F0 00 20 29 02 0E 0E 01 F7"
+  },
+  {
+   "t": 501266.8,
+   "kind": "out",
+   "text": "→ LP   layout? F0 00 20 29 02 0E 00 F7"
+  },
+  {
+   "t": 501268.2,
+   "kind": "sys",
+   "text": "statechange input \"IAC Driver LS Clock\" state=connected connection=open"
+  },
+  {
+   "t": 501269.1,
+   "kind": "sys",
+   "text": "statechange output \"Launchpad Pro MK3 LPProMK3 MIDI\" state=connected connection=open"
+  },
+  {
+   "t": 501271.6,
+   "kind": "ok",
+   "text": "← LP   layout changed → Programmer (page 0) (5 ms after request) [reconnect→programmer 5 ms]"
+  },
+  {
+   "t": 501271.7,
+   "kind": "sys",
+   "text": "full repaint after acquiring Programmer mode"
+  },
+  {
+   "t": 503498.5,
+   "kind": "sys",
+   "text": "LP in = Launchpad Pro MK3 LPProMK3 MIDI"
+  },
+  {
+   "t": 503499.3,
+   "kind": "sys",
+   "text": "clock in = IAC Driver LS Clock"
+  },
+  {
+   "t": 503499.5,
+   "kind": "sys",
+   "text": "autodetect: LP in=Launchpad Pro MK3 LPProMK3 MIDI LP out=Launchpad Pro MK3 LPProMK3 MIDI clock=IAC Driver LS Clock notes=IAC Driver LS Notes"
+  },
+  {
+   "t": 516731.8,
+   "kind": "out",
+   "text": "→ LP   programmer ON F0 00 20 29 02 0E 0E 01 F7"
+  },
+  {
+   "t": 516732.8,
+   "kind": "out",
+   "text": "→ LP   layout? F0 00 20 29 02 0E 00 F7"
+  },
+  {
+   "t": 516735.6,
+   "kind": "ok",
+   "text": "← LP   layout changed → Programmer (page 0) (4 ms after request)"
+  },
+  {
+   "t": 516736.2,
+   "kind": "sys",
+   "text": "full repaint after acquiring Programmer mode"
+  },
+  {
+   "t": 533944.7,
+   "kind": "in",
+   "text": "← CLK  SPP 0 sixteenths (= bar 1 in 4/4)  F2 00 00"
+  },
+  {
+   "t": 533947.3,
+   "kind": "in",
+   "text": "← CLK  Start  FA"
+  },
+  {
+   "t": 533955.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 533976,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 533997,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534017.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534038.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534059.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534080.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534101.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534122.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534142.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534163.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534184.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534205.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534226.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534247.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534267.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534288.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534309.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534330.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534351.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534372.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534392.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534413.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534434.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534455.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534476.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534497.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534517.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534538.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534559.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534580.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534601.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534622.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534642.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534663.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534684.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534705.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534726.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534747.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534767.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534788.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534809.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534830.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534851.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534872.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534893,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534913.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534934.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534955.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534976.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 534997.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535018,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535038.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535059.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535080.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535101.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535122.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535142.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535163.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535184.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535205.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535226,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535247.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535267.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535288.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535309.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535330.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535351.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535372.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535392.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535413.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535434.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535455.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535476.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535497.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535518,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535538.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535559.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535580.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535601.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535622.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535642.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535663.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535684.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535705.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535726.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535747,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535767.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535788.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535809.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535830.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535851.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535872.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535893,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535913.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535934.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535955.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535976.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 535997.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536017.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536038.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536059.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536080.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536101.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536122.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536142.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536163.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536184.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536205.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536226.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536247.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536268,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536288.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536309.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536330.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536351.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536380.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536392.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536413.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536434.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536455.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536476.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536497.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536517.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536538.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536559.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536580.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536601.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536622,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536643,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536663.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536684.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536705.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536726.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536747.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536767.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536788.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536809.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536830.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536851.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536871.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536893,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536913.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536934.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536955.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536976.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 536997.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537017.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537038.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537059.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537080.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537101.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537121.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537143,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537163.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537184.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537205.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537226.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537247.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537268,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537288.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537309.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537330.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537351.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537372.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537392.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537413.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537434.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537455.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537476.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537497.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537517.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537538.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537559.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537580.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537601.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537621.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537642.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537663.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537684.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537705.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537726.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537747.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537768,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537788.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537809.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537830.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537851.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537872.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537892.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537913.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537934.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537955.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537976.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 537997.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538017.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538038.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538059.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538080.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538101.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538122.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538142.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538163.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538184.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538205.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538226.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538247.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538268.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538288.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538309.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538330.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538351.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538372.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538392.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538413.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538434.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538455.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538476.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538497.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538518,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538538.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538559.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538580.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538601.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538622.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538642.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538663.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538684.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538705.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538726.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538747,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538767.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538788.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538820.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538830.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538851,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538871.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538892.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538913.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538934.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538955.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538976.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 538997,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539017.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539038.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539059.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539080.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539101.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539122.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539142.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539163.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539184.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539205.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539226.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539246.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539267.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539288.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539309.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539330.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539351.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539372,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539392.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539413.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539434.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539455.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539476.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539497.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539518,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539538.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539559.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539580.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539601.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539622,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539642.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539663.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539684.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539705.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539726.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539746.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539767.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539788.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539809.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539830.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539851.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539872.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539892.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539913.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539934.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539955.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539976.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 539997.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540017.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540038.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540059.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540080.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540101,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540121.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540142.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540163.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540184.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540205.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540226.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540247,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540267.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540288.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540309.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540330.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540351.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540372.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540392.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540413.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540434.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540455.2,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540476.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540497.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540517.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540538.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540559.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540580.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540601.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540622.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540642.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540663.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540684.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540705.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540726.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540747,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540768,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540788.8,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540809.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540830.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540851.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540871.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540893,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540913.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540934.5,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540955.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540976.3,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 540997.1,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 541017.9,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 541038.7,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 541059.6,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 541080.4,
+   "kind": "in",
+   "text": "← CLK  F8",
+   "clock": true
+  },
+  {
+   "t": 541082.6,
+   "kind": "in",
+   "text": "← CLK  Stop  FC"
+  },
+  {
+   "t": 565558.2,
+   "kind": "in",
+   "text": "← LP   CC 93 = 127 (ch 1)"
+  },
+  {
+   "t": 565762.5,
+   "kind": "in",
+   "text": "← LP   CC 93 = 0 (ch 1)"
+  },
+  {
+   "t": 567094.3,
+   "kind": "in",
+   "text": "← LP   CC 94 = 127 (ch 1)"
+  },
+  {
+   "t": 567283.7,
+   "kind": "in",
+   "text": "← LP   CC 94 = 0 (ch 1)"
+  }
+ ]
+}
