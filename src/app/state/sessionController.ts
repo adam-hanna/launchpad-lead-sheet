@@ -289,6 +289,10 @@ export class SessionController {
     if (state.kind === 'granted') {
       for (const p of this.midi.ports()) this.portStates.set(p.id, p.state);
       this.autodetect();
+      // Ports remembered from the last visit are selected before access exists, so autodetect finds
+      // "no change" and binds nothing. Bind both explicitly now that the ports are real (#156).
+      this.bindHardware();
+      this.bindClock();
     }
     this.emit();
     return state;
