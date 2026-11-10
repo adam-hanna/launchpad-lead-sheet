@@ -189,7 +189,29 @@ describe('SettingsPanel', () => {
     expect(controller.snapshot().settings.pastEnd).toBe('dark');
     fireEvent.click(screen.getByText('Pink, red, orange'));
     expect(controller.snapshot().settings.themeName).toBe('pinkRedOrange');
-    fireEvent.click(screen.getByText('Custom'));
+    fireEvent.click(screen.getByText('Custom', { selector: '[data-testid="layout"] button' }));
     expect(controller.snapshot().settings.layout.rowOffset).toBe(7);
+  });
+});
+
+describe('SettingsPanel should-haves (M7)', () => {
+  it('clock offset, look-ahead, beat indicator and the custom theme editor', () => {
+    const { controller } = make();
+    const { rerender } = render(<SettingsPanel snap={controller.snapshot()} controller={controller} />);
+    fireEvent.change(screen.getByLabelText('Clock offset (ticks)'), { target: { value: '12' } });
+    expect(controller.snapshot().settings.clockOffsetTicks).toBe(12);
+    fireEvent.change(screen.getByLabelText('Clock offset (ticks)'), { target: { value: '-999' } });
+    expect(controller.snapshot().settings.clockOffsetTicks).toBe(-48);
+    fireEvent.click(screen.getByLabelText('Preview next change on the last beat'));
+    expect(controller.snapshot().settings.lookAhead).toBe(true);
+    fireEvent.click(screen.getByLabelText('Beat on the top buttons'));
+    expect(controller.snapshot().settings.beatIndicator).toBe(false);
+    fireEvent.click(screen.getByText('Custom', { selector: '[data-testid="theme"] button' }));
+    rerender(<SettingsPanel snap={controller.snapshot()} controller={controller} />);
+    expect(screen.getByTestId('theme-editor')).toBeTruthy();
+    fireEvent.change(screen.getByLabelText('3rd'), { target: { value: '#ff0000' } });
+    expect(controller.snapshot().settings.customTheme.colours.third).toEqual([127, 0, 0]);
+    fireEvent.change(screen.getByLabelText('Flash bright palette index'), { target: { value: '57' } });
+    expect(controller.snapshot().settings.customTheme.rootFlash.a).toBe(57);
   });
 });

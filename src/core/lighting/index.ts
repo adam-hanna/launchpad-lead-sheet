@@ -4,3 +4,4 @@ export * from './theme';
 export * from './renderer';
 export * from './debug';
 export * from './buttons';
+export * from './lookahead';

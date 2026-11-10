@@ -27,3 +27,15 @@ describe('octave buttons', () => {
     expect(octaveButtonStates(-1).get(OCTAVE_DOWN_BUTTON)).toEqual({ kind: 'rgb', rgb: [45, 45, 45] });
   });
 });
+
+describe('beat indicator', () => {
+  it('lights the current beat white, others dim, beyond the bar off; wraps past eight', async () => {
+    const { beatIndicatorStates } = await import('./buttons');
+    const m = beatIndicatorStates(2, 4);
+    expect(m.get(91)).toEqual({ kind: 'rgb', rgb: [10, 10, 10] });
+    expect(m.get(92)).toEqual({ kind: 'rgb', rgb: [110, 110, 110] });
+    expect(m.get(95)).toEqual({ kind: 'off' });
+    expect(beatIndicatorStates(9, 12).get(91)).toEqual({ kind: 'rgb', rgb: [110, 110, 110] });
+    expect(beatIndicatorStates(1, 12).get(98)).toEqual({ kind: 'rgb', rgb: [10, 10, 10] });
+  });
+});

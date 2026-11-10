@@ -1,5 +1,7 @@
 import { LAYOUT_PRESETS, MAX_ROW_OFFSET, MIN_ROW_OFFSET, presetName, type LayoutPreset } from '@core/grid';
-import { MAX_OCTAVE_SHIFT, MIN_OCTAVE_SHIFT, THEMES } from '@core/lighting';
+import { CUSTOM_THEME_NAME, MAX_OCTAVE_SHIFT, MIN_OCTAVE_SHIFT, THEMES } from '@core/lighting';
+import { MAX_CLOCK_OFFSET_TICKS } from '@core/settings';
+import { ThemeEditor } from '@app/components/ThemeEditor';
 import { midiNoteName } from '@core/theory';
 import { Button } from '@app/components/ui/button';
 import { Input } from '@app/components/ui/input';
@@ -236,16 +238,62 @@ export function SettingsPanel({
           }}
         />
       </Row>
+      <Row label="Clock offset (ticks)" htmlFor="clockOffset">
+        <Input
+          id="clockOffset"
+          type="number"
+          className="w-20"
+          min={-MAX_CLOCK_OFFSET_TICKS}
+          max={MAX_CLOCK_OFFSET_TICKS}
+          value={s.clockOffsetTicks}
+          onChange={(e) => {
+            const v = Math.max(
+              -MAX_CLOCK_OFFSET_TICKS,
+              Math.min(MAX_CLOCK_OFFSET_TICKS, Number(e.target.value) || 0),
+            );
+            controller.updateSettings({ clockOffsetTicks: v });
+          }}
+        />
+      </Row>
+      <Row label="Preview next change on the last beat" htmlFor="lookAhead">
+        <Switch
+          id="lookAhead"
+          checked={s.lookAhead}
+          onCheckedChange={(lookAhead) => {
+            controller.updateSettings({ lookAhead });
+          }}
+        />
+      </Row>
+      <Row label="Beat on the top buttons" htmlFor="beatIndicator">
+        <Switch
+          id="beatIndicator"
+          checked={s.beatIndicator}
+          onCheckedChange={(beatIndicator) => {
+            controller.updateSettings({ beatIndicator });
+          }}
+        />
+      </Row>
       <Row label="Theme">
         <Choice
           testId="theme"
           value={s.themeName}
-          options={THEMES.map((t) => ({ value: t.name, label: t.label }))}
+          options={[
+            ...THEMES.map((t) => ({ value: t.name, label: t.label })),
+            { value: CUSTOM_THEME_NAME, label: 'Custom' },
+          ]}
           onChange={(themeName) => {
             controller.updateSettings({ themeName });
           }}
         />
       </Row>
+      {s.themeName === CUSTOM_THEME_NAME && (
+        <ThemeEditor
+          theme={s.customTheme}
+          onChange={(customTheme) => {
+            controller.updateSettings({ customTheme });
+          }}
+        />
+      )}
     </div>
   );
 }

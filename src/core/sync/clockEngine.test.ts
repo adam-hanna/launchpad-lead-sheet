@@ -182,3 +182,18 @@ describe('ClockEngine: configuration, subscription, ignored input', () => {
     expect(seen).toHaveLength(4);
   });
 });
+
+describe('ClockEngine: tick offset (plan §4.4 should-have)', () => {
+  it('shifts the displayed position without touching counted ticks and never goes below 1.1.1', () => {
+    const e = engine();
+    e.onMidi(START, 0);
+    clocks(e, 11, 1); // tick 10
+    e.setTickOffset(3);
+    expect(e.snapshot().ticks).toBe(10);
+    expect(e.snapshot().position?.tickInBar).toBe(13);
+    e.setTickOffset(-20);
+    expect(e.snapshot().position).toMatchObject({ liveBar: 1, tickInBar: 0 });
+    e.setTickOffset(96);
+    expect(e.snapshot().position).toMatchObject({ liveBar: 2, tickInBar: 10 });
+  });
+});
