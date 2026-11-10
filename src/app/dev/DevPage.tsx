@@ -99,6 +99,11 @@ export function DevPage({ session }: { readonly session: Session }) {
                 Panic
               </Button>
               <Badge variant="outline">held: {snap.heldNotes.length ? snap.heldNotes.join(' ') : '—'}</Badge>
+              {snap.stuck.map((s) => (
+                <Badge key={s.port} variant="destructive">
+                  stuck on {s.port}: {s.notes.join(' ')}
+                </Badge>
+              ))}
             </div>
             <div className="grid gap-1 sm:grid-cols-2">
               {sel('lpIn', 'input')}

@@ -5,7 +5,17 @@ import {
   type OwnershipSnapshot,
 } from '@core/device';
 import { mappingFor, type GridMapping, type PadIndex } from '@core/grid';
-import { FrameRenderer, THEMES, WARM_THEME, type LedState, type Theme } from '@core/lighting';
+import {
+  FrameRenderer,
+  OCTAVE_DOWN_BUTTON,
+  OCTAVE_UP_BUTTON,
+  THEMES,
+  WARM_THEME,
+  clampOctaveShift,
+  octaveButtonStates,
+  type LedState,
+  type Theme,
+} from '@core/lighting';
 import {
   activeHarmony,
   chordAt,
@@ -19,7 +29,13 @@ import {
   type ResolvedBar,
   type Sheet,
 } from '@core/sheet';
-import { NoteOwnership, type OutputMessage, type OwnerSource } from '@core/routing';
+import {
+  NoteOwnership,
+  PendingCleanup,
+  type Destination,
+  type OutputMessage,
+  type OwnerSource,
+} from '@core/routing';
 import { ClockEngine, TempoEstimator, type TransportSnapshot } from '@core/sync';
 import { formatKey } from '@core/theory';
 import {
@@ -59,6 +75,8 @@ export interface SessionSnapshot {
   readonly pressedCount: number;
   /** Distinct MIDI notes sounding on the notes output. */
   readonly heldNotes: readonly number[];
+  /** Notes whose Note Off could not be delivered because their output is gone (plan §4.2). */
+  readonly stuck: readonly { readonly port: string; readonly notes: readonly number[] }[];
   readonly lastError: string | null;
 }
 
@@ -100,6 +118,7 @@ export class SessionController {
   private readonly hwRenderer = new FrameRenderer();
   private readonly virtualRenderer = new FrameRenderer();
   private readonly notes = new NoteOwnership();
+  private readonly pending = new PendingCleanup();
   private readonly output: NotesOutput;
   private mapping: GridMapping;
 
@@ -162,6 +181,9 @@ export class SessionController {
       this.virtual.onChannelPressure((value) => {
         this.onChannelPressure(value);
       }),
+      this.virtual.onButton((button, value) => {
+        this.onButton(button, value);
+      }),
     );
     this.render();
   }
@@ -191,6 +213,7 @@ export class SessionController {
       settings: this.settings,
       pressedCount: this.notes.ownerCount(),
       heldNotes: [...this.notes.activeNotes()].sort((a, b) => a - b),
+      stuck: this.pending.stuck().map((s) => ({ port: s.port, notes: s.notes.map((d) => d.note) })),
       lastError: this.lastError,
     };
   }
@@ -222,6 +245,10 @@ export class SessionController {
     }
     const lpChanged = next.lpIn !== this.selection.lpIn || next.lpOut !== this.selection.lpOut;
     const clockChanged = next.clockIn !== this.selection.clockIn;
+    const oldNotesOut = this.selection.notesOut;
+    // Output changed: release every note to the OLD destination before switching (plan §4.2).
+    if (oldNotesOut !== undefined && next.notesOut !== oldNotesOut)
+      this.send(this.notes.releasePort(oldNotesOut));
     this.selection = next;
     if (lpChanged) this.bindHardware();
     if (clockChanged) this.bindClock();
@@ -247,6 +274,7 @@ export class SessionController {
     const { messages, unreachable } = this.notes.panic((port) => this.output.reachable(port));
     this.send(messages);
     if (unreachable.length) {
+      this.pending.add(unreachable);
       this.fail(
         `${String(unreachable.length)} note(s) could not be silenced: their output is gone. Silence them in Live.`,
       );
@@ -289,6 +317,7 @@ export class SessionController {
 
   updateSettings(patch: Partial<Settings>): void {
     this.settings = { ...this.settings, ...patch };
+    this.settings = { ...this.settings, octaveShift: clampOctaveShift(this.settings.octaveShift) };
     this.render();
     this.emit();
   }
@@ -333,6 +362,10 @@ export class SessionController {
       port.onChannelPressure((value) => {
         if (!this.inputEnabled) return;
         this.onChannelPressure(value);
+      }),
+      port.onButton((button, value) => {
+        if (!this.inputEnabled) return;
+        this.onButton(button, value);
       }),
     ];
     const connected =
@@ -403,6 +436,24 @@ export class SessionController {
       if (port.state === 'disconnected') this.engine.onClockInputDisconnected();
       else this.bindClock();
     }
+    if (port.type === 'output') {
+      if (port.state === 'disconnected') {
+        // Destination unavailable: owners on it move to the pending-cleanup record (plan §4.2).
+        const owed = this.notes
+          .releasePort(port.id)
+          .flatMap<Destination>((m) =>
+            m.type === 'noteOff' ? [{ port: m.port, channel: m.channel, note: m.note }] : [],
+          );
+        this.pending.add(owed);
+        if (owed.length)
+          this.fail(
+            `${String(owed.length)} note(s) stuck: output disconnected. Silence them in Live or replug.`,
+          );
+        this.render();
+      } else if (this.pending.isBlocked(port.id)) {
+        this.flushPending(port.id);
+      }
+    }
     this.emit();
   }
 
@@ -449,6 +500,14 @@ export class SessionController {
       const note = this.mapping.noteAt(pad);
       const port = this.selection.notesOut;
       if (note === null || !port) return;
+      // A returning destination must deliver its owed Note Offs before accepting new notes.
+      if (this.pending.isBlocked(port)) {
+        this.flushPending(port);
+        if (this.pending.isBlocked(port)) {
+          this.fail('notes output still owes releases; press ignored');
+          return;
+        }
+      }
       this.send(this.notes.press(owner, { port, channel: this.settings.notesChannel, note, velocity }));
     } else {
       this.send(this.notes.release(owner));
@@ -467,12 +526,35 @@ export class SessionController {
     this.send(this.notes.channelPressure(port, this.settings.notesChannel, value));
   }
 
+  private onButton(button: PadIndex, value: number): void {
+    if (value === 0) return;
+    if (button === OCTAVE_UP_BUTTON) this.updateSettings({ octaveShift: this.settings.octaveShift + 1 });
+    else if (button === OCTAVE_DOWN_BUTTON)
+      this.updateSettings({ octaveShift: this.settings.octaveShift - 1 });
+  }
+
   private send(messages: readonly OutputMessage[]): void {
     if (messages.length === 0) return;
     const report = this.output.send(messages);
     if (report.failed.length) {
+      this.pending.add(report.failed);
       this.fail(`${String(report.failed.length)} MIDI message(s) could not be sent to the notes output`);
     }
+  }
+
+  /** Retry the Note Offs a port owes; keep whatever still fails (plan §4.2). */
+  private flushPending(port: string): void {
+    const messages = this.pending.messagesFor(port);
+    if (messages.length === 0) return;
+    const report = this.output.send(messages);
+    const failed = new Set(report.failed.map((d) => `${d.port}/${String(d.channel)}/${String(d.note)}`));
+    const delivered = messages.flatMap<Destination>((m) =>
+      m.type === 'noteOff' && !failed.has(`${m.port}/${String(m.channel)}/${String(m.note)}`)
+        ? [{ port: m.port, channel: m.channel, note: m.note }]
+        : [],
+    );
+    this.pending.confirm(delivered);
+    if (!this.pending.isBlocked(port)) this.lastError = null;
   }
 
   // ---- internals: rendering -------------------------------------------------------------------------
@@ -519,7 +601,7 @@ export class SessionController {
       rootFlash: s.rootFlash,
       dark: harmony.dark,
       pressed,
-      ...(this.buttons ? { buttons: this.buttons } : {}),
+      buttons: new Map([...octaveButtonStates(s.octaveShift), ...(this.buttons ?? [])]),
     };
 
     const v = this.virtualRenderer.render(deps);
