@@ -63,7 +63,7 @@ Grid pads send **Note On** (channel 1) with velocity; **aftertouch** is polyphon
 | 2       | `91` / `B1`        | Flashing between colour A (current static/pulse colour) and B (this value), 50% duty, **one beat period** |
 | 3       | `92` / `B2`        | Pulsing dark ↔ full, **two beat period**                                                                  |
 
-Velocity/value 0 turns the LED off. Flash and pulse are synchronised to **MIDI beat clock received on the MIDI port** (fallback 120 bpm). Forward Live's clock to the device for beat-locked flashing.
+Velocity/value 0 turns the LED off. Flash and pulse are synchronised to **MIDI beat clock received** (fallback 120 bpm until the first clock; after clock stops the flash **freezes** rather than free-running, gate G7). Flash: one period per beat, 50 % duty, colour A first; pulse: two-beat period. Forward Live's clock to the device for beat-locked flashing, and make sure nothing else sends it clock: the device sums clock from the DAW port and the MIDI port, so Live's control surface output must have Sync off (G7). Stop does not stop the flash; repaint static instead.
 
 ### By SysEx (preferred; whole surface in one message)
 

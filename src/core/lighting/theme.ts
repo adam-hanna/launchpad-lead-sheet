@@ -31,8 +31,8 @@ export const WARM_THEME: Theme = {
     pressed: { rgb: [127, 127, 127] },
     dim: { rgb: [6, 6, 6] },
   },
-  // Placeholder palette pinks until G7 records the chosen pair (docs/spikes/README.md).
-  rootFlash: { a: 53, b: 55 },
+  // Pink pair chosen on hardware in gate G7 (2026-11-10): 52 bright, 55 dim.
+  rootFlash: { a: 52, b: 55 },
 };
 
 /** The user's alternative: pink / red / orange for root / 3rd / 5th. */
