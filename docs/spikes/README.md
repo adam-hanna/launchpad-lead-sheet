@@ -112,7 +112,14 @@ Programmer` with the response time. **All off**, then **Index sweep** (watch a w
   playing pads.
 - **Pass**: no stuck notes across 20 remaps; pressure arrives in both modes; LEDs keep updating while
   playing with Live in front.
-- **Result**: _pending_ · evidence: `logs/g4-*.json`
+- **Result**: **PASS** (2026-11-10; polyphonic aftertouch not yet exercised, see below) · evidence:
+  `logs/g4-round-trip-2026-11-10.json`. 316 Note On and 316 Note Off over the IAC notes bus, balanced per
+  note, across octave shifts via the device's own buttons 80 and 70 (base 36 → 48 → 36) with pads held:
+  **no stuck notes**. Pads sounded in Live with monitoring In; press feedback lit every pad with the held
+  note. Channel pressure arrived throughout (637 messages; the device ships in channel-pressure mode).
+  Repaint on every beat ran for 80 s of Live playback with Live in the foreground. **Not covered**:
+  polyphonic aftertouch (the device's Setup menu was not visited); it is a one-minute check to add when
+  convenient and does not block the gate.
 
 ### G5 Latency and jitter
 
