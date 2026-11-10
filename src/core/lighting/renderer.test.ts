@@ -5,7 +5,16 @@ import { parseChord, parseKeyToken } from '../theory';
 import { frameKindsSnapshot } from './debug';
 import { led, stateAt } from './ledState';
 import { FrameRenderer, type RenderDeps } from './renderer';
-import { PINK_RED_ORANGE_THEME, THEMES, WARM_THEME, colourToLed, render } from './theme';
+import {
+  HIGH_CONTRAST_THEME,
+  PINK_RED_ORANGE_THEME,
+  THEMES,
+  WARM_THEME,
+  colourToLed,
+  luminance,
+  redGreenCollapsed,
+  render,
+} from './theme';
 
 const mapping = buildMapping(DEFAULT_LAYOUT, 0, { kind: 'absolute' });
 const [cmaj7, ab] = resolve({
@@ -56,7 +65,7 @@ describe('render()', () => {
     const f = new FrameRenderer().render({ ...base, buttons: new Map([[80, led.palette(3)]]) }).frame;
     expect(stateAt(f, 80)).toEqual(led.palette(3));
     expect(stateAt(f, 70).kind).toBe('off');
-    expect(THEMES.map((t) => t.name)).toEqual(['warm', 'pinkRedOrange']);
+    expect(THEMES.map((t) => t.name)).toEqual(['warm', 'pinkRedOrange', 'highContrast']);
     expect(PINK_RED_ORANGE_THEME.colours.third).toEqual({ rgb: [127, 0, 0] });
     expect(colourToLed({ palette: 5 })).toEqual(led.palette(5));
   });
@@ -135,5 +144,33 @@ describe('FrameRenderer device cache (plan §4.3 acceptance)', () => {
     r.render({ ...base, transport: 'stopped' });
     const sel = r.render({ ...base, transport: 'stopped', harmony: ab! });
     expect(sel.specs.length).toBeGreaterThan(0);
+  });
+});
+
+describe('high-contrast theme (roadmap M7-T9)', () => {
+  const chordRoles = ['bass', 'chordRoot', 'third', 'fifth', 'seventh', 'extension'] as const;
+  const rgbOf = (role: (typeof chordRoles)[number]) => {
+    const c = HIGH_CONTRAST_THEME.colours[role];
+    if (!('rgb' in c)) throw new Error('high-contrast roles are RGB');
+    return c.rgb;
+  };
+  it('keeps every chord role apart for a red–green-deficient viewer', () => {
+    for (const a of chordRoles)
+      for (const b of chordRoles) {
+        if (a === b) continue;
+        const ca = redGreenCollapsed(rgbOf(a));
+        const cb = redGreenCollapsed(rgbOf(b));
+        const blueDiff = Math.abs(ca[2] / 127 - cb[2] / 127);
+        const lumDiff = Math.abs(luminance(ca) - luminance(cb));
+        // Either the blue–yellow axis or brightness must separate the pair clearly.
+        expect(blueDiff >= 0.4 || lumDiff >= 0.15, `${a} vs ${b}`).toBe(true);
+      }
+  });
+  it('makes the chord root and bass the brightest roles and the key root dimmer than the chord root', () => {
+    const lum = (role: (typeof chordRoles)[number]) => luminance(rgbOf(role));
+    expect(lum('bass')).toBeGreaterThan(lum('third'));
+    const keyRoot = HIGH_CONTRAST_THEME.colours.keyRoot;
+    if ('rgb' in keyRoot) expect(luminance(keyRoot.rgb)).toBeLessThan(lum('chordRoot') / 2);
+    expect(luminance(redGreenCollapsed([127, 0, 0]))).toBeCloseTo(luminance(redGreenCollapsed([0, 127, 0])));
   });
 });

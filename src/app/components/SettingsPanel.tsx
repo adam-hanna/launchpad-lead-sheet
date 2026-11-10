@@ -33,14 +33,16 @@ function Choice<T extends string>({
   options,
   onChange,
   testId,
+  label,
 }: {
   readonly value: T;
   readonly options: readonly { readonly value: T; readonly label: string }[];
   readonly onChange: (v: T) => void;
   readonly testId: string;
+  readonly label: string;
 }) {
   return (
-    <div className="flex gap-1" role="radiogroup" data-testid={testId}>
+    <div className="flex gap-1" role="radiogroup" aria-label={label} data-testid={testId}>
       {options.map((o) => (
         <Button
           key={o.value}
@@ -73,6 +75,7 @@ export function SettingsPanel({
     <div className="grid gap-1" data-testid="settings-panel">
       <Row label="Show">
         <Choice
+          label="Show"
           testId="display-mode"
           value={s.displayMode}
           options={[
@@ -106,6 +109,7 @@ export function SettingsPanel({
       </Row>
       <Row label="Grid">
         <Choice
+          label="Grid"
           testId="grid-mode"
           value={s.relative ? 'relative' : 'absolute'}
           options={[
@@ -120,6 +124,7 @@ export function SettingsPanel({
       {s.relative && (
         <Row label="Shape anchored on">
           <Choice
+            label="Shape anchored on"
             testId="anchor"
             value={s.anchor}
             options={[
@@ -134,6 +139,7 @@ export function SettingsPanel({
       )}
       <Row label="Layout">
         <Choice
+          label="Layout"
           testId="layout"
           value={preset}
           options={[
@@ -212,6 +218,7 @@ export function SettingsPanel({
       </Row>
       <Row label="After the last bar">
         <Choice
+          label="After the last bar"
           testId="past-end"
           value={s.pastEnd}
           options={[
@@ -275,6 +282,7 @@ export function SettingsPanel({
       </Row>
       <Row label="Theme">
         <Choice
+          label="Theme"
           testId="theme"
           value={s.themeName}
           options={[

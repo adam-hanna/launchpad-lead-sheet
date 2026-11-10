@@ -9,11 +9,51 @@ export interface SessionStoreState {
   readonly tabRole: TabRole | null;
 }
 
-/** Bind a controller to a Zustand store; the store mirrors every snapshot the controller emits. */
-export function createSessionStore(controller: SessionController, tabRole: TabRole | null = 'owner') {
+/** Decides when a queued UI update runs. The default runs it immediately (tests, passive tabs). */
+export type UpdateScheduler = (run: () => void) => void;
+
+export const immediateScheduler: UpdateScheduler = (run) => {
+  run();
+};
+
+/**
+ * Coalesce UI updates to one per animation frame (roadmap M7-T10). The controller emits a snapshot on
+ * every MIDI clock tick (48/s at 120 bpm in 4/4); the LEDs are driven synchronously from those, but the
+ * React tree only needs the latest snapshot once per frame. In a hidden tab `requestAnimationFrame` does
+ * not fire, so the UI simply pauses at no CPU cost while MIDI keeps flowing; the pending update runs when
+ * the tab becomes visible again.
+ */
+export function animationFrameScheduler(
+  raf: (cb: () => void) => void = (cb) => {
+    requestAnimationFrame(cb);
+  },
+  onVisible?: (flush: () => void) => void,
+): UpdateScheduler {
+  let pending: (() => void) | null = null;
+  const flush = () => {
+    const run = pending;
+    pending = null;
+    run?.();
+  };
+  onVisible?.(flush);
+  return (run) => {
+    const first = pending === null;
+    pending = run;
+    if (first) raf(flush);
+  };
+}
+
+/** Bind a controller to a Zustand store; the store mirrors the latest snapshot the controller emitted. */
+export function createSessionStore(
+  controller: SessionController,
+  tabRole: TabRole | null = 'owner',
+  schedule: UpdateScheduler = immediateScheduler,
+) {
   const store = createStore<SessionStoreState>(() => ({ snapshot: controller.snapshot(), tabRole }));
   controller.subscribe((snapshot) => {
-    store.setState({ snapshot });
+    schedule(() => {
+      store.setState({ snapshot });
+    });
   });
   return store;
 }
@@ -44,7 +84,15 @@ export function getSession(): Session {
     persistence: { sheets, autosave, settings: new SettingsStore() },
   });
   controllerRef = controller;
-  const store = createSessionStore(controller, null);
+  const store = createSessionStore(
+    controller,
+    null,
+    animationFrameScheduler(undefined, (flush) => {
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') flush();
+      });
+    }),
+  );
   const lock = new TabLock();
 
   const becomeOwner = () => {

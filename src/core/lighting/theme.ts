@@ -48,7 +48,49 @@ export const PINK_RED_ORANGE_THEME: Theme = {
   },
 };
 
-export const THEMES: readonly Theme[] = [WARM_THEME, PINK_RED_ORANGE_THEME];
+/**
+ * Colour-blind-safe theme (roadmap M7-T9). Roles differ along the blue–orange axis and in brightness,
+ * which survive red–green deficiencies (deuteranopia, protanopia): no role pair relies on a red/green hue
+ * difference alone, and the two most important roles are also the two brightest (white bass, orange root).
+ * `rootFlash` uses the palette's orange pair so the beat flash keeps the root's colour.
+ */
+export const HIGH_CONTRAST_THEME: Theme = {
+  name: 'highContrast',
+  label: 'High contrast (colour-blind safe)',
+  colours: {
+    bass: { rgb: [127, 127, 127] },
+    chordRoot: { rgb: [127, 60, 0] },
+    third: { rgb: [0, 70, 127] },
+    fifth: { rgb: [127, 127, 0] },
+    seventh: { rgb: [40, 0, 70] },
+    extension: { rgb: [0, 127, 60] },
+    scale: { rgb: [0, 0, 24] },
+    keyRoot: { rgb: [60, 28, 0] },
+    pressed: { rgb: [127, 127, 127] },
+    dim: { rgb: [6, 6, 6] },
+  },
+  rootFlash: { a: 9, b: 11 },
+};
+
+export const THEMES: readonly Theme[] = [WARM_THEME, PINK_RED_ORANGE_THEME, HIGH_CONTRAST_THEME];
+
+/** Relative luminance (0–1) of a Launchpad RGB triple, for contrast checks. */
+export function luminance(rgb: RGB): number {
+  const lin = (v: number) => {
+    const c = Math.max(0, Math.min(127, v)) / 127;
+    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  };
+  return 0.2126 * lin(rgb[0]) + 0.7152 * lin(rgb[1]) + 0.0722 * lin(rgb[2]);
+}
+
+/**
+ * Approximate how a red–green-deficient viewer sees a colour: collapse red and green to their mean so
+ * only blue–yellow and brightness remain. Coarse by design; it only has to tell theme roles apart.
+ */
+export function redGreenCollapsed(rgb: RGB): RGB {
+  const ry = Math.round((rgb[0] + rgb[1]) / 2);
+  return [ry, ry, rgb[2]];
+}
 
 export const CUSTOM_THEME_NAME = 'custom';
 
