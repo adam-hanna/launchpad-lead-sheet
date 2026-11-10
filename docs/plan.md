@@ -386,24 +386,25 @@ including `off` LEDs, even though the cached frame was identical.
   4. `stopped` otherwise
 - **Transition table**
 
-  | Event                            | Effect                                                                                                                                                                                                                            |
-  | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-  | Start `FA`                       | position := 1.1.1, tick 0 pending; valid := true; intent := play; timer armed, `timedOut` cleared                                                                                                                                 |
-  | SPP `F2`                         | position := value (16ths → ticks), pending; valid := true; intent unchanged; timer armed, `timedOut` cleared                                                                                                                      |
-  | Continue `FB`                    | intent := play; valid unchanged (¬valid stays `unsynced` until SPP/Start); timer armed from now, `timedOut` cleared                                                                                                               |
-  | Stop `FC`                        | intent := stop; position retained; valid unchanged; timer disarmed                                                                                                                                                                |
-  | Clock `F8`                       | if intent = play: the first Clock after Start/Continue/SPP **occupies** the pending position (the downbeat lands on that Clock, per the MIDI spec), each later Clock advances one tick; timer re-armed. If intent = stop: ignored |
-  | Timer fires                      | `timedOut` := true; valid := false → `lostClock`                                                                                                                                                                                  |
-  | Clock input port disconnected    | valid := false; intent := stop; timer disarmed → `unsynced`, "clock input lost"                                                                                                                                                   |
-  | Clock input port reconnected     | no change; valid stays false until Start/SPP                                                                                                                                                                                      |
-  | Launchpad disconnect / reconnect | **no effect** on transport (§4.2)                                                                                                                                                                                                 |
+  | Event      | Effect                                                                                            |
+  | ---------- | ------------------------------------------------------------------------------------------------- |
+  | Start `FA` | position := 1.1.1, tick 0 pending; valid := true; intent := play; timer armed, `timedOut` cleared |
 
-  **Receiver rule** (ours, fixed): SPP alone never changes play intent; Continue always sets it.
-  **Sender behaviour** (Live's, unverified): the Live 12 manual §17.3.1.2 says SPP and Continue are sent
-  each time the play position changes. Whether a seek while _stopped_ emits SPP alone or SPP plus
-  Continue is **not established** and is recorded by gate G3. If G3 shows Continue on a stopped seek, the
-  contract is adjusted before implementation (e.g. Continue followed by no Clock within the timeout does
-  not count as playing); the limitation is recorded either way.
+| SPP `F2` | position := value (16ths → ticks), pending; valid := true; intent unchanged; `timedOut` cleared; timer armed **only if intent = play** (a seek while stopped must not time out into `unsynced`) |
+| Continue `FB` | intent := play; valid unchanged (¬valid stays `unsynced` until SPP/Start); timer armed from now, `timedOut` cleared |
+| Stop `FC` | intent := stop; position retained; valid unchanged; timer disarmed |
+| Clock `F8` | if intent = play: the first Clock after Start/Continue/SPP **occupies** the pending position (the downbeat lands on that Clock, per the MIDI spec), each later Clock advances one tick; timer re-armed. If intent = stop: ignored |
+| Timer fires | `timedOut` := true; valid := false → `lostClock` |
+| Clock input port disconnected | valid := false; intent := stop; timer disarmed → `unsynced`, "clock input lost" |
+| Clock input port reconnected | no change; valid stays false until Start/SPP |
+| Launchpad disconnect / reconnect | **no effect** on transport (§4.2) |
+
+**Receiver rule** (ours, fixed): SPP alone never changes play intent; Continue always sets it.
+**Sender behaviour** (Live's, unverified): the Live 12 manual §17.3.1.2 says SPP and Continue are sent
+each time the play position changes. Whether a seek while _stopped_ emits SPP alone or SPP plus
+Continue is **not established** and is recorded by gate G3. If G3 shows Continue on a stopped seek, the
+contract is adjusted before implementation (e.g. Continue followed by no Clock within the timeout does
+not count as playing); the limitation is recorded either way.
 
 - **No wall-clock inference.** Position advances only on received messages, processed in arrival order
   with their Web MIDI timestamps. A burst of buffered clocks after a stall shorter than the timeout is
