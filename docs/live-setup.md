@@ -40,7 +40,9 @@ is what gate G2 decides; if it fights, set the control surface to **None** while
 
 1. Create a MIDI track with any instrument.
 2. **MIDI From**: `IAC Driver LS Notes`, channel **All** (or the channel chosen in the app's settings).
-3. **Monitor**: **In** (or Auto with the track armed).
+3. **Monitor**: **Auto**, and **arm** the track (its record button). An armed track in Auto plays the pads
+   live and also plays back what you record. Do not use **In**: it mutes the track's own clips, so a
+   recording on that track stays silent.
 
 Do not set MIDI From to "All Ins": the raw Launchpad port would reach the instrument too.
 
@@ -76,6 +78,8 @@ the device stays in Programmer mode; **power-cycle or replug it** (it always boo
 | "Clock lost"                                       | Live stopped sending clock (sync turned off, Live quit)        | Check Sync **On** for `LS Clock`; press Play                        |
 | Harmony is one bar off                             | Sheet starts mid-song or meter differs                         | Set **Starts at Live bar**; check the meter                         |
 | Pads light but nothing sounds                      | Track input or monitoring                                      | Section 3                                                           |
+| Recording plays back silent                        | Track Monitor is **In**, which mutes the track's clips         | Set Monitor to **Auto** and keep the track armed                    |
+| Track lane is grey; recordings do not play         | The track plays Session view, not the Arrangement              | Click the orange **Back to Arrangement** button                     |
 | Root flashes twice per beat                        | Live sends clock to the Launchpad's DAW port too               | Sync **Off** for the `LPProMK3 DAW` output in Live's MIDI ports     |
 | "Launchpad conflict"                               | Something keeps leaving Programmer mode                        | Set Live's Launchpad control surface to None, then **Retry**        |
 | "Stuck on …" badge                                 | Notes were sounding when the notes output vanished             | Replug the output (the app releases them) or stop the track in Live |

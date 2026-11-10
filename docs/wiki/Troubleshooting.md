@@ -70,7 +70,7 @@ Live bar 1 through the end of the sheet.
 ## Nothing sounds, pads light
 
 The notes reach `IAC Driver LS Notes` but no track listens. Set a MIDI track's **MIDI From** to that bus
-with **Monitor In** (or arm it). Do not use "All Ins": the raw Launchpad port would reach the instrument.
+with **Monitor Auto** and arm it (Monitor **In** would also mute the track's recordings). Do not use "All Ins": the raw Launchpad port would reach the instrument.
 
 ## Pads send wrong notes into Live
 
