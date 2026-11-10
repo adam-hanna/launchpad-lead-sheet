@@ -22,12 +22,12 @@ Live and the browser both see these as `IAC Driver LS Clock` and `IAC Driver LS 
 
 Live → Preferences → **Link, Tempo & MIDI**:
 
-| Port                          | Track            | Sync   | Remote | Why                                                                                       |
-| ----------------------------- | ---------------- | ------ | ------ | ----------------------------------------------------------------------------------------- |
-| Output: `IAC Driver LS Clock` | off              | **On** | off    | Live sends MIDI clock, Start/Stop and Song Position here                                  |
-| Input: `IAC Driver LS Notes`  | **On**           | off    | off    | the app's notes arrive here                                                               |
-| Input: `LPProMK3 MIDI`        | **Off**          | off    | off    | in Programmer mode the pads send grid indices, not notes; keep them away from instruments |
-| Input/Output: `LPProMK3 DAW`  | as Live set them |        |        | used by Live's own Launchpad control surface                                              |
+| Port                          | Track          | Sync    | Remote         | Why                                                                                                                                  |
+| ----------------------------- | -------------- | ------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Output: `IAC Driver LS Clock` | off            | **On**  | off            | Live sends MIDI clock, Start/Stop and Song Position here                                                                             |
+| Input: `IAC Driver LS Notes`  | **On**         | off     | off            | the app's notes arrive here                                                                                                          |
+| Input: `LPProMK3 MIDI`        | **Off**        | off     | off            | in Programmer mode the pads send grid indices, not notes; keep them away from instruments                                            |
+| Output: `LPProMK3 DAW`        | as Live set it | **Off** | as Live set it | Live's control surface may stay; but with Sync on here the device gets a second clock and the root flashes at double speed (gate G7) |
 
 Then, still in that preferences page, under **MIDI Clock Type** for `IAC Driver LS Clock` choose **Song**.
 Pattern mode would always start the app at bar 1; Song mode sends the position so starting mid-arrangement
@@ -76,6 +76,7 @@ the device stays in Programmer mode; **power-cycle or replug it** (it always boo
 | "Clock lost"                                       | Live stopped sending clock (sync turned off, Live quit)        | Check Sync **On** for `LS Clock`; press Play                        |
 | Harmony is one bar off                             | Sheet starts mid-song or meter differs                         | Set **Starts at Live bar**; check the meter                         |
 | Pads light but nothing sounds                      | Track input or monitoring                                      | Section 3                                                           |
+| Root flashes twice per beat                        | Live sends clock to the Launchpad's DAW port too               | Sync **Off** for the `LPProMK3 DAW` output in Live's MIDI ports     |
 | "Launchpad conflict"                               | Something keeps leaving Programmer mode                        | Set Live's Launchpad control surface to None, then **Retry**        |
 | "Stuck on …" badge                                 | Notes were sounding when the notes output vanished             | Replug the output (the app releases them) or stop the track in Live |
 | Another tab is controlling MIDI                    | Two app tabs                                                   | Close one, or **Take over here**                                    |

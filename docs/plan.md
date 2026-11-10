@@ -33,7 +33,8 @@ Live or a Remote Script.
 - **Chords**: bounded chord-symbol grammar (§4.9) with user spelling preserved.
 - **Lighting**: membership-by-mode plus priority (§4.6); display modes Key / Chord / Key+Chord;
   out-of-mode dark (setting: dim); root flashes on the beat via hardware flash with clock forwarded to
-  the device, opt-out; semantic LED state model (§4.3).
+  the device (one beat period, verified in G7; Live must not also send clock on the DAW port), opt-out;
+  semantic LED state model (§4.3).
 - **Grid**: Fourths default; Thirds, Sequential, custom row offset; base note and octave shift via side
   buttons with LED feedback; Absolute vs Relative grid, relative anchor chord root (setting: key root),
   per §4.7.

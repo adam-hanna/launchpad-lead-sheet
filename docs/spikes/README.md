@@ -158,7 +158,16 @@ Programmer` with the response time. **All off**, then **Index sweep** (watch a w
   playing.
 - **Pass**: all roles distinguishable; pink pair chosen (record the indices); flash is on the beat in all
   three cases, or the fail is recorded and the software flash fallback is adopted.
-- **Result**: _pending_ · chosen palette: A = _, B = _ · evidence: photo or notes
+- **Result**: **PASS** (2026-11-10) · chosen palette: **A = 52** (bright pink), **B = 55** (dim pink) ·
+  evidence: `logs/g7-colour-flash-2026-11-10.json`, observations. Every role row was distinguishable at
+  arm's length. Hardware flash: one period per beat at 50 % duty (reference manual, confirmed), bright
+  on the beat and dim on the off-beat after Start from 1.1.1 and after a seek mid-bar while playing
+  (replug case deferred to G8). **Finding**: Live's Launchpad control surface had **Sync On** for the
+  `LPProMK3 DAW` output, so the device received two clocks and flashed at double speed; Sync Off on that
+  row fixes it and the setup guide now requires it. Without any forwarded clock the device freezes the
+  flash (it only free-runs at 120 bpm before the first clock). After Live's Stop the device keeps
+  flashing at the last tempo, so the app's rule of repainting the root static when not playing (§4.3) is
+  what stops it. Software flash fallback (M4-T8, M7-T5) **not needed**.
 
 ### G8 Web MIDI lifecycle
 
@@ -173,11 +182,11 @@ disconnect`, then `layout changed → Programmer … [reconnect→programmer N m
 
 ## Decisions fed back into the plan (gate review, M1-T11)
 
-| Question                                   | Answer | Consequence                     |
-| ------------------------------------------ | ------ | ------------------------------- |
-| Live control surface: coexist or disable?  |        | setup guide / §4.2              |
-| Hardware flash phase reliable?             |        | §4.3 hardware vs software flash |
-| Stopped seek: SPP alone or SPP + Continue? |        | §4.4 receiver contract          |
-| Loop wrap: what does Live send?            |        | §4.4 sheet-loop guidance        |
-| Pink palette pair                          |        | theme defaults                  |
-| Index map matches the reference?           |        | driver constants                |
+| Question                                   | Answer                                                                                           | Consequence                     |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------ | ------------------------------- |
+| Live control surface: coexist or disable?  | Coexists (G2); but its DAW output must have **Sync Off** or the device gets a second clock (G7)  | setup guide / §4.2              |
+| Hardware flash phase reliable?             | Yes: one beat period, phase correct after Start and mid-bar seek (G7); software fallback dropped | §4.3 hardware vs software flash |
+| Stopped seek: SPP alone or SPP + Continue? | SPP alone (G3)                                                                                   | §4.4 receiver contract          |
+| Loop wrap: what does Live send?            | Nothing (G3); the sheet loop mapping covers it                                                   | §4.4 sheet-loop guidance        |
+| Pink palette pair                          | A = 52, B = 55 (G7)                                                                              | theme defaults                  |
+| Index map matches the reference?           | Yes, plus nine undocumented buttons: Shift 90, lower row 101–108 (G1)                            | driver constants                |
