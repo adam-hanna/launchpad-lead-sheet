@@ -1,5 +1,6 @@
 import { createStore, useStore } from 'zustand';
 import { WebMidi } from '@adapters/midi';
+import { Autosave, SettingsStore, SheetStore, defaultKv } from '@adapters/storage';
 import { VirtualLaunchpad } from '@adapters/virtual';
 import { SessionController, type SessionSnapshot } from './sessionController';
 
@@ -28,7 +29,22 @@ let singleton: Session | null = null;
 export function getSession(): Session {
   if (!singleton) {
     const virtual = new VirtualLaunchpad();
-    const controller = new SessionController({ midi: WebMidi.fromNavigator(), virtual });
+    const sheets = new SheetStore(defaultKv());
+    let controllerRef: SessionController | null = null;
+    const autosave = new Autosave(sheets, {
+      onSaved: (id) => controllerRef?.onSaved(id),
+      onError: (id, e) => controllerRef?.onSaveError(id, e),
+    });
+    const controller = new SessionController({
+      midi: WebMidi.fromNavigator(),
+      virtual,
+      persistence: { sheets, autosave, settings: new SettingsStore() },
+    });
+    controllerRef = controller;
+    void controller.openLastOrDemo();
+    window.addEventListener('pagehide', () => {
+      void autosave.flush();
+    });
     singleton = { controller, virtual, store: createSessionStore(controller) };
   }
   return singleton;

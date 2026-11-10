@@ -49,7 +49,9 @@ import {
 } from '@adapters/midi';
 import { ProMk3Port } from '@adapters/launchpad';
 import type { VirtualLaunchpad } from '@adapters/virtual';
+import type { Autosave, SettingsStore, SheetStore } from '@adapters/storage';
 import { DEFAULT_SETTINGS, type Settings } from './settings';
+import { demoSheet } from './demoSheet';
 
 export interface ActiveSummary {
   readonly status: ActiveHarmony['status'];
@@ -77,6 +79,7 @@ export interface SessionSnapshot {
   readonly heldNotes: readonly number[];
   /** Notes whose Note Off could not be delivered because their output is gone (plan §4.2). */
   readonly stuck: readonly { readonly port: string; readonly notes: readonly number[] }[];
+  readonly save: 'none' | 'pending' | 'saved' | 'error';
   readonly lastError: string | null;
 }
 
@@ -95,6 +98,12 @@ export interface SessionOptions {
   readonly clearTimer?: (handle: unknown) => void;
   readonly createHardwarePort?: (midi: WebMidi, inputId: string, outputId: string) => HardwarePort;
   readonly initialSettings?: Partial<Settings>;
+  /** Sheet library, autosave and settings storage (roadmap E6.4). Optional: tests run without it. */
+  readonly persistence?: {
+    readonly sheets: SheetStore;
+    readonly autosave: Autosave;
+    readonly settings: SettingsStore;
+  };
 }
 
 type Unsub = () => void;
@@ -133,6 +142,8 @@ export class SessionController {
   private timeoutHandle: unknown = null;
   private inputEnabled = false;
   private lastError: string | null = null;
+  private saveState: 'none' | 'pending' | 'saved' | 'error' = 'none';
+  private readonly persistence: SessionOptions['persistence'];
   private buttons: ReadonlyMap<PadIndex, LedState> | undefined;
   private readonly listeners = new Set<(s: SessionSnapshot) => void>();
   private readonly disposers: Unsub[] = [];
@@ -148,7 +159,10 @@ export class SessionController {
         globalThis.clearTimeout(h as ReturnType<typeof setTimeout>);
       });
     this.createHardwarePort = options.createHardwarePort ?? ((midi, i, o) => new ProMk3Port(midi, i, o));
-    this.settings = { ...DEFAULT_SETTINGS, ...options.initialSettings };
+    this.persistence = options.persistence;
+    const stored = this.persistence?.settings.loadSettings() ?? DEFAULT_SETTINGS;
+    this.settings = { ...stored, ...options.initialSettings };
+    if (this.persistence) this.selection = this.persistence.settings.loadPorts();
     this.output = new NotesOutput(this.midi);
     this.mapping = mappingFor(
       this.settings.layout,
@@ -214,6 +228,7 @@ export class SessionController {
       pressedCount: this.notes.ownerCount(),
       heldNotes: [...this.notes.activeNotes()].sort((a, b) => a - b),
       stuck: this.pending.stuck().map((s) => ({ port: s.port, notes: s.notes.map((d) => d.note) })),
+      save: this.saveState,
       lastError: this.lastError,
     };
   }
@@ -250,6 +265,7 @@ export class SessionController {
     if (oldNotesOut !== undefined && next.notesOut !== oldNotesOut)
       this.send(this.notes.releasePort(oldNotesOut));
     this.selection = next;
+    this.persistence?.settings.savePorts(next);
     if (lpChanged) this.bindHardware();
     if (clockChanged) this.bindClock();
     this.emit();
@@ -285,8 +301,32 @@ export class SessionController {
 
   // ---- sheet ----------------------------------------------------------------------------------------
 
-  loadSheet(sheet: Sheet): void {
+  /** Open the last sheet from the library, or the demo when there is none. */
+  async openLastOrDemo(): Promise<void> {
+    const store = this.persistence?.sheets;
+    if (store) {
+      const last = await store.lastOpened();
+      const r = last ? await store.load(last) : null;
+      if (r?.ok) {
+        this.loadSheet(r.sheet, { persist: false });
+        return;
+      }
+    }
+    this.loadSheet(demoSheet());
+  }
+
+  /** Replace the current sheet (editor change or import). Autosaves and remembers it as last opened. */
+  loadSheet(sheet: Sheet, options: { readonly persist?: boolean } = {}): void {
+    const switching = sheet.id !== this.sheet.id;
+    if (switching && this.persistence) void this.persistence.autosave.flush();
     this.sheet = sheet;
+    if (this.persistence) {
+      if (options.persist !== false) {
+        this.saveState = 'pending';
+        this.persistence.autosave.schedule(sheet);
+      } else this.saveState = 'saved';
+      this.persistence.sheets.setLastOpened(sheet.id).catch(() => undefined);
+    }
     this.resolved = resolve(sheet);
     this.engine.setMeter(sheet.meter);
     this.engine.setOriginBar(sheet.originBar);
@@ -318,6 +358,7 @@ export class SessionController {
   updateSettings(patch: Partial<Settings>): void {
     this.settings = { ...this.settings, ...patch };
     this.settings = { ...this.settings, octaveShift: clampOctaveShift(this.settings.octaveShift) };
+    this.persistence?.settings.saveSettings(this.settings);
     this.render();
     this.emit();
   }
@@ -326,6 +367,21 @@ export class SessionController {
   setButtons(buttons: ReadonlyMap<PadIndex, LedState> | undefined): void {
     this.buttons = buttons;
     this.render();
+  }
+
+  /** Autosave callbacks (wired by the store that owns the Autosave). */
+  onSaved(sheetId: string): void {
+    if (sheetId === this.sheet.id && !this.persistence?.autosave.hasPending(sheetId))
+      this.saveState = 'saved';
+    this.emit();
+  }
+
+  onSaveError(sheetId: string, error: unknown): void {
+    if (sheetId === this.sheet.id) this.saveState = 'error';
+    this.fail(
+      `could not save "${sheetId}": ${error instanceof Error ? error.message : String(error)}. Export JSON to keep your work.`,
+    );
+    this.emit();
   }
 
   dispose(): void {
